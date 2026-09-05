@@ -43,12 +43,22 @@ header .tagline {
 .topbar {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 18px;
   margin: 0 0 10px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
 }
-.topbar .linkish { margin-left: 0; font-size: 14px; }
+/* The 32px minimum target height applies to the button and not to the inline
+   anchor beside it, so the button centred its text in a taller box and sat
+   lower. Same box for both. */
+.topbar .linkish {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  margin-left: 0;
+  font-size: 14px;
+}
 
 /* Logo beside the title: a CRT tube in profile with the flyback's HV lead. */
 .brand { display: flex; gap: 14px; align-items: flex-start; }
@@ -78,7 +88,14 @@ header .tagline {
 }
 /* A button that reads as a link — the About sheet and the repo link sit in
    running text, so a button chrome would shout over the tagline. */
+/* Used for both <button> and <a>. The 32px minimum target height applies to a
+   button and not to an inline anchor, so side by side the button centred its
+   text in a taller box and sat lower than the link. Same box for both. */
 .linkish {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  vertical-align: middle;
   background: none;
   border: 0;
   padding: 0;
@@ -608,4 +625,4 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 .permalink { margin: 14px 0 0; font-size: 13px; }
 
 .note-inline { color: var(--muted); font-size: 13px; }
-.note-inline .linkish { margin-left: 0; font-size: 13px; }
+.note-inline .linkish { margin-left: 0; font-size: 13px; min-height: 0; }
