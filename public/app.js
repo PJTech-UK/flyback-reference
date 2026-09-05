@@ -731,10 +731,6 @@
       <p style="margin-top:14px" class="help-eg">The focus-voltage (Uf) estimate assumes a <b>24 kV</b> CRT anode (EHT) supply and a simple-divider bleeder; it isn't valid for HRTs that tap intermediate multiplier stages.</p>`;
   }
   const openAbout = () => $("about").classList.add("show");
-  if ($("version") && CATALOG.version) {
-    $("version").textContent = "v" + CATALOG.version
-      + (CATALOG.generated ? " · data built " + CATALOG.generated.slice(0, 10) : "");
-  }
   $("aboutBtn").onclick = openAbout;
   if ($("aboutBtn2")) $("aboutBtn2").onclick = openAbout;
   $("aboutClose").onclick = () => { $("about").classList.remove("show"); };
@@ -755,6 +751,12 @@
     $("stats").textContent =
       `${n(st.parts)} transformer parts · ${n(st.codes)} manufacturer part numbers · ` +
       `${n(st.models)} TV and monitor models`;
+    // Belongs here, after the fetch. Reading CATALOG at module top level threw
+    // on a null and took every handler registered below it with it.
+    if ($("version") && CATALOG.version) {
+      $("version").textContent = "v" + CATALOG.version
+        + (CATALOG.generated ? " · data built " + CATALOG.generated.slice(0, 10) : "");
+    }
     buildHelp();
 
     restoreFromUrl();

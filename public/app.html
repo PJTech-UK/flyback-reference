@@ -9,21 +9,43 @@
 <body>
 
 <header>
-  <h1>Flyback, LOPT &amp; Tripler Cross-Reference Database</h1>
-  <p class="tagline">
-    Cross-reference and technical data for CRT line-output transformers (flybacks /
-    LOPTs), triplers and related EHT components.
-    <button class="linkish" id="aboutBtn" type="button">What is this?</button>
-    <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference" rel="noopener">Source &amp; data on GitHub</a>
-  </p>
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 64 52" aria-hidden="true" focusable="false">
+      <!-- A CRT tube in profile: the screen face at the left, the funnel
+           tapering to the neck, and the flyback's HV lead into the anode cap on
+           top of the bell — which is the connection this whole archive is about. -->
+      <g fill="none" stroke="currentColor" stroke-width="3"
+         stroke-linejoin="round" stroke-linecap="round">
+        <path d="M10 10 Q7 26 10 42 L37 34 V18 Z"/>
+        <path d="M37 22 H55 V30 H37"/>
+        <path d="M23.5 14 Q27 4 38 6"/>
+        <circle cx="23.5" cy="14" r="4"/>
+      </g>
+    </svg>
+    <div>
+      <h1>Welcome to the Flyback, LOPT &amp; Tripler Cross-Reference Database</h1>
+      <p class="tagline">
+        Cross-reference and technical data for CRT line-output transformers
+        (flybacks&nbsp;/&nbsp;LOPTs), triplers and related EHT components.
+        <button class="linkish" id="aboutBtn" type="button">What is this?</button>
+        <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference" target="_blank" rel="noopener">Source &amp; data on GitHub</a>
+      </p>
+    </div>
+  </div>
   <div class="stats" id="stats">loading…</div>
+
+  <p class="prompt" id="prompt">
+    <strong>Type any part number to start.</strong>
+    Whatever is printed on the transformer, or the make and model of the set it came out of.
+  </p>
 
   <div class="search">
     <input type="text" id="q" autofocus
-           placeholder="Try: BG1897, hrt241bp, sony, vpp:200-300, type:SM, wnd&gt;=4, role:focus, or type:SM AND (vpp&gt;=200 OR role:focus)" />
+           aria-label="Search part numbers, TV and monitor models"
+           placeholder="e.g. BG1897, HRT241BP, BSC24, or Sony KV-2000" />
     <select id="category" title="Filter by part type"></select>
     <button class="btn" id="toggleBuilder" type="button">Compose a search</button>
-    <button class="btn" id="helpBtn" type="button" title="Search help">?&nbsp;Help</button>
+    <button class="btn" id="helpBtn" type="button">Search tips</button>
   </div>
 
   <div class="search">
@@ -62,15 +84,15 @@
   with IP addresses truncated before they are recorded.</p>
   <p><span id="version"></span></p>
   <p><button class="linkish" id="aboutBtn2" type="button">About this archive</button>
-  <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference" rel="noopener">Source and data on GitHub</a></p>
+  <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference" target="_blank" rel="noopener">Source and data on GitHub</a></p>
 </footer>
 
 <div class="modal" id="modal"><img id="modalImg" alt=""></div>
 
 <!-- about modal -->
-<div class="sheet" id="about">
+<div class="sheet" id="about" role="dialog" aria-modal="true" aria-label="About this archive">
   <div class="panel">
-    <button class="close" id="aboutClose" type="button">&times;</button>
+    <button class="close" id="aboutClose" type="button" aria-label="Close">&times;</button>
     <h2>About this archive</h2>
     <p>Reference data for CRT line-output transformers (flybacks / LOPTs), triplers and
     related EHT components. The manufacturers' catalogues that carried it are out of print
@@ -98,15 +120,15 @@
     records they appear in.</p>
 
     <p>Corrections, particularly bench measurements, are welcome via the
-    <a href="https://github.com/PJTech-UK/flyback-reference" rel="noopener">repository</a>.</p>
+    <a href="https://github.com/PJTech-UK/flyback-reference" target="_blank" rel="noopener">repository</a>.</p>
   </div>
 </div>
 
 <!-- help modal -->
-<div class="sheet" id="help">
+<div class="sheet" id="help" role="dialog" aria-modal="true" aria-label="Search tips">
   <div class="panel">
-    <button class="close" id="helpClose" type="button">&times;</button>
-    <h2>How to search</h2>
+    <button class="close" id="helpClose" type="button" aria-label="Close">&times;</button>
+    <h2>Search tips</h2>
     <div id="helpBody"></div>
   </div>
 </div>
