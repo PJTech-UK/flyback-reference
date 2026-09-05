@@ -624,11 +624,17 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 }
 
 /* ---- server-rendered pages ---- */
+/* Same column as the header and footer, so the page has one left edge. Prose
+   inside it still stops at 78 characters; the code lists and the part index use
+   the full width, which is what they are for. */
 .static-page {
-  max-width: 78ch;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 20px 60px;
 }
+.static-page > h1,
+.static-page > h2,
+.static-page > p:not(.codes) { max-width: 78ch; }
 .static-page h1 { font-size: 26px; margin: 0 0 4px; color: var(--accent); font-family: ui-monospace, monospace; }
 .static-page h2 { font-size: 18px; margin: 26px 0 6px; }
 .static-page .meta-line { color: var(--muted); margin: 0 0 18px; }

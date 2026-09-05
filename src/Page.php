@@ -52,20 +52,24 @@ final class Page
 </head>
 <body>
 <header>
+ <div class="wrap">
   <nav class="topbar" aria-label="Site links">
     <a class="linkish" href="/">Search the database</a>
     <a class="linkish" href="/parts">All parts</a>
   </nav>
+ </div>
 </header>
 <main class="static-page">
 $body
 </main>
 <footer>
+ <div class="wrap">
   <p>HR Diemen is a trademark of Efiter S.L. This archive is not affiliated with,
   endorsed by, or connected to Efiter or HR Diemen.</p>
   <p><a class="linkish" href="/">Search the database</a>
   <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference"
      target="_blank" rel="noopener">Source &amp; data on GitHub</a></p>
+ </div>
 </footer>
 </body>
 </html>
