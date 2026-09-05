@@ -43,6 +43,11 @@ Searches by part number, by the set a part was fitted to, or by electrical
 characteristics, combined with `AND`, `OR`, `NOT` and parentheses. Where a part
 is unobtainable it lists others of a similar design, with the differences.
 
+Each part also links out to ready-made searches across all of its equivalent
+codes at once, on search engines and marketplaces, in eight languages — the trade
+term for these components differs by country, and stock listed as ТДКС or 高压包
+never surfaces in an English search.
+
 ```bash
 php bin/build-db.php
 php -S localhost:8000 -t public public/index.php
