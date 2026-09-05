@@ -9,6 +9,16 @@
 <body>
 
 <header>
+  <nav class="topbar" aria-label="Site links">
+    <button class="linkish" id="aboutBtn" type="button">What is this?</button>
+    <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference"
+       target="_blank" rel="noopener">Source &amp; data on GitHub</a>
+    <!-- Ko-fi: uncomment and drop the URL in when the account exists.
+    <a class="linkish" href="https://ko-fi.com/YOURNAME"
+       target="_blank" rel="noopener">Buy me a coffee</a>
+    -->
+  </nav>
+
   <div class="brand">
     <svg class="logo" viewBox="0 0 64 52" aria-hidden="true" focusable="false">
       <!-- A CRT tube in profile: the screen face at the left, the funnel
@@ -25,13 +35,15 @@
     <div>
       <h1>Welcome to the Flyback, LOPT &amp; Tripler Cross-Reference Database</h1>
       <p class="tagline">
-        Cross-reference and technical data for CRT line-output transformers
-        (flybacks&nbsp;/&nbsp;LOPTs), triplers and related EHT components.
-        <button class="linkish" id="aboutBtn" type="button">What is this?</button>
-        <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference" target="_blank" rel="noopener">Source &amp; data on GitHub</a>
+        Cross-reference and technical data for <b>HR Diemen</b> line-output
+        transformers (flybacks&nbsp;/&nbsp;LOPTs), triplers and related EHT
+        components for CRT televisions and monitors, supplemented with
+        cross-reference data from other historic parts catalogues and from
+        documents circulated by the repair community.
       </p>
     </div>
   </div>
+
   <div class="stats" id="stats">loading…</div>
 
   <p class="prompt" id="prompt">
@@ -83,6 +95,8 @@
   scripts from anywhere else. Visits are counted from the web server's own logs,
   with IP addresses truncated before they are recorded.</p>
   <p><span id="version"></span></p>
+  <p>HR Diemen is a trademark of Efiter S.L. This archive is not affiliated with,
+  endorsed by, or connected to Efiter or HR Diemen.</p>
   <p><button class="linkish" id="aboutBtn2" type="button">About this archive</button>
   <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference" target="_blank" rel="noopener">Source and data on GitHub</a></p>
 </footer>

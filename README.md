@@ -1,11 +1,12 @@
 # Flyback, LOPT & Tripler Cross-Reference Database
 
-Cross-reference and technical data for CRT line-output transformers (flybacks /
-LOPTs), triplers and related EHT components, with a search application over it.
+Cross-reference and technical data for HR Diemen line-output transformers
+(flybacks / LOPTs), triplers and related EHT components for CRT televisions and
+monitors, supplemented with cross-reference data from other historic parts
+catalogues and from documents circulated by the repair community.
 
-The manufacturers' catalogues carrying this information are out of print or
-offline, and the same transformer is commonly listed under several different part
-numbers.
+The catalogues carrying this information are out of print or offline, and the
+same transformer is commonly listed under several different part numbers.
 
 Roughly 9,000 transformer parts, 48,000 manufacturer part numbers and 98,000 TV
 and monitor models.

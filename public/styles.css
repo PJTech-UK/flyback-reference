@@ -37,6 +37,18 @@ header .tagline {
   max-width: 78ch;
 }
 
+/* Links on their own row above the title. Inline in the tagline they broke the
+   sentence across a line at whatever width the viewport happened to be. */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.topbar .linkish { margin-left: 0; font-size: 14px; }
+
 /* Logo beside the title: a CRT tube in profile with the flyback's HV lead. */
 .brand { display: flex; gap: 14px; align-items: flex-start; }
 .brand .logo {
