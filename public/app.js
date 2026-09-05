@@ -217,13 +217,22 @@
     }).join("");
     const more = subs.n > (subs.top || []).length
       ? `<button class="link-btn" data-subs="${esc(code)}">see all ${subs.n}</button>` : "";
-    return `<h3>Possible substitutes (${subs.n})
-        <small style="color:#888;font-weight:normal">— shape-matched shortlist, <b>not</b> equivalents</small></h3>
-      <div class="subs">${rows}${more ? `<div class="sub-row">${more}</div>` : ""}</div>
-      <div class="sub-note">Matched on: same line-rate class and deflection angle, tap profile within
-        12%, and an implied B+ rescale between ×0.80 and ×1.25 — the anode voltage scales by the same
-        factor. Inductance, DC resistance and inter-winding capacitance are not accounted for; those
-        values are not in this dataset.</div>`;
+    // Collapsed, with the warning outside the toggle. Anyone who opens this has
+    // read what it is; anyone who does not open it has still read what it is.
+    return `<h3>Similar devices (${subs.n})</h3>
+      <div class="sub-warning" role="note">
+        <strong>These are NOT compatible types.</strong> This data is an AI-generated search of
+        transformers which might share enough similar characteristics to be useful if the exact
+        part is unobtainable.
+      </div>
+      <details class="subs-toggle">
+        <summary>Show ${subs.n} similar device${subs.n === 1 ? "" : "s"}</summary>
+        <div class="subs">${rows}${more ? `<div class="sub-row">${more}</div>` : ""}</div>
+        <div class="sub-note">Matched on: same line-rate class and deflection angle, tap profile within
+          12%, and an implied B+ rescale between ×0.80 and ×1.25 — the anode voltage scales by the same
+          factor. Inductance, DC resistance and inter-winding capacitance are not accounted for; those
+          values are not in this dataset.</div>
+      </details>`;
   }
 
   /* Functional pin labels (ABL / HTR / AFC / B+ …) from the Data-Pin
@@ -441,6 +450,10 @@
   }
 
   function renderResultsPage(data) {
+    // Once a search is running, the introduction has done its job. On a phone it
+    // is otherwise a screenful between the box and the answer.
+    document.body.classList.toggle("has-results", !data.empty);
+
     if (data.empty || data.total === 0) {
       $summary.textContent = data.empty ? "" : "No matches.";
       $pager.innerHTML = "";

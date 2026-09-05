@@ -99,6 +99,37 @@ header .tagline {
   header .tagline { display: none; }
   .prompt .prompt-detail { display: none; }
   header .stats { font-size: 12px; }
+  /* And once results are on screen the introduction has served its purpose. */
+  body.has-results .prompt { display: none; }
+  body.has-results header .stats { display: none; }
+}
+
+/* Short screens — an iPhone SE is 568px tall and the header alone was 704px.
+   Nothing is trapped, since it is not sticky, but a whole screen of masthead
+   before the first result is its own kind of broken. */
+/* 320px-wide phones — the original SE and anything in a split view. The top bar
+   wrapped to three lines and the search controls to four, purely on gaps and
+   padding. */
+@media (max-width: 860px) {
+  /* Wrapped rows were paying the 18px column gap twice over. */
+  .topbar { row-gap: 0; }
+}
+
+@media (max-width: 460px) {
+  .topbar { gap: 14px; }
+  .topbar .linkish { min-height: 28px; font-size: 13px; }
+  .search .btn { font-size: 14px; padding: 5px 8px; }
+  .search select { font-size: 14px; }
+  header h1 { font-size: 17px; }
+}
+
+@media (max-height: 700px) and (max-width: 860px) {
+  header { padding: 10px 20px 10px; }
+  .brand { flex-direction: row; align-items: center; gap: 10px; }
+  .brand .logo { width: 28px; height: 23px; }
+  header h1 { font-size: 16px; }
+  header .stats { display: none; }
+  .prompt { margin-top: 8px; }
 }
 
 @media (max-width: 640px) {
@@ -669,3 +700,26 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 /* Tip link. No badge and no coloured button: it sits in a row of plain text
    links and stays one. A pseudo-element cup only picked up the link underline
    and looked like a smudge. */
+
+/* Similar devices. The warning sits outside the toggle, so it is read whether or
+   not the list is ever opened. */
+.sub-warning {
+  border: 1px solid #e0b48a;
+  background: #fff7ee;
+  border-left-width: 4px;
+  border-radius: 4px;
+  padding: 8px 11px;
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6b4415;
+  max-width: 78ch;
+}
+.sub-warning strong { color: #8a3d0b; }
+.subs-toggle > summary {
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.subs-toggle > summary:hover { text-decoration: underline; }

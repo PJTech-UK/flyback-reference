@@ -1,6 +1,9 @@
 # Substitutes: method and limits
 
-A shortlist, not a compatibility verdict.
+A shortlist, not a compatibility verdict. The interface calls these "similar devices",
+keeps them collapsed, and states before the toggle that they are not compatible
+types — only parts that may share enough characteristics to be worth trying when
+the exact part cannot be found.
 
 ## What can be compared
 
