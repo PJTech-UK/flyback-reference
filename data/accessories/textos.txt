@@ -1,0 +1,44 @@
+HR 16512|Cable Alta Tensión con ventosa y bleeder 500 M - SALORA
+HR 16513|Cable Alta Tensión con ventosa y bleeder 167 M - SALORA
+HR 16505|Cable Alta Tensión con ventosa y bleeder 700 M
+HR 16518|Cable Alta Tensión con ventosa y bleeder 500 M
+HR 16522|Cable Alta Tensión con ventosa y bleeder 500 M - PHILIPS
+HR 1694|Cable Alta Tensión con ventosa y bleeder 700 M
+HR 1696|Cable Alta Tensión con ventosa y bleeder 700 M
+HR 1698|Cable Alta Tensión con ventosa y bleeder 700 M
+HR 16523|Cable Alta Tensión con ventosa y bleeder 167 M - PHILIPS
+HR 1697|Cable Alta Tensión con ventosa y bleeder 250 M - PHILIPS
+HR 16506|Cable Alta Tensión con ventosa - PHILIPS
+HR 16502|Cable Alta Tensión con ventosa - TELEFUNKEN
+HR 1669-400|Cable Alta Tensión con ventosa
+HR 1662|Cable Alta Tensión con ventosa
+HR 1660|Cable Alta Tensión con ventosa y capuchón silicona
+HR 1661|Cable Alta Tensión con ventosa y capuchón silicona
+HR 1663|Cable Alta Tensión con ventosa y capuchón silicona
+HR 1670-S|Cable Alta Tensión apantallado con ventosa
+HR 1674-S|Cable Alta Tensión apantallado con ventosa
+HR 1681-S|Cable Alta Tensión apantallado con ventosa 
+HR 1682-S|Cable Alta Tensión apantallado con ventosa y bleeder 167 M
+HR 1683-S|Cable Alta Tensión apantallado con ventosa y bleeder 167 M
+HR 1687-S|Cable Alta Tensión apantallado con ventosa y bleeder 167 M
+HR 1689-S|Cable Alta Tensión apantallado con ventosa y bleeder 167 M
+HR 1690-S|Cable Alta Tensión apantallado con ventosa y bleeder 167 M
+HR 1692-S|Cable Alta Tensión apantallado con ventosa y bleeder 500 M
+HR 1688-S|Cable Alta Tensión apantallado con ventosa y bleeder 167 M
+HR 1691-S|Cable Alta Tensión apantallado con ventosa y bleeder 167 M
+HR 1693-S1Cable Alta Tensión apantallado con ventosa y bleeder 500 M
+HR 1684-S|Cable Alta Tensión con ventosa y bleeder 167 M
+HR 1686-S|Cable Alta Tensión con ventosa y bleeder 167 M
+HR 1685-S|Cable Alta Tensión con ventosa y bleeder 167 M
+HR 16501|Cable Alta Tensión con ventosa y bleeder 1000 M
+HR 1695|Cable Alta Tensión con ventosa y bleeder 500 M
+HR 16524|Cable foco 20 kv 450 mm
+HR 16525|Cable G2 500 mm
+HR 16526|Cable sincronismos 600mm
+HR 165291Cable foco 30 kv 550 mm
+HR 1675-S|Ventosa sil. 63 mm / para cable 4,2mm
+HR 1676-S|Ventosa sil. 63 mm / para cable 5mm
+HR 1677-S|Ventosa sil. 52 mm / para cable 4,2mm
+HR 1678-S|Ventosa sil. 52 mm / para cable 5mm
+HR 1679|Ventosa PVC  61mm / para cable 5,6mm
+HR 1680-S|Ventosa sil. 63 mm / para cable 5,6mm y Rest. Serie

@@ -1,0 +1,32 @@
+name: Bench measurement
+description: Real measured data for a part — the thing nobody ever published
+labels: ["measurement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Inductance, DCR and real rail voltages are exactly what the published
+        data never contained, and they are what turns a substitute shortlist into
+        an answer. Even partial measurements are worth having.
+  - type: input
+    id: part
+    attributes:
+      label: Part
+      placeholder: "HR 7637"
+    validations:
+      required: true
+  - type: textarea
+    id: readings
+    attributes:
+      label: Readings
+      description: Pin pairs and values. Note the instrument and test frequency if you have them.
+      placeholder: |
+        Primary 2-1: 1.05 mH @ 1 kHz, DCR 0.8 R
+        Pin 8-7: 22 V rectified, in a Vestel 11AK56 chassis
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else worth knowing
+      description: Which chassis, whether the part was new or pulled, anything that surprised you.

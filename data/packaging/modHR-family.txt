@@ -1,0 +1,15 @@
+HR 6143 - 1BS - I
+HR 6214 - 1IP - I
+HR 6370 - 11BP - G
+HR 6404 - 1TS - I
+HR 7318 - 1OS - I
+HR 7526 - 1NP - I
+
+MEDIDAS CAJAS
+A= largo B= ancho C= alto
+
+J - 12,5cm / 10cm / 8cm
+G - 12cm  / 10cm / 6,5cm
+I - 13cm  / 8,5cm / 6cm
+D - 9,5cm / 8,5cm / 6cm
+F - 7cm  / 6cm / 4,5cm

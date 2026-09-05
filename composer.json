@@ -1,0 +1,29 @@
+{
+    "name": "pjtech-uk/flyback-reference",
+    "description": "Cross-reference and technical data for CRT line-output transformers, triplers and related EHT components",
+    "type": "project",
+    "license": "MIT",
+    "homepage": "https://github.com/PJTech-UK/flyback-reference",
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo_sqlite": "*",
+        "ext-json": "*"
+    },
+    "scripts": {
+        "build": [
+            "@php bin/build-db.php"
+        ],
+        "post-install-cmd": [
+            "@build"
+        ],
+        "post-update-cmd": [
+            "@build"
+        ]
+    },
+    "scripts-descriptions": {
+        "build": "Assemble dataset/ into database/database.sqlite (~3 seconds)"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

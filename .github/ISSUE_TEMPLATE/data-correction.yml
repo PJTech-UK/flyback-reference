@@ -1,0 +1,42 @@
+name: Data correction
+description: A figure, code or cross-reference in the archive is wrong or missing
+labels: ["data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill this in completely. This archive is maintained irregularly by
+        one person, so assume nobody will get the chance to ask you a follow-up
+        question — an issue that can be actioned in one pass, months later, is
+        worth ten that need a conversation first.
+  - type: input
+    id: part
+    attributes:
+      label: Which part?
+      description: The HR code, or the manufacturer code you searched for.
+      placeholder: "HR 80016 — or BSC24-01N4004U"
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What does the archive currently say?
+      description: Copy the figure or claim as it appears, so it can be found again.
+    validations:
+      required: true
+  - type: textarea
+    id: right
+    attributes:
+      label: What should it say?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: How do you know?
+      description: >
+        A photo of the part, a page from a service manual, a bench measurement
+        (say which pins and how you measured), or a link. "It didn't work in my
+        set" is useful too — say what happened.
+    validations:
+      required: true

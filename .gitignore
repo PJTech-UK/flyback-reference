@@ -1,0 +1,55 @@
+# Original HR The Book product files (Windows app + V12 DB) — not Claude-authored
+HR The Book.exe
+HRBOOKupdate.exe
+Update.exe
+xtras/
+*.v12
+*.cst
+diemen.ini
+idiomas.txt
+web/
+
+# Local working notes — not for the public repo.
+# HANDOVER.md is a session handover: it carries local environment details and
+# a byte-level account of the source database's internals. The topic documents
+# (XREF_INGEST.md, SUBSTITUTES.md, ...) are the published documentation.
+# efiter-enquiry-draft.md is unsent private correspondence.
+HANDOVER.md
+notes/efiter-enquiry-draft.md
+
+# Claude Code local settings & prompt logs
+.claude/
+prompt-log.txt
+extract/prompt-log.txt
+
+# Raw captured site pages — verbatim copies of someone else's web pages. The
+# facts are extracted into extract/*.json; the pages themselves live in
+# ../hr-book-local-archive/ and are not published. See that directory's README.
+data/scraped/
+
+# Generated bundle for the superseded static webapp — 19 MB of data regenerated
+# by extract/build_web_data.py, and every clone was paying for it.
+webapp/data.js
+
+# Built artefact — regenerate with: php bin/build-db.php
+/database/*
+!/database/.gitkeep
+
+# Composer's autoloader. There are no dependencies — composer.json exists so the
+# host's standard `composer install` builds the database via post-install-cmd.
+/vendor/
+
+# Python build artefacts
+__pycache__/
+*.pyc
+
+# Pipeline debug output / logs
+extract/ocr_out/
+*.log
+
+# Raw per-HR output of the schematic reader — 2,983 files of geometry that only
+# the reader cares about. The fields the database uses are consolidated into
+# dataset/schematic_extracts.json, which IS committed: "regenerable" stopped
+# being true the moment the data was published without the reader.
+#   php tools/consolidate-schematic-extracts.php
+analysis/bulk_extract/

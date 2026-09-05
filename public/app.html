@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flyback, LOPT &amp; Tripler Cross-Reference Database</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header>
+  <h1>Flyback, LOPT &amp; Tripler Cross-Reference Database</h1>
+  <p class="tagline">
+    Cross-reference and technical data for CRT line-output transformers (flybacks /
+    LOPTs), triplers and related EHT components.
+    <button class="linkish" id="aboutBtn" type="button">What is this?</button>
+    <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference" rel="noopener">Source &amp; data on GitHub</a>
+  </p>
+  <div class="stats" id="stats">loading…</div>
+
+  <div class="search">
+    <input type="text" id="q" autofocus
+           placeholder="Try: BG1897, hrt241bp, sony, vpp:200-300, type:SM, wnd&gt;=4, role:focus, or type:SM AND (vpp&gt;=200 OR role:focus)" />
+    <select id="category" title="Filter by part type"></select>
+    <button class="btn" id="toggleBuilder" type="button">Compose a search</button>
+    <button class="btn" id="helpBtn" type="button" title="Search help">?&nbsp;Help</button>
+  </div>
+
+  <div class="search">
+    <label><input type="checkbox" id="onlyImgs"> with image only</label>
+    <label><input type="checkbox" id="searchUses" checked> include TV/monitor models</label>
+    <label>sort <select id="sortBy" style="font-size:13px"></select></label>
+  </div>
+
+  <!-- guided query builder -->
+  <div class="builder" id="builder" hidden>
+    <div class="bhead">
+      <strong>Compose a search</strong>
+      <span class="bhint">Builds the query in the box above — you can edit it by hand afterwards.</span>
+      <button class="btn" id="builderClose" type="button">Close</button>
+    </div>
+    <div id="brows"></div>
+    <div class="bactions">
+      <button class="btn" id="addGroup" type="button">+ another group</button>
+      <button class="btn primary" id="applyBuilder" type="button">Apply to search</button>
+      <span class="bhint">A group is a set of conditions considered together.
+        Add a second group when you want <em>this lot</em> or <em>that lot</em>.</span>
+    </div>
+    <div class="bpreview" id="bpreview"></div>
+  </div>
+</header>
+
+<main>
+  <div class="summary" id="summary"></div>
+  <div id="results"></div>
+  <div class="pager" id="pager"></div>
+</main>
+
+<footer>
+  <p>This site sets no cookies, stores nothing in your browser, and loads no
+  scripts from anywhere else. Visits are counted from the web server's own logs,
+  with IP addresses truncated before they are recorded.</p>
+  <p><span id="version"></span></p>
+  <p><button class="linkish" id="aboutBtn2" type="button">About this archive</button>
+  <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference" rel="noopener">Source and data on GitHub</a></p>
+</footer>
+
+<div class="modal" id="modal"><img id="modalImg" alt=""></div>
+
+<!-- about modal -->
+<div class="sheet" id="about">
+  <div class="panel">
+    <button class="close" id="aboutClose" type="button">&times;</button>
+    <h2>About this archive</h2>
+    <p>Reference data for CRT line-output transformers (flybacks / LOPTs), triplers and
+    related EHT components. The manufacturers' catalogues that carried it are out of print
+    or offline, and the same transformer is usually listed under several different part
+    numbers.</p>
+
+    <p>Search by any part number, by the TV or monitor a part was fitted to, or by
+    electrical characteristics. Where a part is unobtainable, the site lists others of a
+    similar design to consider.</p>
+
+    <h3>Reliability</h3>
+    <p>Every record shows its source. A published cross-reference means a manufacturer sold
+    one part for another's application; it is not a measurement. Substitute suggestions are
+    search results, not recommendations.</p>
+
+    <p>Inductance, DC resistance and inter-winding capacitance determine whether a flyback
+    will work in a given circuit. None of those values are in this dataset. Some figures were
+    read by machine from scanned drawings and contain errors.</p>
+
+    <h3>Attribution</h3>
+    <p>Much of the reference data originates with <b>HR Diemen</b>, a Spanish manufacturer of
+    replacement flyback transformers. HR Diemen is a trademark of Efiter S.L.
+    <b>This project is not affiliated with, endorsed by, or connected to Efiter or HR Diemen
+    in any way</b>, and makes no claim to their marks. Other sources are credited on the
+    records they appear in.</p>
+
+    <p>Corrections, particularly bench measurements, are welcome via the
+    <a href="https://github.com/PJTech-UK/flyback-reference" rel="noopener">repository</a>.</p>
+  </div>
+</div>
+
+<!-- help modal -->
+<div class="sheet" id="help">
+  <div class="panel">
+    <button class="close" id="helpClose" type="button">&times;</button>
+    <h2>How to search</h2>
+    <div id="helpBody"></div>
+  </div>
+</div>
+
+<script src="/sourcing.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

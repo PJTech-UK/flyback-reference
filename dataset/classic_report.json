@@ -1,0 +1,11 @@
+{
+  "oem_rows_raw": 9618,
+  "oem_pairs": 9546,
+  "oem_distinct_fbt": 1071,
+  "tuners_skipped_xref": 0,
+  "model_rows_raw": 14486,
+  "model_pairs": 12897,
+  "model_distinct_fbt": 750,
+  "model_brands": 295,
+  "tuners_skipped_model": 0
+}

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Rights holder — removal request
+    url: https://github.com/PJTech-UK/flyback-reference/blob/master/DATA.md
+    about: If you hold rights in material here and want it removed, see DATA.md. Specific, good-faith requests are honoured without argument.
+  - name: How this archive is maintained
+    url: https://github.com/PJTech-UK/flyback-reference/blob/master/CONTRIBUTING.md
+    about: Response times are geological. Silence is not rejection, and a pull request beats an issue.

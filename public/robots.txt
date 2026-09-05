@@ -1,0 +1,21 @@
+# This is a preservation archive. Being found is the point. Please crawl.
+User-agent: *
+Allow: /
+
+# Search result URLs are unbounded and produce near-duplicate pages; the
+# canonical entry point is the root.
+Disallow: /api/
+
+# To keep AI crawlers out, uncomment. They are listed rather than blocked
+# because an archive nobody can find helps nobody, and these are currently the
+# ones that identify themselves honestly.
+# User-agent: GPTBot
+# User-agent: ClaudeBot
+# User-agent: anthropic-ai
+# User-agent: CCBot
+# User-agent: PerplexityBot
+# User-agent: Google-Extended
+# User-agent: Applebot-Extended
+# User-agent: Bytespider
+# User-agent: Amazonbot
+# Disallow: /

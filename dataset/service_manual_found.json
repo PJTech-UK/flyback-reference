@@ -1,0 +1,74 @@
+{
+ "HR 2031/22": {
+  "chassis": "K9",
+  "confidence": "hit",
+  "note": "Philips K9 chassis; several K9 manuals on elektrotanya",
+  "url": "https://elektrotanya.com/philips_k9_chassis_touch-control_colour_tv_sm.pdf/download.html"
+ },
+ "HR 46476": {
+  "chassis": "CM2600",
+  "confidence": "weak",
+  "note": "Philips CM2600 chassis also used in IBM monitor CM2617 (FCC A3KM086) per edaboard - that cross-reference may be the way in; no direct manual located",
+  "url": ""
+ },
+ "HR 80344": {
+  "chassis": "11AK46",
+  "confidence": "lead",
+  "note": "Vestel 11AK46 exact chassis match, but the file is service-info BULLETINS not a full SM; eserviceinfo Vestel category (165 files) worth a manual look",
+  "url": "https://elektrotanya.com/vestel-service-info-bulettins_11ak46.rar/download.html"
+ },
+ "HR 80435": {
+  "chassis": "MC-049A",
+  "confidence": "weak",
+  "note": "Search claimed a ManualsLib MC-049A manual but the actual result is GOLDSTAR CB-14A80 - unconfirmed whether CB-14A80 uses the MC-049A chassis. Sibling MC41A/MC41B SM on elektrotanya",
+  "url": "https://www.manualslib.com/manual/4367020/Goldstar-Cb-14a80.html"
+ },
+ "HR 80880": {
+  "chassis": "A8.0A / A8.0A-AA",
+  "confidence": "hit",
+  "note": "Philips A8.0A exact chassis match; several variants on elektrotanya (a8.0a-aa SM, a8.0a_aa TV D SCH)",
+  "url": "https://elektrotanya.com/philips_chassis_a8.0a_sch.pdf/download.html"
+ },
+ "HR 80914": {
+  "chassis": "11AK56 / 11AK56-4",
+  "confidence": "hit",
+  "note": "Vestel 11AK56 exact chassis match with our usage list; also vestel_chassis_11ak56-4_sm_1.pdf and electronica-pt.com 11AK56-4 schematic",
+  "url": "https://elektrotanya.com/vestel_11ak56_sm.pdf/download.html"
+ },
+ "HR 81193": {
+  "chassis": "R4000 / EUROCOMBO",
+  "confidence": "hit",
+  "note": "Thomson/Telefunken R4000 exact chassis match; eserviceinfo covers R4000-R7000+T4000-T7000 across Ferguson/Saba/Telefunken/Thomson; also elektrotanya thomson_r4000_sch.zip",
+  "url": "https://www.eserviceinfo.com/downloadsm/656/Thomson_R4000.html"
+ },
+ "HR 82198": {
+  "chassis": "NC-6HA",
+  "confidence": "weak",
+  "note": "Goldstar NC-6HA eboard 6870VM0033A (forum); sibling chassis NC-5AA has full SM on elektrotanya",
+  "url": ""
+ },
+ "HR 82213": {
+  "chassis": "ATC113",
+  "confidence": "weak",
+  "note": "RCA ATC113 family documented (ATC113CA1 forum thread, antiqueradioschematics); exact ATC113AA1 not confirmed",
+  "url": ""
+ },
+ "HR 82332": {
+  "chassis": "",
+  "confidence": "lead",
+  "note": "Sony PVM-1271Q/1371QM SM (free PDF). CVM and PVM are different lines - verify before trusting",
+  "url": "https://www.evl.uic.edu/xevious/av/manual/SONY_PVM1271Q.pdf"
+ },
+ "HR 82430": {
+  "chassis": "M3-LXU",
+  "confidence": "hit",
+  "note": "Hitachi M3-LXU/M3-XU named in our own usage list",
+  "url": "https://elektrotanya.com/hitachi_chassis-m3lxu_training.pdf/download.html"
+ },
+ "HR 82498": {
+  "chassis": "",
+  "confidence": "lead",
+  "note": "Mitsubishi CS-26EX1 = SAMS Photofact #3211 (paid); also indexed on elektrotanya",
+  "url": ""
+ }
+}
