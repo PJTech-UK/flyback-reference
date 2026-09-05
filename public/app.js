@@ -116,7 +116,10 @@
         }).join("");
         whatIf = `<div class="uf-whatif-row"><b>If an external pot is added:</b> ${opts}</div>`;
       }
+      // The two buttons run a search rather than doing something to this part,
+      // which was not obvious from the buttons alone.
       const groupBtns = `<div class="uf-actions">
+          <span class="uf-actions-label">Search for other parts with the&hellip;</span>
           <button class="link-btn" data-action="same-network" data-hr="${esc(code)}">same network</button>
           <button class="link-btn" data-action="similar-uf" data-hr="${esc(code)}">similar Uf range</button>
         </div>`;

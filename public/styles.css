@@ -394,7 +394,19 @@ details[open] > summary { margin-bottom: 6px; }
 .uf-nom { font-size: 13px; color: var(--muted); margin-left: 4px; }
 .uf-whatif-row { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
 .uf-whatif { display: inline-block; margin-right: 10px; font-family: ui-monospace, monospace; }
-.uf-actions { margin-top: 6px; }
+.uf-actions {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.uf-actions-label {
+  flex-basis: 100%;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 1px;
+}
 .link-btn {
   background: transparent;
   border: 1px solid var(--accent);
