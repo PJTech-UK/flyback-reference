@@ -422,6 +422,21 @@
     renderResultsPage(data);
   }
 
+  /* A type filter only sees the parts whose tester type was recorded, which is
+   * about a quarter of them — the rest arrived through cross-reference
+   * catalogues carrying no descriptors. Without saying so, filtering to
+   * "monitor" returns 239 and reads as "this archive has almost no monitor
+   * parts" rather than "this archive does not know the type of most parts". */
+  function typeFilterNote() {
+    const untyped = (CATALOG && CATALOG.stats && CATALOG.stats.untyped) || 0;
+    if (!untyped) return "";
+    const filtered = $cat.value || /\b(type|tester_type):/i.test($q.value);
+    if (!filtered) return "";
+    return ` <span class="note-inline">${untyped.toLocaleString()} parts have no type` +
+           ` recorded and are not included — <button class="linkish" data-drop-type>search` +
+           ` without the type filter</button>.</span>`;
+  }
+
   function renderResultsPage(data) {
     if (data.empty || data.total === 0) {
       $summary.textContent = data.empty ? "" : "No matches.";
@@ -440,11 +455,23 @@
       return;
     }
     $summary.innerHTML = `${data.total.toLocaleString()} HR part${data.total === 1 ? "" : "s"} match` +
-      (data.pages > 1 ? ` · page ${data.page} of ${data.pages}` : "") + ".";
+      (data.pages > 1 ? ` · page ${data.page} of ${data.pages}` : "") + "." + typeFilterNote();
     $results.innerHTML = data.results.map(renderCard).join("");
     for (const img of $results.querySelectorAll("img[data-src]")) {
       io.observe(img);
       img.addEventListener("click", () => openImage(img.dataset.src || img.src));
+    }
+    for (const btn of $summary.querySelectorAll("[data-drop-type]")) {
+      btn.addEventListener("click", () => {
+        $cat.value = "";
+        const rest = $q.value.replace(/\b(?:tester_)?type:\S+\s*/gi, "").trim();
+        // If the type filter was the whole query, removing it would leave the
+        // empty "type a part code" state, which answers nothing. data:any is
+        // the match-all, so the point being made — there are more parts than
+        // the filter showed — is actually visible.
+        $q.value = rest || "data:any";
+        scheduleSearch();
+      });
     }
     for (const btn of $results.querySelectorAll("[data-goto]")) {
       btn.addEventListener("click", () => {

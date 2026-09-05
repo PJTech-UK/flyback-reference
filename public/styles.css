@@ -595,3 +595,6 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 .part-index span { color: var(--muted); font-family: system-ui, sans-serif; font-size: 13px; }
 .static-page .pager { margin-top: 24px; display: flex; gap: 16px; }
 .permalink { margin: 14px 0 0; font-size: 13px; }
+
+.note-inline { color: var(--muted); font-size: 13px; }
+.note-inline .linkish { margin-left: 0; font-size: 13px; }

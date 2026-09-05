@@ -43,7 +43,7 @@ final class Catalog
             ],
             [
                 'key' => 'tester_type', 'label' => 'Type', 'type' => 'enum',
-                'help' => 'HR Diemen tester family — the same distinction as the Type selector beside the search box. ST = TV flyback (≈15.6 kHz line), SM = multiscan-monitor flyback (≈32 kHz+), CH = chopper PSU, TR = tripler, MC/BN = niche.',
+                'help' => 'Which tester the manufacturer characterised the part on. ST = TV flyback (about 15.6 kHz line), SM = multiscan-monitor flyback (32 kHz and up), CH = chopper PSU, TR = tripler, MC/BN = niche. IMPORTANT: only about a quarter of parts have a tester type recorded — the rest reached this archive through cross-reference catalogues that carried no descriptors. Filtering by type excludes every one of them, so a small result count means thin coverage of the field, not a small population.',
                 'ops' => [['op' => 'is', 'token' => 'type:{v}', 'label' => 'is']],
                 'options' => [], // filled by dynamic()
                 'examples' => ['type:SM', 'type:ST'],
@@ -207,6 +207,9 @@ final class Catalog
             // what changes them. (Distinct codes, not spellings — docs/OEM_CODES.md.)
             'stats'     => [
                 'parts'  => (int) Db::meta('stat_parts'),
+                // How many parts have no tester type at all. A type filter
+                // silently excludes them, and that is most of the archive.
+                'untyped' => (int) Db::meta('stat_untyped'),
                 'codes'  => (int) Db::meta('stat_codes'),
                 'models' => (int) Db::meta('stat_models'),
             ],

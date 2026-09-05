@@ -814,6 +814,8 @@ $insMeta->execute(['n_classic_pairs', (string) $classic_pairs]);
 $insMeta->execute(['stat_parts',  (string) (int) $db->query('SELECT COUNT(*) FROM hr')->fetchColumn()]);
 $insMeta->execute(['stat_codes',  (string) (int) $db->query('SELECT COUNT(DISTINCT oem_norm) FROM equivalents')->fetchColumn()]);
 $insMeta->execute(['stat_models', (string) (int) $db->query('SELECT COUNT(DISTINCT model_norm) FROM uses')->fetchColumn()]);
+$insMeta->execute(['stat_untyped', (string) (int) $db->query(
+    "SELECT COUNT(*) FROM hr WHERE tester_type IS NULL OR tester_type = ''")->fetchColumn()]);
 
 // Set-manufacturer vocabulary for the "did you mean" suggester. Built here so a
 // flood of nonsense queries cannot make the site re-derive it per request.
