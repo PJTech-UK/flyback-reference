@@ -650,3 +650,7 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 
 .note-inline { color: var(--muted); font-size: 13px; }
 .note-inline .linkish { margin-left: 0; font-size: 13px; min-height: 0; }
+
+/* Tip link. No badge and no coloured button: it sits in a row of plain text
+   links and stays one. A pseudo-element cup only picked up the link underline
+   and looked like a smudge. */

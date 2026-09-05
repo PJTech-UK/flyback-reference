@@ -107,6 +107,12 @@ recognition errors.
 
 Corrections are welcome, particularly bench measurements. See `CONTRIBUTING.md`.
 
+## Support
+
+The data and the code are free. If the archive saved you a job,
+[a tip is welcome](https://ko-fi.com/jonathanpjtech60339) — it is not required and
+nothing here is behind it.
+
 ## Licence
 
 Code: MIT (`LICENSE`). The reference data did not originate with this project and

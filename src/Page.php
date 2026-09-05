@@ -56,6 +56,7 @@ final class Page
   <nav class="topbar" aria-label="Site links">
     <a class="linkish" href="/">Search the database</a>
     <a class="linkish" href="/parts">All parts</a>
+    <a class="linkish kofi" href="https://ko-fi.com/jonathanpjtech60339" target="_blank" rel="noopener">Support this archive</a>
   </nav>
  </div>
 </header>
@@ -68,7 +69,8 @@ $body
   endorsed by, or connected to Efiter or HR Diemen.</p>
   <p><a class="linkish" href="/">Search the database</a>
   <a class="linkish" href="https://github.com/PJTech-UK/flyback-reference"
-     target="_blank" rel="noopener">Source &amp; data on GitHub</a></p>
+     target="_blank" rel="noopener">Source &amp; data on GitHub</a>
+  <a class="linkish kofi" href="https://ko-fi.com/jonathanpjtech60339" target="_blank" rel="noopener">Support this archive on Ko-fi</a></p>
  </div>
 </footer>
 </body>
