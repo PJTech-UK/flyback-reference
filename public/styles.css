@@ -27,9 +27,15 @@ header {
   padding: 16px 20px 14px;
   background: #fff;
   border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
   z-index: 10;
+}
+/* Sticky ONLY where the header is comfortably shorter than the screen. A sticky
+   element taller than the viewport pins and never releases: the page scrolls
+   behind it and the results are unreachable. That is what happened on a phone
+   once the header grew a tagline, a prompt and a stats line — 788px of header
+   on an 844px viewport, and worse once browser chrome takes its share. */
+@media (min-width: 861px) and (min-height: 620px) {
+  header { position: sticky; top: 0; }
 }
 header h1 { margin: 0 0 6px; font-size: 21px; line-height: 1.25; }
 header .stats { color: var(--muted); font-size: 15px; margin-top: 2px; }
@@ -85,6 +91,15 @@ header .tagline {
   text-wrap: balance;
 }
 .prompt strong { color: var(--accent); }
+
+@media (max-width: 860px) {
+  /* Everything above the search box is a cost on a phone: the reader came to
+     type a part number. The tagline is in "What is this?" and the prompt's
+     explanation is not needed twice. */
+  header .tagline { display: none; }
+  .prompt .prompt-detail { display: none; }
+  header .stats { font-size: 12px; }
+}
 
 @media (max-width: 640px) {
   /* The logo beside the text squeezed the tagline into a 230px column and eight
