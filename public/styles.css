@@ -31,6 +31,7 @@ header h1 { margin: 0 0 6px; font-size: 21px; line-height: 1.25; }
 header .stats { color: var(--muted); font-size: 15px; margin-top: 2px; }
 header .tagline {
   margin: 0;
+  text-wrap: pretty;
   font-size: 14px;
   line-height: 1.55;
   color: var(--muted);
@@ -65,6 +66,9 @@ header .tagline {
   font-size: 15px;
   line-height: 1.5;
   max-width: 78ch;
+  /* Short blocks broke at whatever the viewport dictated — "the make and /
+     model of the set". Let the browser even the lines out. */
+  text-wrap: balance;
 }
 .prompt strong { color: var(--accent); }
 
@@ -377,14 +381,21 @@ details[open] > summary { margin-bottom: 6px; }
 .accs li { font-family: ui-monospace, monospace; font-size: 14px; }
 
 /* ---- sourcing panel (see sourcing.js) ---- */
-.sourcing { margin-top: 10px; border-top: 1px solid var(--line, #ddd); padding-top: 8px; }
+.sourcing {
+  margin-top: 14px;
+  border: 1px solid #bcd3ea;
+  background: #f4f9ff;
+  border-radius: 5px;
+  padding: 10px 12px;
+}
 .sourcing > summary {
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--accent);
   list-style: revert;
 }
+.sourcing > summary small { font-weight: normal; color: var(--muted); font-size: 13px; }
 .sourcing > summary:hover { text-decoration: underline; }
 .src-body { padding: 8px 0 2px 2px; display: flex; flex-direction: column; gap: 9px; }
 .src-group { display: flex; flex-direction: column; gap: 4px; }

@@ -267,7 +267,10 @@
       point, but it needs human eyes.</div>`;
   }
 
-  function renderCard(res) {
+  function renderCard(res, _i, all) {
+    // Expanded when you have narrowed to one part; collapsed while browsing a
+    // list, where 25 open panels would bury the results themselves.
+    const soleResult = !all || all.length === 1;
     const row = res.row, code = res.code;
     // The API returns {oem, src, alts}; tolerate the older bare-string shape too.
     // One chip per part: `alts` holds the other spellings of the same number
@@ -356,7 +359,7 @@
                    : "");
               return `<span class="${cls}" title="${esc(t)}">${esc(e.oem)}</span>`;
             }).join("")}</div>
-            ${window.Sourcing ? Sourcing.render(res) : ""}
+            ${window.Sourcing ? Sourcing.render(res, soleResult) : ""}
             <p class="permalink"><a href="/part/${esc(code.replace(/[^A-Za-z0-9]+/g, "").toLowerCase())}">Permanent page for ${esc(code)}</a></p>
             ${res.obs ? `<h3>Notes <small style="color:#888;font-weight:normal">— quoted verbatim from the manufacturer's own application notes; not independently verified</small></h3>${renderNotes(res.obs, row)}` : ""}
             ${accs.length ? `<h3>Accessories</h3><ul class="accs">${accs.map(a => `<li>${esc(a)}</li>`).join("")}</ul>` : ""}

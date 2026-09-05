@@ -187,7 +187,7 @@
 
   // --- main render ----------------------------------------------------------
 
-  function render(res) {
+  function render(res, expanded) {
     const { hr, oems, allOems } = bestCodes(res);
     const variants = hrVariants(hr);
     const kind = isTripler(res) ? 'tripler' : 'flyback';
@@ -241,8 +241,9 @@
     const allCodes = [hr, ...allOems].join('  ');
 
     return `
-      <details class="sourcing">
-        <summary>Find this part &amp; its equivalents on the web (${allOems.length + 1} codes)</summary>
+      <details class="sourcing"${expanded ? ' open' : ''}>
+        <summary>Buy or find this part &mdash; searches every one of its ${allOems.length + 1} codes
+          <small>including in other languages</small></summary>
         <div class="src-body">
           <div class="src-group">
             <div class="src-label">All codes at once <small>— the widest net</small></div>
