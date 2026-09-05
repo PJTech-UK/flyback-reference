@@ -52,6 +52,7 @@ require __DIR__ . '/../src/Catalog.php';
 require __DIR__ . '/../src/QueryParser.php';
 require __DIR__ . '/../src/QueryCompiler.php';
 require __DIR__ . '/../src/Suggest.php';
+require __DIR__ . '/../src/Page.php';
 require __DIR__ . '/../src/Search.php';
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
@@ -112,6 +113,41 @@ try {
 
     if (str_starts_with($path, '/api/')) {
         sendJson(['error' => 'unknown endpoint'], 404);
+    }
+
+    // --- server-rendered pages, for crawlers and for no-JavaScript ----------
+    //
+    // The application draws everything with fetch, so a crawler sees the shell
+    // and not one part number. These carry the same records as plain HTML at a
+    // stable URL, cross-linked so the whole dataset is reachable.
+    function sendHtml(string $html, int $code = 200, int $maxAge = 3600): void
+    {
+        http_response_code($code);
+        header('Content-Type: text/html; charset=utf-8');
+        header('Cache-Control: public, max-age=' . $maxAge);
+        echo $html;
+        exit;
+    }
+
+    if (preg_match('#^/part/([^/]+)/?$#', $path, $m)) {
+        $html = Page::part(Db::get(), urldecode($m[1]));
+        if ($html !== null) sendHtml($html);
+        sendHtml('<!doctype html><meta charset="utf-8"><title>Part not found</title>'
+               . '<p>No such part. <a href="/parts">Browse all parts</a>.</p>', 404, 60);
+    }
+
+    if (preg_match('#^/parts(?:/(\d+))?/?$#', $path, $m)) {
+        $html = Page::index(Db::get(), isset($m[1]) ? (int)$m[1] : 1);
+        if ($html !== null) sendHtml($html);
+        sendHtml('<!doctype html><meta charset="utf-8"><title>Not found</title>'
+               . '<p>No such page. <a href="/parts">Browse all parts</a>.</p>', 404, 60);
+    }
+
+    if ($path === '/sitemap.xml') {
+        header('Content-Type: application/xml; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        echo Page::sitemap(Db::get());
+        exit;
     }
 } catch (Throwable $e) {
     // A missing database is a deployment state, not a fault, and it is the one

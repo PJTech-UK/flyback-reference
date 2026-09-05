@@ -21,13 +21,13 @@ final class Catalog
                 'key' => 'text', 'label' => 'Anywhere (codes and set models)', 'type' => 'text',
                 'help' => 'The broadest option: matches anywhere in a part’s HR code, in any of its manufacturer equivalent codes, and in the make and model of the sets it was fitted to. Set makes and models are only included while the “include TV/monitor models” box is ticked. It does NOT search notes, output roles, family codes or accessory lists — use the specific fields for those. Punctuation and case are ignored, so AT2075/30102, AT-2075-30102 and at 2075 30102 are the same search.',
                 'ops' => [['op' => 'contains', 'token' => '{v}', 'label' => 'contains']],
-                'examples' => ['BG1897', '1897', 'sony kv-1234'],
+                'examples' => ['BG1897', 'BSC25', 'sony kv 2752'],
             ],
             [
                 'key' => 'oem', 'label' => 'Manufacturer part code only', 'type' => 'text',
                 'help' => 'Search ONLY the manufacturer / OEM equivalent part codes (not HR codes or models). Punctuation and case are ignored; spell the code however your source spells it.',
                 'ops' => [['op' => 'contains', 'token' => 'oem:{v}', 'label' => 'contains']],
-                'examples' => ['oem:19293-134', 'oem:BG1897'],
+                'examples' => ['oem:8-598-925-00', 'oem:BG1897'],
             ],
             [
                 'key' => 'make', 'label' => 'Set make only (TV / monitor brand)', 'type' => 'text',
@@ -39,7 +39,7 @@ final class Catalog
                 'key' => 'model', 'label' => 'Set model only (TV / monitor)', 'type' => 'text',
                 'help' => 'Search ONLY the model of the set the part is fitted in. Punctuation and case are ignored.',
                 'ops' => [['op' => 'contains', 'token' => 'model:{v}', 'label' => 'contains']],
-                'examples' => ['model:kt2345', 'model:kv-2000'],
+                'examples' => ['model:CTV 2592', 'model:kv 2752'],
             ],
             [
                 'key' => 'tester_type', 'label' => 'Type', 'type' => 'enum',

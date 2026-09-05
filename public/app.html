@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flyback, LOPT &amp; Tripler Cross-Reference Database</title>
+<meta name="description" content="Cross-reference and technical data for HR Diemen line-output transformers (flybacks / LOPTs), triplers and EHT components for CRT televisions and monitors. 9,000 parts, 48,000 manufacturer part numbers, 98,000 sets.">
+<link rel="canonical" href="https://flyback-reference.net/">
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -54,7 +56,8 @@
   <div class="search">
     <input type="text" id="q" autofocus
            aria-label="Search part numbers, TV and monitor models"
-           placeholder="e.g. BG1897, HRT241BP, BSC24, or Sony KV-2000" />
+           placeholder="e.g. BG1897, HR7506, or Sony KV 2752" />
+    <button class="btn" id="clearBtn" type="button" hidden>Clear</button>
     <select id="category" title="Filter by part type"></select>
     <button class="btn" id="toggleBuilder" type="button">Compose a search</button>
     <button class="btn" id="helpBtn" type="button">Search tips</button>
@@ -94,7 +97,7 @@
   <p>This site sets no cookies, stores nothing in your browser, and loads no
   scripts from anywhere else. Visits are counted from the web server's own logs,
   with IP addresses truncated before they are recorded.</p>
-  <p><span id="version"></span></p>
+  <p><a class="linkish" href="/parts">Browse all parts</a><span id="version"></span></p>
   <p>HR Diemen is a trademark of Efiter S.L. This archive is not affiliated with,
   endorsed by, or connected to Efiter or HR Diemen.</p>
   <p><button class="linkish" id="aboutBtn2" type="button">About this archive</button>

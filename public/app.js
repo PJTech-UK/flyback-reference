@@ -357,6 +357,7 @@
               return `<span class="${cls}" title="${esc(t)}">${esc(e.oem)}</span>`;
             }).join("")}</div>
             ${window.Sourcing ? Sourcing.render(res) : ""}
+            <p class="permalink"><a href="/part/${esc(code.replace(/[^A-Za-z0-9]+/g, "").toLowerCase())}">Permanent page for ${esc(code)}</a></p>
             ${res.obs ? `<h3>Notes <small style="color:#888;font-weight:normal">— quoted verbatim from the manufacturer's own application notes; not independently verified</small></h3>${renderNotes(res.obs, row)}` : ""}
             ${accs.length ? `<h3>Accessories</h3><ul class="accs">${accs.map(a => `<li>${esc(a)}</li>`).join("")}</ul>` : ""}
             ${uses.length ? (() => {
@@ -731,6 +732,27 @@
       <p style="margin-top:14px" class="help-eg">The focus-voltage (Uf) estimate assumes a <b>24 kV</b> CRT anode (EHT) supply and a simple-divider bleeder; it isn't valid for HRTs that tap intermediate multiplier stages.</p>`;
   }
   const openAbout = () => $("about").classList.add("show");
+  // Clear resets the query, the filters and the sort — "reset" is what people
+  // actually want when a search has gone somewhere odd, and clearing only the
+  // text box leaves a category filter quietly applied.
+  const $clear = $("clearBtn");
+  function syncClear() {
+    $clear.hidden = !($q.value || $cat.value || $only.checked ||
+                      !$uses.checked || $sortBy.value !== "code");
+  }
+  $clear.onclick = () => {
+    $q.value = ""; $cat.value = ""; $only.checked = false;
+    $uses.checked = true; $sortBy.value = "code";
+    page = 1;
+    syncClear();
+    $q.focus();
+    runSearch();
+  };
+  for (const el of [$q, $cat, $only, $uses, $sortBy]) {
+    el.addEventListener("input", syncClear);
+    el.addEventListener("change", syncClear);
+  }
+
   $("aboutBtn").onclick = openAbout;
   if ($("aboutBtn2")) $("aboutBtn2").onclick = openAbout;
   $("aboutClose").onclick = () => { $("about").classList.remove("show"); };
@@ -760,6 +782,7 @@
     buildHelp();
 
     restoreFromUrl();
+    syncClear();
     // Deep links: #build opens the query builder, #help opens the help modal.
     if (location.hash === "#build") { $builder.hidden = false; groups = [defaultGroup()]; renderBuilder(); }
     if (location.hash === "#help") $("help").classList.add("show");

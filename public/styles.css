@@ -95,6 +95,7 @@ header .tagline {
   margin-top: 8px;
   flex-wrap: wrap;
 }
+#clearBtn { flex: none; }
 .search input[type=text] {
   flex: 1;
   min-width: 240px;
@@ -575,3 +576,22 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 @media (min-width: 641px) {
   .uses-grid { font-size: 14px; }
 }
+
+/* ---- server-rendered pages ---- */
+.static-page {
+  max-width: 78ch;
+  margin: 0 auto;
+  padding: 20px;
+}
+.static-page h1 { font-size: 26px; margin: 0 0 4px; color: var(--accent); font-family: ui-monospace, monospace; }
+.static-page h2 { font-size: 18px; margin: 26px 0 6px; }
+.static-page .meta-line { color: var(--muted); margin: 0 0 18px; }
+.static-page .codes { font-family: ui-monospace, monospace; font-size: 14px; line-height: 1.9; word-break: break-word; }
+.static-page figure { margin: 0 0 18px; }
+.static-page figure img { max-width: 100%; border: 1px solid var(--border); background: #fff; }
+.static-page figcaption { font-size: 13px; color: var(--muted); }
+.part-index { columns: 3 220px; list-style: none; padding: 0; }
+.part-index li { break-inside: avoid; margin-bottom: 4px; font-family: ui-monospace, monospace; font-size: 14px; }
+.part-index span { color: var(--muted); font-family: system-ui, sans-serif; font-size: 13px; }
+.static-page .pager { margin-top: 24px; display: flex; gap: 16px; }
+.permalink { margin: 14px 0 0; font-size: 13px; }

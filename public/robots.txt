@@ -1,4 +1,6 @@
 # This is a preservation archive. Being found is the point. Please crawl.
+Sitemap: https://flyback-reference.net/sitemap.xml
+
 User-agent: *
 Allow: /
 
