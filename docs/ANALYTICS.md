@@ -71,7 +71,7 @@ log_format privacy '$ip_anon - - [$time_local] "$request" $status $body_bytes_se
 **b. Replace `access_log off;` inside `server { }`:**
 
 ```nginx
-access_log /home/forge/<your-site>/logs/access.log privacy;
+access_log <site-home>/logs/access.log privacy;
 
 # Images are most of the requests and none of the interest.
 location /data/ {
@@ -81,13 +81,19 @@ location /data/ {
 ```
 
 ```bash
-mkdir -p /home/forge/<your-site>/logs
+sudo deploy/setup-logging.sh <site-user> <site-home>
 ```
 
-`/var/log/nginx` is root-owned and unreadable to the `forge` user, so every
-later step would need `sudo`. nginx runs as `forge` on a Forge server, so it can
-write into the site's own directory — confirm with `ps -o user= -C nginx | sort -u`
-before relying on it.
+`/var/log/nginx` is root-owned, so every later step would need `sudo`. Putting
+the log in the site's own directory means the nightly report runs as the site's
+own user with no root at all.
+
+nginx's master process runs as root and opens the log files named in its
+configuration before workers drop privileges, so this works under Forge's site
+isolation even though nginx's workers are not the isolated user. The one catch is
+that a file nginx creates is owned by root and the site user then cannot read it,
+so create it first with the right owner — `deploy/setup-logging.sh` does that,
+installs the rotation config and prints the nginx block to paste.
 
 **A log outside `/var/log/nginx` is rotated by nothing.** Ubuntu's stock
 `/etc/logrotate.d/nginx` matches `/var/log/nginx/*.log` and nothing else, and an
@@ -104,7 +110,7 @@ sudo logrotate -d /etc/logrotate.d/<your-site>    # dry run — read what it say
 Check a line arrives with a zeroed final octet before going further:
 
 ```bash
-tail -n 3 /home/forge/<your-site>/logs/access.log
+tail -n 3 <site-home>/logs/access.log
 # 203.0.113.0 - - [05/Sep/2026:14:02:11 +0000] "GET /?q=BSC24 HTTP/1.1" 200 5036 "-" "Mozilla/5.0 …"
 ```
 
@@ -121,13 +127,13 @@ you want the second:
 
 ```bash
 # Reads the current log and the most recent rotated one. Still loses week-old data.
-zcat -f /home/forge/<your-site>/logs/access.log.1* /home/forge/<your-site>/logs/access.log | goaccess -
+zcat -f <site-home>/logs/access.log.1* <site-home>/logs/access.log | goaccess -
 ```
 
 ```bash
 # Keeps a running database, so history survives rotation. This is the one to use.
-goaccess /home/forge/<your-site>/logs/access.log \
-  --persist --restore --db-path=/home/forge/goaccess-db \
+goaccess <site-home>/logs/access.log \
+  --persist --restore --db-path=<site-home>/goaccess-db \
   ... other options as below ...
 ```
 
@@ -149,29 +155,29 @@ Country lookup needs a GeoIP database. MaxMind's GeoLite2 Country is free with a
 registration; put the `.mmdb` somewhere readable and reference it.
 
 ```bash
-goaccess /home/forge/<your-site>/logs/access.log \
+goaccess <site-home>/logs/access.log \
   --log-format='%h - - [%d:%t %^] "%r" %s %b "%R" "%u"' \
   --date-format=%d/%b/%Y --time-format=%H:%M:%S \
   --geoip-database=/usr/share/GeoIP/GeoLite2-Country.mmdb \
   --ignore-crawlers=false \
-  --persist --restore --db-path=/home/forge/goaccess-db \
-  -o /home/forge/stats.html
+  --persist --restore --db-path=<site-home>/goaccess-db \
+  -o <site-home>/stats.html
 ```
 
 `--log-format` matches the `privacy` format field for field; change one and you
 must change the other.
 
-As a cron entry. The log is readable by `forge`, so this belongs in the `forge`
-user's own crontab (`crontab -e`) and needs no root at all:
+As a cron entry, in the site user's own crontab (`crontab -e` as that user —
+under site isolation that is the per-site account, not `forge`). No root needed:
 
 ```cron
-0 5 * * * /usr/bin/goaccess /home/forge/<your-site>/logs/access.log --log-format='%h - - [%d:%t %^] "%r" %s %b "%R" "%u"' --date-format=%d/%b/%Y --time-format=%H:%M:%S --geoip-database=/usr/share/GeoIP/GeoLite2-Country.mmdb --ignore-crawlers=false --persist --restore --db-path=/home/forge/goaccess-db -o /home/forge/stats.html
+0 5 * * * /usr/bin/goaccess <site-home>/logs/access.log --log-format='%h - - [%d:%t %^] "%r" %s %b "%R" "%u"' --date-format=%d/%b/%Y --time-format=%H:%M:%S --geoip-database=/usr/share/GeoIP/GeoLite2-Country.mmdb --ignore-crawlers=false --persist --restore --db-path=<site-home>/goaccess-db -o <site-home>/stats.html
 ```
 
 **Do not write the report into `public/`.** It would be on the open web, and it
 lists your referrers, your traffic, your 404s and every search anyone ran.
-`/home/forge/stats.html` is outside the document root: fetch it with
-`scp forge@<host>:/home/forge/stats.html .` and open it locally.
+`<site-home>/stats.html` is outside the document root: fetch it with
+`scp <site-user>@<host>:<site-home>/stats.html .` and open it locally.
 
 `--ignore-crawlers=false` keeps bots in the report and lists them separately,
 which is the split you want. GoAccess knows the search engines; the AI crawlers
@@ -182,7 +188,7 @@ what is arriving:
 
 ```bash
 grep -ohiE 'GPTBot|ClaudeBot|anthropic-ai|CCBot|PerplexityBot|Google-Extended|Applebot-Extended|Bytespider|Amazonbot' \
-  /home/forge/<your-site>/logs/access.log | sort | uniq -c | sort -rn
+  <site-home>/logs/access.log | sort | uniq -c | sort -rn
 ```
 
 ## The caveat about "unique visitors"
