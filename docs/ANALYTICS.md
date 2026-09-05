@@ -42,19 +42,26 @@ error_log  /var/log/nginx/<your-site>-error.log error;
 so there is nothing to analyse until you change it. Errors are logged; requests
 are not.
 
-**You do not need the global nginx config**, which Forge no longer exposes. Its
-per-site editor (*Site → Nginx Configuration*) writes
-`/etc/nginx/sites-available/<your-site>`, and that file is `include`d from
-`nginx.conf`'s `http { }` block — so a `map` and a `log_format` placed above the
-`server { }` block in it are already in the only context those directives are
-valid in.
+**You do not need the global nginx config**, which Forge no longer exposes. But
+the two editors Forge does give you are not equivalent, and putting a directive
+in the wrong one stops nginx starting:
 
-`deploy/nginx-logging.conf` in this repository is the block to paste, with the
-reasoning in comments. Two changes:
+| Forge UI | actual file | context |
+|---|---|---|
+| **Domain conf** | `sites-available/<domain>` | its top level is **http**; it holds the `server { }` block |
+| **General Config** | `forge-conf/<id>/site.conf` | included **inside** `server { }`, so **server** context |
 
-**a. Add the anonymising format above the `server { }` block.** The site file is
-included inside nginx's `http` context, so a `map` at the top of it is valid
-there — it will not work inside `server { }`.
+`map` and `log_format` are http-only and cannot go in General Config.
+`access_log` and `location` are server-context and cannot go above the server
+block. So this lands in three places, and `deploy/setup-logging.sh` does the
+first one for you:
+
+**a. The anonymising format, at http context.** The best home is
+`/etc/nginx/forge-conf/<id>/before/logging.conf` — that directory is included
+above the server block and Forge does not rewrite it, so the change survives
+Forge regenerating the site file when you change PHP version or renew a
+certificate. `setup-logging.sh` finds the id and writes it. Failing that, paste
+it at the very top of the **Domain conf**, above the first `include`.
 
 ```nginx
 # Zero the last octet of IPv4; keep only the first block of IPv6.
@@ -68,7 +75,7 @@ log_format privacy '$ip_anon - - [$time_local] "$request" $status $body_bytes_se
                    '"$http_referer" "$http_user_agent"';
 ```
 
-**b. Replace `access_log off;` inside `server { }`:**
+**b. In General Config**, replace Forge's `access_log off;`:
 
 ```nginx
 access_log <site-home>/logs/access.log privacy;
