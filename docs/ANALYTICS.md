@@ -211,10 +211,21 @@ tracking with extra steps.
 
 ## If a CDN is in front
 
-Cloudflare and the like replace `$remote_addr` with their own address. Use
-`$http_cf_connecting_ip` in the `map` instead, and remember the CDN then holds
-the real addresses regardless of what you log — its own analytics will also be
-counting, on its own terms.
+This is the normal case, and the config assumes it. Cloudflare replaces
+`$remote_addr` with its own edge address, so logging that gives you a few hundred
+distinct "visitors" and a country column reading whichever data centre answered.
+`$http_cf_connecting_ip` is the real address, truncated here exactly as before.
+
+`$http_cf_ipcountry` then gives country directly and the GeoIP database becomes
+unnecessary — drop `--geoip-database` from the GoAccess line, or just count the
+field:
+
+```bash
+awk '{print $2}' <site-home>/logs/access.log | sort | uniq -c | sort -rn | head
+```
+
+The CDN holds the untruncated addresses whatever you do, and counts its own
+visitors on its own terms in its own dashboard.
 
 ## What was deliberately not done
 
