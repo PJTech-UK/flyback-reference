@@ -216,54 +216,6 @@ worker, no scheduler, no `.env`.
 it schematic images. Give the initial clone a few minutes before assuming it has
 hung.
 
-### DNS and the www name
-
-`www` is not special. It is an ordinary subdomain label, exactly like `api` or
-`mail` — its universality is convention and nothing else. DNS has no concept of
-it, and neither does nginx beyond matching `server_name`.
-
-In Cloudflare, alongside the apex `A` record:
-
-| Type | Name | Target |
-|---|---|---|
-| A | `flyback-reference.net` (or `@`) | the server's IP |
-| CNAME | `www` | `flyback-reference.net` |
-
-Put the **full apex name** in the CNAME target rather than `@`. Cloudflare's UI
-accepts `@` there as shorthand, but the target of a CNAME is a name in the wider
-DNS, not a position within the zone file, so the fully qualified form is what it
-actually means and what every other provider expects. In the *Name* field `www`
-alone is right — Cloudflare appends the zone.
-
-An `A` record for `www` pointing at the same IP works just as well. With
-Cloudflare proxying enabled it makes no practical difference either way, because
-the edge answers both names itself.
-
-**Set both records to the same proxy status.** An apex that is proxied and a
-`www` that is not will behave differently — different IPs, different TLS,
-different logs — and the difference only shows up for whichever name you did not
-test.
-
-### TLS, in the order that works
-
-1. **DNS first.** Both records resolving, before anything else.
-2. **Certificate covering both names.** In Forge, add `www.<domain>` to the
-   site's aliases *before* requesting the Let's Encrypt certificate, and tick
-   both when you request it. A redirect from a name the certificate does not
-   cover fails with a certificate warning before it ever redirects — the browser
-   validates the certificate first.
-3. **Then the redirect.** Forge's redirect from `www` to the apex.
-
-Two Cloudflare settings will waste an afternoon if they are wrong:
-
-- **SSL/TLS mode must be Full (strict), not Flexible.** Flexible means Cloudflare
-  speaks HTTP to the origin; Forge redirects HTTP to HTTPS; Cloudflare follows it
-  back to itself. That is an infinite redirect loop, and it looks like a broken
-  application rather than a misconfigured proxy.
-- **Issuing the certificate through an orange-clouded record** sometimes fails
-  HTTP-01 validation. If it does, set the record to DNS-only for the couple of
-  minutes it takes, then turn the proxy back on.
-
 ### Optional
 
 Set `APP_DEBUG=1` in the site's environment only while diagnosing something —
