@@ -488,6 +488,20 @@ if (is_file("$EX/community_uses.csv")) {
     fclose($fh);
 }
 
+// Some sheets describe an accessory the archive has no record of at all — 13
+// four-digit HR 16xx products and 6 five-digit accessory codes referenced by
+// nothing. HR Diemen's own datasheet is held for each, which is evidence enough
+// that the part existed, so give it a record. The sheets are image scans with
+// only the code extractable, so that is all the record claims.
+foreach (glob("$ROOT/data/accessory-sheets/*.PDF") as $fp) {
+    if (!preg_match('/^HR(\d+)$/i', pathinfo($fp, PATHINFO_FILENAME), $m)) continue;
+    $code = 'HR ' . $m[1];
+    if (isset($hr[$code])) continue;
+    $hr[$code] = ['hr' => $code, '_source' => 'accessory_sheet'];
+    $schem[$code][] = ['kind' => 'accessory sheet',
+                       'path' => '../data/accessory-sheets/' . basename($fp)];
+}
+
 // All HR codes (union of pairs / hr / uses), like build_web_data.py
 $codes = [];
 foreach ($pairs as [$oem, $h, $_s]) $codes[$h] = true;
@@ -601,6 +615,27 @@ foreach ($obs as $h => $note) $insObs->execute([$h, $note]);
 $insAcc = $db->prepare('INSERT INTO acc (hr, accessory) VALUES (?,?)');
 foreach ($acc as $h => $list) foreach ($list as $a) $insAcc->execute([$h, $a]);
 
+// Accessory datasheets. The accessory is named only inside a description string
+// — "HR 16525-CA. G2 / SCREEN CA." — and the PDF describing it sits in
+// data/accessory-sheets/ referenced by nothing. 26 of the 44 sheets were
+// unreachable from anywhere in the application, and searching the code stamped
+// on the cable returned nothing at all.
+//
+// Link each sheet to every part that lists that accessory, and put the
+// accessory's own code in that part's searchable codes.
+$accSheets = 0; $accCodes = [];
+foreach ($acc as $h => $list) {
+    foreach ($list as $a) {
+        if (!preg_match('/HR\s*(\d{5})/', (string)$a, $m)) continue;
+        $code = $m[1];
+        $file = "$ROOT/data/accessory-sheets/HR$code.PDF";
+        if (!is_file($file)) continue;
+        $schem[$h][] = ['kind' => 'accessory sheet', 'path' => "../data/accessory-sheets/HR$code.PDF"];
+        $accCodes[$h][] = "HR $code";
+        $accSheets++;
+    }
+}
+
 /** Image kinds carry the source's own vocabulary; publish them in English.
  *  The distinction is provenance, not subject: an "archived" drawing is the
  *  same drawing, recovered from a web archive rather than from the site. */
@@ -681,6 +716,8 @@ foreach ($hr_codes as $code) {
     // "include TV/monitor models" toggle is on).
     $codeParts = [norm($code)];
     foreach ($equivByHr[$code] ?? [] as $oem) $codeParts[] = norm($oem);
+    // The code stamped on an accessory cable or cap, so it finds the parts it fits.
+    foreach ($accCodes[$code] ?? [] as $ac) $codeParts[] = norm($ac);
     $codeBlob = implode(' ', array_filter(array_unique($codeParts)));
     // use_blob is matched as one contiguous string, so "BUSH 1433" cannot find a
     // set filed as "BUSH-MURPHY-RANK 1433" — the make and the model are not
@@ -966,6 +1003,7 @@ printf("  + %s pin-function rows, %s alt diagrams, %s equivalents from Data-Pin 
 printf("  + %s service-manual leads\n", number_format($manual_rows));
 printf("  + %s contributed fitment rows\n", number_format($community_uses));
 printf("  + %s parts identified with no HR equivalent\n", number_format($orphan_rows));
+printf("  + %s accessory datasheet links (were unreachable)\n", number_format($accSheets));
 echo "wrote $DB_PATH (" . number_format(filesize($DB_PATH)) . " bytes)\n";
 printf("  pairs:        %s  (%s rows incl. spelling variants)\n",
        number_format($count('SELECT COUNT(*) FROM equivalents WHERE canon=1')),

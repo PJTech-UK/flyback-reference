@@ -183,10 +183,11 @@ final class QueryCompiler
             return 'hr.listed = ' . ($yes ? '1' : '0');
         }
         // `src:` — where the record came from.
-        if (preg_match('/^src:(book|site|xref)$/i', $tok, $m)) {
+        if (preg_match('/^src:(book|site|xref|accessory_sheet)$/i', $tok, $m)) {
             return match (strtolower($m[1])) {
                 'book' => 'hr.source IS NULL',
                 'site' => "hr.source = 'site_2012'",
+                'accessory_sheet' => "hr.source = 'accessory_sheet'",
                 default => "hr.source = 'xref_2011'",
             };
         }

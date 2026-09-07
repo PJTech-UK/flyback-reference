@@ -135,6 +135,7 @@ final class Catalog
                 'options' => [
                     ['value' => 'book', 'label' => '2003 database'],
                     ['value' => 'site', 'label' => 'hrdiemen.com 2012'],
+                    ['value' => 'accessory_sheet', 'label' => 'accessory datasheet only'],
                     ['value' => 'xref', 'label' => '2011 catalogue only'],
                 ],
                 'examples' => ['src:xref'],
