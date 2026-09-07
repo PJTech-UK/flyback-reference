@@ -113,6 +113,7 @@ final class Search
         $hits = []; $rest = [];
         foreach ($rows as $u) {
             $row = ['fab' => $u['fab'], 'fabname' => $u['fabname'], 'model' => $u['model']];
+            if (!empty($u['src'])) $row['src'] = $u['src'];
             $isHit = false;
             foreach ($useTerms as $t) {
                 if ($t !== '' && str_contains((string)$u['model_norm'], $t)) { $isHit = true; break; }
@@ -192,7 +193,7 @@ final class Search
                           ORDER BY s.same_pins DESC, s.mat_ok DESC, s.shape_d ASC");
         // model_norm is norm("fabname model"), so one substring test covers a
         // free-text term, a make: term and a model: term alike.
-        $uses   = $group("SELECT hr, fab, fabname, model, model_norm FROM uses WHERE hr IN ($ph)");
+        $uses   = $group("SELECT hr, fab, fabname, model, model_norm, src FROM uses WHERE hr IN ($ph)");
         $accs   = $group("SELECT hr, accessory FROM acc WHERE hr IN ($ph)");
         $obs    = [];
         $st = $this->db->prepare("SELECT hr, note FROM obs WHERE hr IN ($ph)");

@@ -173,8 +173,14 @@
       .sort((a, b) => (b[1].some(u => u.hit) - a[1].some(u => u.hit))
                    || String(a[0]).localeCompare(b[0]))
       .map(([fab, us]) => `<div class="fab${us.some(u => u.hit) ? " hit" : ""}">${esc(fab)}</div>` +
-        `<div class="models">${us.map(u =>
-          `<span${u.hit ? ' class="hit"' : ""}>${esc(u.model || "(unspecified)")}</span>`).join("")}</div>`).join("");
+        `<div class="models">${us.map(u => {
+          const cls = [u.hit ? "hit" : "", u.src ? "contributed" : ""].filter(Boolean).join(" ");
+          const t = u.src === "community"
+            ? "Contributed by a repairer — not from the manufacturer's own fitment list"
+            : u.src ? `From a service manual (${u.src}) — not the manufacturer's own fitment list` : "";
+          return `<span${cls ? ` class="${cls}"` : ""}${t ? ` title="${esc(t)}"` : ""}>`
+               + `${esc(u.model || "(unspecified)")}${u.src ? "*" : ""}</span>`;
+        }).join("")}</div>`).join("");
     return `<div class="uses-grid">${rows}</div>`;
   }
 
@@ -385,13 +391,16 @@
               const shown = uses.length < total
                 ? `Show ${uses.length.toLocaleString()} of ${total.toLocaleString()} TV / monitor models`
                 : `${nHit ? "Show all " : "Show "}${total.toLocaleString()} TV / monitor model${total === 1 ? "" : "s"}`;
-              const note = uses.length < total
+              const anyContrib = uses.some(u => u.src);
+      const note = uses.length < total
                 ? `<div class="nodata" style="font-size:11px">Long list truncated. Every model matching your search is shown; search a model name to find a specific set.</div>`
                 : "";
               // Open the list when the search named a set in it, so the reason
               // this part came back is on screen without a click.
               return head + renderUseHits(uses) +
-                `<details${nHit ? " open" : ""}><summary>${shown}</summary>${renderUses(uses)}${note}</details>`;
+                `<details${nHit ? " open" : ""}><summary>${shown}</summary>${renderUses(uses)}${note}`
+                + (anyContrib ? `<div class="nodata" style="font-size:12px">* contributed, or read from a service manual — not from the manufacturer's own fitment list.</div>` : "")
+                + `</details>`;
             })() : ""}
           </div>
         </div>

@@ -735,3 +735,7 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
   margin-bottom: 6px;
 }
 .subs-toggle > summary:hover { text-decoration: underline; }
+
+/* Fitments contributed by repairers or read from a service manual. Marked,
+   because a claim in this archive always says where it came from. */
+.uses-grid .models span.contributed { border-bottom: 1px dotted var(--muted); cursor: help; }

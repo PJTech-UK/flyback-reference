@@ -99,7 +99,10 @@ CREATE TABLE equivalents (hr TEXT, oem TEXT, oem_norm TEXT, src TEXT,
                                --   represent the code on screen; every literal spelling
                                --   stays in the table, canon just picks the tag to show.
                                -- alts: on a canon row, JSON list of the other spellings
-CREATE TABLE uses     (hr TEXT, fab TEXT, fabname TEXT, model TEXT, model_norm TEXT);
+CREATE TABLE uses     (hr TEXT, fab TEXT, fabname TEXT, model TEXT, model_norm TEXT,
+                       src TEXT);
+                               -- src: NULL = the manufacturer's own fitment list,
+                               -- anything else = contributed, and shown as such
 CREATE TABLE obs      (hr TEXT, note TEXT);
 CREATE TABLE acc      (hr TEXT, accessory TEXT);
 CREATE TABLE schematics (hr TEXT, kind TEXT, path TEXT);
@@ -440,6 +443,33 @@ if (is_file("$EX/datapin_diagrams.csv")) {
     fclose($fh);
 }
 
+// ---------------------------------------------------------------------------
+// Contributed fitments (dataset/community_uses.csv)
+//
+// Sets the manufacturer's own list does not name, supplied by repairers or read
+// out of a service manual. They are tagged and rendered separately: the value of
+// this archive is that a claim always says where it came from, and a fitment
+// somebody told us is not the same kind of fact as one the maker printed.
+//
+// This is also how a model people actually search for reaches a part filed under
+// a series name — nobody types "TVC Series 3", they type "Cub 1431".
+// ---------------------------------------------------------------------------
+$community_uses = 0;
+if (is_file("$EX/community_uses.csv")) {
+    $fh = fopen("$EX/community_uses.csv", 'r');
+    $hdr = fgetcsv($fh);
+    $ci = array_flip($hdr);
+    while (($row = fgetcsv($fh)) !== false) {
+        if (count($row) < 4) continue;
+        $h = trim($row[$ci['hr']]);
+        if ($h === '') continue;
+        $uses[$h][] = ['fab' => '', 'fabname' => trim($row[$ci['fabname']]),
+                       'model' => trim($row[$ci['model']]), 'src' => trim($row[$ci['source']])];
+        $community_uses++;
+    }
+    fclose($fh);
+}
+
 // All HR codes (union of pairs / hr / uses), like build_web_data.py
 $codes = [];
 foreach ($pairs as [$oem, $h, $_s]) $codes[$h] = true;
@@ -529,14 +559,15 @@ foreach ($pairs as [$oem, $h, $src]) {
                      $isCanon && $alts ? json_encode(array_values($alts)) : null]);
 }
 
-$insUse = $db->prepare('INSERT INTO uses (hr, fab, fabname, model, model_norm) VALUES (?,?,?,?,?)');
+$insUse = $db->prepare('INSERT INTO uses (hr, fab, fabname, model, model_norm, src) VALUES (?,?,?,?,?,?)');
 $useCount = [];
 foreach ($uses as $h => $list) {
     $useCount[$h] = count($list);
     foreach ($list as $u) {
         $model = trim($u['model'] ?? '');
         $fabname = $u['fabname'] ?? ($fab[$u['fab'] ?? ''] ?? ($u['fab'] ?? ''));
-        $insUse->execute([$h, $u['fab'] ?? '', $fabname, $model, norm("$fabname $model")]);
+        $insUse->execute([$h, $u['fab'] ?? '', $fabname, $model, norm("$fabname $model"),
+                          $u['src'] ?? null]);
     }
 }
 
@@ -643,6 +674,14 @@ foreach ($hr_codes as $code) {
             foreach ($words as $w) {
                 if (mb_strlen($w) >= 2) $useParts[] = norm("$w $model");
             }
+        }
+        // The model often leads with a word nobody types: a range name ("CUB
+        // 1431 MS") or the catalogue's own "CHASIS". Index the make against the
+        // rest of it as well, so "Microvitec 1431 MS" and "Philips A 8.0 A"
+        // reach the same rows as the full spelling.
+        $mw = preg_split('/\s+/u', trim($model), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        if (count($mw) > 1) {
+            $useParts[] = norm($fab . ' ' . implode(' ', array_slice($mw, 1)));
         }
     }
     $useBlob = implode(' ', array_filter(array_unique($useParts)));
@@ -866,6 +905,7 @@ printf("  + %s inferred pairs via Classic FBT correspondences\n", number_format(
 printf("  + %s pin-function rows, %s alt diagrams, %s equivalents from Data-Pin PDFs\n",
        number_format($datapin_pins), number_format($datapin_diagrams), number_format($datapin_equivs));
 printf("  + %s service-manual leads\n", number_format($manual_rows));
+printf("  + %s contributed fitment rows\n", number_format($community_uses));
 echo "wrote $DB_PATH (" . number_format(filesize($DB_PATH)) . " bytes)\n";
 printf("  pairs:        %s  (%s rows incl. spelling variants)\n",
        number_format($count('SELECT COUNT(*) FROM equivalents WHERE canon=1')),
