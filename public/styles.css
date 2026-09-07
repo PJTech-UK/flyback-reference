@@ -739,3 +739,12 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 /* Fitments contributed by repairers or read from a service manual. Marked,
    because a claim in this archive always says where it came from. */
 .uses-grid .models span.contributed { border-bottom: 1px dotted var(--muted); cursor: help; }
+
+/* Manufacturer and model browse pages. */
+.az { font-family: ui-monospace, monospace; line-height: 2; }
+.az a { display: inline-block; min-width: 1.6em; text-align: center; }
+.model-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.model-table th { text-align: left; border-bottom: 2px solid var(--border); padding: 6px 8px 6px 0; }
+.model-table td { border-bottom: 1px solid var(--border); padding: 5px 8px 5px 0; vertical-align: top; }
+.model-table td:first-child { font-family: ui-monospace, monospace; white-space: nowrap; }
+.model-table .codes a { margin-right: 8px; white-space: nowrap; }

@@ -136,6 +136,18 @@ try {
                . '<p>No such part. <a href="/parts">Browse all parts</a>.</p>', 404, 60);
     }
 
+    if ($path === '/makes' || $path === '/makes/') {
+        sendHtml(Page::makes(Db::get()));
+    }
+
+    if (preg_match('#^/make/([^/]+?)(?:/(\d+))?/?$#', $path, $m)) {
+        $html = Page::make(Db::get(), strtolower(preg_replace('/[^a-z0-9]+/i', '', urldecode($m[1]))),
+                           isset($m[2]) ? (int)$m[2] : 1);
+        if ($html !== null) sendHtml($html);
+        sendHtml('<!doctype html><meta charset="utf-8"><title>Manufacturer not found</title>'
+               . '<p>No such manufacturer. <a href="/makes">Browse all manufacturers</a>.</p>', 404, 60);
+    }
+
     if (preg_match('#^/parts(?:/(\d+))?/?$#', $path, $m)) {
         $html = Page::index(Db::get(), isset($m[1]) ? (int)$m[1] : 1);
         if ($html !== null) sendHtml($html);

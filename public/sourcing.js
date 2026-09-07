@@ -109,6 +109,12 @@
   ];
 
   const MARKETS = [
+    // A specialist rather than a marketplace: one of the last places still
+    // holding new old stock of these, and they ship internationally. Their
+    // search takes one code at a time, so it gets the HR code rather than the
+    // OR-query the marketplaces get.
+    { label: 'Dönberg', single: true,
+      url: q => `https://www.donberg.ie/search?query=${encodeURIComponent(q)}` },
     { label: 'eBay UK', url: q => `https://www.ebay.co.uk/sch/i.html?_nkw=${encodeURIComponent(q)}` },
     { label: 'eBay US', url: q => `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}` },
     { label: 'eBay DE', url: q => `https://www.ebay.de/sch/i.html?_nkw=${encodeURIComponent(q)}` },
@@ -206,8 +212,11 @@
       chip(e.url(hrOnly), e.label, `${e.label}: the HR code alone`)).join('');
 
     const marketRow = MARKETS.map(m =>
-      chip(m.url(oems.length ? [hr.replace(/\s+/g, ''), ...oems.slice(0, 3)].join(' OR ') : hr), m.label,
-        `Search ${m.label} for this part and its main equivalents`)).join('');
+      m.single
+        ? chip(m.url(hr.replace(/\s+/g, '')), m.label,
+            `Search ${m.label} for ${hr} — a specialist supplier holding old stock, ships internationally`)
+        : chip(m.url(oems.length ? [hr.replace(/\s+/g, ''), ...oems.slice(0, 3)].join(' OR ') : hr), m.label,
+            `Search ${m.label} for this part and its main equivalents`)).join('');
 
     // One Google search per language, pairing the codes with that language's
     // trade name for the component.

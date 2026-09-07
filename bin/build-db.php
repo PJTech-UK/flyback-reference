@@ -564,8 +564,14 @@ $useCount = [];
 foreach ($uses as $h => $list) {
     $useCount[$h] = count($list);
     foreach ($list as $u) {
-        $model = trim($u['model'] ?? '');
-        $fabname = $u['fabname'] ?? ($fab[$u['fab'] ?? ''] ?? ($u['fab'] ?? ''));
+        // Part of the fitment data came out of scraped HTML and still carries
+        // entity encoding — "S&amp;V", "29&#39; A/F". It is an artefact of the
+        // transport, not the data, and it breaks both display and search: nobody
+        // searching S&V matches S&amp;V.
+        $model = trim(html_entity_decode($u['model'] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $fabname = html_entity_decode(
+            $u['fabname'] ?? ($fab[$u['fab'] ?? ''] ?? ($u['fab'] ?? '')),
+            ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $insUse->execute([$h, $u['fab'] ?? '', $fabname, $model, norm("$fabname $model"),
                           $u['src'] ?? null]);
     }
@@ -671,8 +677,16 @@ foreach ($hr_codes as $code) {
         $useParts[] = norm("$fab $model");
         $words = preg_split('/[^\p{L}\p{N}]+/u', $fab, -1, PREG_SPLIT_NO_EMPTY) ?: [];
         if (count($words) > 1) {
+            // Each word on its own: Bush, Murphy and Rank all reach a Rank-era
+            // Bush; Goldstar and LG reach the same monitor.
             foreach ($words as $w) {
                 if (mb_strlen($w) >= 2) $useParts[] = norm("$w $model");
+            }
+            // And each leading run of them, because the catalogue name is often
+            // the real name plus a suffix: "BANG & OLUFSEN - B&O" is typed
+            // "Bang & Olufsen", "NOKIA - ITT" is typed "Nokia".
+            for ($k = 2; $k < count($words); $k++) {
+                $useParts[] = norm(implode(' ', array_slice($words, 0, $k)) . ' ' . $model);
             }
         }
         // The model often leads with a word nobody types: a range name ("CUB
