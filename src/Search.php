@@ -87,6 +87,12 @@ final class Search
         $slice = array_slice($rows, ($page - 1) * self::PER_PAGE, self::PER_PAGE);
         $codes = array_column($slice, 'code');
 
+        // Parts identified for a set that has no HR replacement recorded. They are
+        // not HR records and cannot join the result list, so they come back
+        // separately and are shown as their own thing — for a pre-1980 set this
+        // is the only answer available, and it is still an answer.
+        $orphans = $this->orphans($compiled['terms'], $compiled['useTerms']);
+
         $out = [
             'empty'   => false,
             'total'   => $total,
@@ -95,6 +101,7 @@ final class Search
             'eht'     => $eht,
             'results' => $this->hydrate($codes, $compiled['terms'], $compiled['useTerms']),
         ];
+        if ($orphans) $out['orphans'] = $orphans;
         // Nothing found: see whether a word in the query is one edit off a brand
         // we know. Offered, never applied — see Suggest.php for why fuzzy
         // matching must not widen a search on this vocabulary.
@@ -121,6 +128,20 @@ final class Search
             if ($isHit) { $row['hit'] = true; $hits[] = $row; } else { $rest[] = $row; }
         }
         return array_merge($hits, array_slice($rest, 0, max(0, self::USES_CAP - count($hits))));
+    }
+
+    /** @return list<array<string,mixed>> at most 12, matched on part or on set. */
+    private function orphans(array $terms, array $useTerms): array
+    {
+        $all = array_values(array_unique(array_merge($terms, $useTerms)));
+        $all = array_values(array_filter($all, fn($t) => strlen($t) >= 3));
+        if (!$all) return [];
+        $sql = 'SELECT part, part_make, fabname, model, source, note FROM orphans WHERE '
+             . implode(' OR ', array_fill(0, count($all), 'blob LIKE ?')) . ' LIMIT 12';
+        $args = array_map(fn($t) => '%' . $t . '%', $all);
+        $st = $this->db->prepare($sql);
+        $st->execute($args);
+        return $st->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function sortRows(array $rows, string $sort): array

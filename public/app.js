@@ -9,6 +9,7 @@
   const esc = s => (s == null ? "" : String(s)).replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
 
+  const $orphans = $("orphans");
   const $q = $("q"), $cat = $("category"), $only = $("onlyImgs"), $uses = $("searchUses"),
         $sortBy = $("sortBy"),
         $results = $("results"), $summary = $("summary"), $pager = $("pager"),
@@ -461,6 +462,27 @@
            ` without the type filter</button>.</span>`;
   }
 
+  /* Parts identified for a set with no HR replacement recorded. Anything older
+   * than HR Diemen's range — roughly pre-1980 — can only ever be answered this
+   * way, and knowing the original part number is what lets somebody go looking
+   * for one. Shown apart from the HR results, because it is a different claim. */
+  function renderOrphans(data) {
+    const o = data.orphans || [];
+    if (!o.length) { $orphans.innerHTML = ""; return; }
+    $orphans.innerHTML = `
+      <h3>Identified, but no HR replacement recorded (${o.length})</h3>
+      <p class="orphan-note">These sets predate the HR Diemen range or were never
+      covered by it. The original part is named so you know what to look for; there
+      is no equivalent to order.</p>
+      <table class="model-table"><thead><tr><th>Set</th><th>Original part</th><th>Source</th></tr></thead><tbody>
+      ${o.map(r => `<tr>
+        <td>${esc([r.fabname, r.model].filter(Boolean).join(" "))}</td>
+        <td class="codes">${esc(r.part || "—")}${r.part_make ? ` <span class="muted">(${esc(r.part_make)})</span>` : ""}</td>
+        <td class="muted">${esc(r.source || "")}${r.note ? ` — ${esc(r.note)}` : ""}</td>
+      </tr>`).join("")}
+      </tbody></table>`;
+  }
+
   function renderResultsPage(data) {
     // Once a search is running, the introduction has done its job. On a phone it
     // is otherwise a screenful between the box and the answer.
@@ -489,6 +511,7 @@
         : "";
       $results.innerHTML = data.empty ? ""
         : `<div class="empty">No HR parts match that search.${typeHint}${sug}</div>`;
+      renderOrphans(data);
       for (const btn of $results.querySelectorAll("[data-suggest]")) {
         btn.addEventListener("click", () => { $q.value = btn.dataset.suggest; scheduleSearch(); });
       }
@@ -504,6 +527,7 @@
     }
     $summary.innerHTML = `${data.total.toLocaleString()} HR part${data.total === 1 ? "" : "s"} match` +
       (data.pages > 1 ? ` · page ${data.page} of ${data.pages}` : "") + "." + typeFilterNote();
+    renderOrphans(data);
     $results.innerHTML = data.results.map(renderCard).join("");
     for (const img of $results.querySelectorAll("img[data-src]")) {
       io.observe(img);

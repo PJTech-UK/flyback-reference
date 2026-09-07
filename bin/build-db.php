@@ -112,6 +112,24 @@ CREATE TABLE hrt_r    (hr TEXT PRIMARY KEY, total REAL, top REAL, bot REAL, pot 
 -- equivalents: HR never claimed these parts interchange, and inductance, DCR
 -- and stray capacitance -- the things that actually decide it -- were never
 -- published. See docs/SUBSTITUTES.md.
+-- Parts identified for a set where no HR replacement is recorded — which is the
+-- normal case for anything older than HR Diemen's range, roughly pre-1980. The
+-- rest of this database keys on an HR code, so knowing that a Pye 967 used an
+-- Acme ABC123 could not be written down at all. Being told what the original
+-- part was is still the answer to the question somebody actually asked: it is
+-- what they then search for.
+CREATE TABLE orphans (
+  part       TEXT,   -- the transformer's own part number
+  part_norm  TEXT,
+  part_make  TEXT,   -- who made the transformer, where known
+  fabname    TEXT,   -- the set's manufacturer
+  model      TEXT,   -- the set's model
+  model_norm TEXT,
+  blob       TEXT,   -- part + its maker + the set, normalised: one column to search
+  source     TEXT,   -- never blank: this is all contributed
+  note       TEXT
+);
+
 CREATE TABLE substitutes (
   hr        TEXT,      -- target part
   cand      TEXT,      -- candidate
@@ -863,6 +881,33 @@ printf("substitute candidates: %s pairs over %s parts\n",
        number_format($subPairs),
        number_format((int)$db->query('SELECT COUNT(DISTINCT hr) FROM substitutes')->fetchColumn()));
 
+// Orphan parts: identified, but with no HR equivalent recorded.
+$orphan_rows = 0;
+if (is_file("$EX/orphan_parts.csv")) {
+    $fh = fopen("$EX/orphan_parts.csv", 'r');
+    $hdr = fgetcsv($fh);
+    $ci = array_flip($hdr ?: []);
+    $insOrp = $db->prepare('INSERT INTO orphans
+        (part, part_norm, part_make, fabname, model, model_norm, blob, source, note)
+        VALUES (?,?,?,?,?,?,?,?,?)');
+    while (($row = fgetcsv($fh)) !== false) {
+        if (count($row) < 5) continue;
+        $part = trim($row[$ci['part']] ?? '');
+        $fabname = trim($row[$ci['fabname']] ?? '');
+        $model = trim($row[$ci['model']] ?? '');
+        if ($part === '' && $model === '') continue;
+        $pmake = trim($row[$ci['part_make']] ?? '');
+        $insOrp->execute([$part, norm($part), $pmake,
+                          $fabname, $model, norm("$fabname $model"),
+                          norm("$part $pmake $fabname $model"),
+                          trim($row[$ci['source']] ?? 'community'),
+                          trim($row[$ci['note']] ?? '')]);
+        $orphan_rows++;
+    }
+    fclose($fh);
+}
+$db->exec('CREATE INDEX idx_orp_blob ON orphans(blob)');
+
 $insMeta = $db->prepare('INSERT INTO meta (key, value) VALUES (?,?)');
 $insMeta->execute(['generated', date('c')]);
 // Which release this database was built from, so the page can say what is
@@ -920,6 +965,7 @@ printf("  + %s pin-function rows, %s alt diagrams, %s equivalents from Data-Pin 
        number_format($datapin_pins), number_format($datapin_diagrams), number_format($datapin_equivs));
 printf("  + %s service-manual leads\n", number_format($manual_rows));
 printf("  + %s contributed fitment rows\n", number_format($community_uses));
+printf("  + %s parts identified with no HR equivalent\n", number_format($orphan_rows));
 echo "wrote $DB_PATH (" . number_format(filesize($DB_PATH)) . " bytes)\n";
 printf("  pairs:        %s  (%s rows incl. spelling variants)\n",
        number_format($count('SELECT COUNT(*) FROM equivalents WHERE canon=1')),

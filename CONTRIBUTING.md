@@ -48,6 +48,8 @@ committed, and is regenerated from source on every build.
 | pin functions | `dataset/datapin_pins.csv` |
 | tripler resistor values | `dataset/hrt_resistors_overrides.json` |
 | anything in the interface | `` |
+| a set with **no** HR equivalent | `dataset/orphan_parts.csv` |
+| a fitment the maker never listed | `dataset/community_uses.csv` |
 
 Run `php bin/build-db.php` and check the result in the application
 before opening a pull request. There is no test suite: the build reporting its
@@ -55,6 +57,24 @@ expected record counts, and the page rendering correctly, is the check.
 
 Where a value is machine-extracted, add an override rather than editing the
 extracted file. An override survives a re-extraction; a direct edit does not.
+
+## Sets with no HR part
+
+Anything older than the HR Diemen range — roughly pre-1980 — will never have an
+HR equivalent, and until now there was nowhere to record it: every table keyed on
+an HR code. `dataset/orphan_parts.csv` holds those:
+
+```csv
+part,part_make,fabname,model,source,note
+1132-016,THORN,PYE,697,"Trader sheet 1247",
+```
+
+`part` is the transformer's own number, `part_make` whoever made it, `fabname`
+and `model` the set. `source` is required — say where it came from, because
+everything in that file is contributed and is displayed as such. The search
+finds these and lists them separately, under "Identified, but no HR replacement
+recorded": naming the original part is still the answer to the question somebody
+asked, and it is what they then go looking for.
 
 ## Style
 

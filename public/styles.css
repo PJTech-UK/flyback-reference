@@ -748,3 +748,9 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 .model-table td { border-bottom: 1px solid var(--border); padding: 5px 8px 5px 0; vertical-align: top; }
 .model-table td:first-child { font-family: ui-monospace, monospace; white-space: nowrap; }
 .model-table .codes a { margin-right: 8px; white-space: nowrap; }
+
+/* Sets identified with no HR replacement recorded. */
+#orphans { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
+#orphans h3 { margin: 8px 0 4px; }
+.orphan-note { font-size: 13px; color: var(--muted); max-width: 78ch; margin: 0 0 10px; }
+.muted { color: var(--muted); }
