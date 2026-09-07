@@ -627,8 +627,24 @@ foreach ($hr_codes as $code) {
     $codeParts = [norm($code)];
     foreach ($equivByHr[$code] ?? [] as $oem) $codeParts[] = norm($oem);
     $codeBlob = implode(' ', array_filter(array_unique($codeParts)));
+    // use_blob is matched as one contiguous string, so "BUSH 1433" cannot find a
+    // set filed as "BUSH-MURPHY-RANK 1433" — the make and the model are not
+    // adjacent in the blob. 192 makes carry a compound catalogue name and 21,324
+    // fitment rows sit behind one, including NOKIA - ITT, GOLDSTAR - LG and
+    // PANASONIC - MATSUSHITA. Index each component of the name against the model
+    // as well, so any name the set was actually sold under reaches it.
     $useParts = [];
-    foreach ($uses[$code] ?? [] as $u) $useParts[] = norm(($u['fabname'] ?? '') . ' ' . ($u['model'] ?? ''));
+    foreach ($uses[$code] ?? [] as $u) {
+        $fab = (string)($u['fabname'] ?? '');
+        $model = (string)($u['model'] ?? '');
+        $useParts[] = norm("$fab $model");
+        $words = preg_split('/[^\p{L}\p{N}]+/u', $fab, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        if (count($words) > 1) {
+            foreach ($words as $w) {
+                if (mb_strlen($w) >= 2) $useParts[] = norm("$w $model");
+            }
+        }
+    }
     $useBlob = implode(' ', array_filter(array_unique($useParts)));
 
     $insHr->execute([
