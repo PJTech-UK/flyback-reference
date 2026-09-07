@@ -466,10 +466,30 @@
       const sug = sg
         ? `<div class="did-you-mean">Did you mean <button class="link-btn" data-suggest="${esc(sg.query)}">${esc(sg.query)}</button>?</div>`
         : "";
+      // The type filter excludes the 6,496 parts with no tester type recorded.
+      // This warning used to appear only when there WERE results — that is, never
+      // at the moment it matters. A visitor searched a part twenty different ways
+      // with the Type dropdown set, was told "No matches" each time, and gave up.
+      // The part was in the archive; it simply had no type recorded.
+      const untyped = (CATALOG && CATALOG.stats && CATALOG.stats.untyped) || 0;
+      const typeFiltered = $cat.value || /\b(type|tester_type):/i.test($q.value);
+      const typeHint = (untyped && typeFiltered)
+        ? `<div class="did-you-mean">A type filter is set, and ${untyped.toLocaleString()} parts`
+          + ` have no type recorded — including many that are otherwise a match.`
+          + ` <button class="link-btn" data-drop-type>Search all types</button></div>`
+        : "";
       $results.innerHTML = data.empty ? ""
-        : `<div class="empty">No HR parts match that search.${sug}</div>`;
+        : `<div class="empty">No HR parts match that search.${typeHint}${sug}</div>`;
       for (const btn of $results.querySelectorAll("[data-suggest]")) {
         btn.addEventListener("click", () => { $q.value = btn.dataset.suggest; scheduleSearch(); });
+      }
+      for (const btn of $results.querySelectorAll("[data-drop-type]")) {
+        btn.addEventListener("click", () => {
+          $cat.value = "";
+          const rest = $q.value.replace(/\b(?:tester_)?type:\S+\s*/gi, "").trim();
+          $q.value = rest || "data:any";
+          scheduleSearch();
+        });
       }
       return;
     }
