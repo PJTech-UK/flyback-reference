@@ -39,6 +39,12 @@ webapp/data.js
 # host's standard `composer install` builds the database via post-install-cmd.
 /vendor/
 
+# Extracted magazine text and its candidate output. The PDFs are the user's
+# own copies and the candidates are unreviewed OCR — neither belongs in the
+# repository until a human has read them.
+extract/magazine_cache/
+extract/magazine_candidates.csv
+
 # Python build artefacts
 __pycache__/
 *.pyc

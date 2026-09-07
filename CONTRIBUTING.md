@@ -76,6 +76,33 @@ finds these and lists them separately, under "Identified, but no HR replacement
 recorded": naming the original part is still the answer to the question somebody
 asked, and it is what they then go looking for.
 
+## Mining old magazines
+
+`extract/mine_magazines.py` reads a local collection of scanned magazines
+(*Television*, *Practical Television* and the like) and reports places where a
+part number sits near a make and model, in text that is about line output
+transformers.
+
+```bash
+python3 extract/mine_magazines.py --pdfs ~/television-magazines
+python3 extract/mine_magazines.py --pdfs ~/television-magazines --status
+```
+
+It writes candidates to `extract/magazine_candidates.csv` and **nothing else**.
+Each row carries the file, page, the surrounding text, whether the code is
+already known, and how far apart the make and the part were — sort by that last
+column and the confident pairings are at the top. Magazine OCR is noisy and a
+part number that looks plausible and is wrong is worse than none, so read them,
+keep what is real, and paste it into `orphan_parts.csv` or `community_uses.csv`
+yourself.
+
+Neither the extracted text nor the candidate file is committed.
+
+**Do not point it at worldradiohistory.com.** Their robots.txt blocks ClaudeBot
+and the other AI crawlers by name, sets `ai-train=no`, and expressly reserves
+rights under Article 4 of the EU copyright directive; the site returns 403 to
+declared bots. Use your own copies.
+
 ## Style
 
 Match the existing code and documentation. One convention is worth stating
