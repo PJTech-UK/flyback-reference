@@ -38,7 +38,46 @@ final class Search
         return preg_replace('#^\.\./#', '/', $p);
     }
 
-    public function run(array $opt): array
+    /**
+     * Re-run a fruitless search with the constraints that most often hide an
+     * answer taken off, one attempt per relaxation, stopping at the first that
+     * finds something. Returns null when nothing helps.
+     */
+    private function relax(array $opt, string $q, bool $hasCategory, bool $onlyImgs): ?array
+    {
+        $tries = [];
+        if ($hasCategory || preg_match('/\b(?:tester_)?type:/i', $q)) {
+            $tries[] = ['why' => 'ignoring the type filter — most parts have no type recorded',
+                        'opt' => ['category' => '', 'q' => preg_replace('/\b(?:tester_)?type:\S+\s*/i', '', $q)]];
+        }
+        if ($onlyImgs) {
+            $tries[] = ['why' => 'including parts with no schematic', 'opt' => ['onlyImgs' => false]];
+        }
+        // "Bush TV22" is matched as the single string BUSHTV22. Splitting it
+        // lets the make and the model be found separately.
+        $words = preg_split('/\s+/', trim($q), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $plain = array_values(array_filter($words, fn($w) => !QueryCompiler::looksLikeFactor($w)
+                                                          && !preg_match('/^(AND|OR|NOT)$/i', $w)));
+        if (count($plain) > 1) {
+            $tries[] = ['why' => 'matching your words separately rather than as one phrase',
+                        'opt' => ['q' => implode(' AND ', $plain)]];
+        }
+        if (count($plain) > 1) {
+            $tries[] = ['why' => 'matching any one of your words',
+                        'opt' => ['q' => implode(' OR ', $plain)]];
+        }
+        foreach ($tries as $t) {
+            $res = $this->run($t['opt'] + $opt + ['q' => $q], true);
+            if (($res['total'] ?? 0) > 0) {
+                return ['why' => $t['why'], 'query' => $t['opt']['q'] ?? $q,
+                        'category' => $t['opt']['category'] ?? ($opt['category'] ?? ''),
+                        'total' => $res['total'], 'results' => $res['results']];
+            }
+        }
+        return null;
+    }
+
+    public function run(array $opt, bool $relaxing = false): array
     {
         $q       = trim((string)($opt['q'] ?? ''));
         $page    = max(1, (int)($opt['page'] ?? 1));
@@ -102,6 +141,16 @@ final class Search
             'results' => $this->hydrate($codes, $compiled['terms'], $compiled['useTerms']),
         ];
         if ($orphans) $out['orphans'] = $orphans;
+
+        // Nothing found. Rather than stop at "No matches", drop the constraints
+        // that most often hide a real answer and say what was dropped. The type
+        // filter is the worst offender — three quarters of the archive has no
+        // tester type recorded — and a multi-word phrase is the next, because
+        // adjacent free-text words are matched as one contiguous string.
+        if ($total === 0 && !$relaxing) {
+            $out['relaxed'] = $this->relax($opt, $q, $catSql !== null, $onlyImgs);
+        }
+        return $out;
         // Nothing found: see whether a word in the query is one edit off a brand
         // we know. Offered, never applied — see Suggest.php for why fuzzy
         // matching must not widen a search on this vocabulary.

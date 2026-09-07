@@ -497,6 +497,9 @@
       const sug = sg
         ? `<div class="did-you-mean">Did you mean <button class="link-btn" data-suggest="${esc(sg.query)}">${esc(sg.query)}</button>?</div>`
         : "";
+      // The server retries a fruitless search with the constraints that most
+      // often hide an answer taken off. Show what it found and say what it did.
+      const rx = data.relaxed;
       // The type filter excludes the 6,496 parts with no tester type recorded.
       // This warning used to appear only when there WERE results — that is, never
       // at the moment it matters. A visitor searched a part twenty different ways
@@ -509,9 +512,31 @@
           + ` have no type recorded — including many that are otherwise a match.`
           + ` <button class="link-btn" data-drop-type>Search all types</button></div>`
         : "";
+      const era = data.empty ? "" : `
+        <p class="empty-era">This archive is built on HR Diemen's range, which runs from
+        roughly the late 1970s onwards. Sets older than that are thinly covered and many
+        were never in it at all — if you know what one used,
+        <a href="https://github.com/PJTech-UK/flyback-reference" target="_blank" rel="noopener">additions
+        are welcome</a>.</p>
+        <ul class="empty-tips">
+          <li>Try the number printed on the transformer itself rather than the set.</li>
+          <li>Try the chassis rather than the model — <code>Ferguson TX100</code>, not <code>Ferguson 16"</code>.</li>
+          <li>Drop punctuation and spacing; they are ignored either way.</li>
+          <li>Try the make on its own, then narrow: <a class="linkish" href="/makes">browse by make</a>.</li>
+        </ul>`;
       $results.innerHTML = data.empty ? ""
-        : `<div class="empty">No HR parts match that search.${typeHint}${sug}</div>`;
+        : `<div class="empty">No exact match for that search.${typeHint}${sug}${era}</div>`
+          + (rx ? `<div class="relaxed">
+               <h3>Widened the search and found ${rx.total.toLocaleString()}</h3>
+               <p class="relaxed-why">Nothing matched exactly, so this is the same search
+               ${esc(rx.why)}.</p>
+               <div class="relaxed-results">${rx.results.map(renderCard).join("")}</div>
+             </div>` : "");
       renderOrphans(data);
+      for (const img of $results.querySelectorAll("img[data-src]")) {
+        io.observe(img);
+        img.addEventListener("click", () => openImage(img.dataset.src || img.src));
+      }
       for (const btn of $results.querySelectorAll("[data-suggest]")) {
         btn.addEventListener("click", () => { $q.value = btn.dataset.suggest; scheduleSearch(); });
       }

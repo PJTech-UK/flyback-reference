@@ -754,3 +754,11 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 #orphans h3 { margin: 8px 0 4px; }
 .orphan-note { font-size: 13px; color: var(--muted); max-width: 78ch; margin: 0 0 10px; }
 .muted { color: var(--muted); }
+
+/* No exact match: the era note, the tips, and whatever a widened search found. */
+.empty-era { font-size: 14px; line-height: 1.55; max-width: 74ch; margin: 14px auto 0; text-align: left; }
+.empty-tips { font-size: 14px; line-height: 1.7; max-width: 74ch; margin: 8px auto 0; text-align: left; }
+.empty-tips code { background: #eef; padding: 1px 5px; border-radius: 3px; }
+.relaxed { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.relaxed h3 { margin: 22px 0 2px; color: var(--accent); }
+.relaxed-why { font-size: 14px; color: var(--muted); margin: 0 0 12px; }
