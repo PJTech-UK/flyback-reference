@@ -86,6 +86,37 @@ function sendJson($data, int $code = 200, int $maxAge = 60): void
     exit;
 }
 
+/**
+ * A real 404, with a real body.
+ *
+ * Everything the router does not recognise used to fall through to the
+ * single-page shell and return 200. To a person that looks like an empty search
+ * box; to a crawler it is a "soft 404" — an unlimited supply of URLs that all
+ * answer 200 with identical content. Google demotes sites that do it, and with
+ * ten thousand URLs in the sitemap any stale or mistyped one was feeding the
+ * problem. Unknown paths now say so with the correct status.
+ */
+function notFound(string $what, string $suggest = ''): void
+{
+    http_response_code(404);
+    header('Content-Type: text/html; charset=utf-8');
+    header('Cache-Control: public, max-age=300');
+    echo '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+       . '<meta name="viewport" content="width=device-width, initial-scale=1">'
+       . '<title>Not found</title>'
+       . '<meta name="robots" content="noindex">'
+       . '<link rel="icon" href="/favicon.ico" sizes="48x48">'
+       . '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
+       . '<link rel="stylesheet" href="/styles.css">'
+       . '</head><body><div class="wrap" style="padding:40px 20px;max-width:640px">'
+       . '<h1 style="font-size:22px;margin:0 0 10px">' . htmlspecialchars($what, ENT_QUOTES) . '</h1>'
+       . '<p>' . ($suggest !== '' ? htmlspecialchars($suggest, ENT_QUOTES) . ' ' : '')
+       . 'Try a <a href="/">search</a>, or browse '
+       . '<a href="/parts">all parts</a> or <a href="/makes">all manufacturers</a>.</p>'
+       . '</div></body></html>';
+    exit;
+}
+
 try {
     if ($path === '/api/catalog') {
         // Fixed for the life of a deployment — every visitor fetches this once
@@ -132,8 +163,7 @@ try {
     if (preg_match('#^/part/([^/]+)/?$#', $path, $m)) {
         $html = Page::part(Db::get(), urldecode($m[1]));
         if ($html !== null) sendHtml($html);
-        sendHtml('<!doctype html><meta charset="utf-8"><title>Part not found</title>'
-               . '<p>No such part. <a href="/parts">Browse all parts</a>.</p>', 404, 60);
+        notFound('No such part', 'That part number is not in the archive.');
     }
 
     if ($path === '/makes' || $path === '/makes/') {
@@ -144,15 +174,13 @@ try {
         $html = Page::make(Db::get(), strtolower(preg_replace('/[^a-z0-9]+/i', '', urldecode($m[1]))),
                            isset($m[2]) ? (int)$m[2] : 1);
         if ($html !== null) sendHtml($html);
-        sendHtml('<!doctype html><meta charset="utf-8"><title>Manufacturer not found</title>'
-               . '<p>No such manufacturer. <a href="/makes">Browse all manufacturers</a>.</p>', 404, 60);
+        notFound('No such manufacturer', 'That manufacturer is not in the archive.');
     }
 
     if (preg_match('#^/parts(?:/(\d+))?/?$#', $path, $m)) {
         $html = Page::index(Db::get(), isset($m[1]) ? (int)$m[1] : 1);
         if ($html !== null) sendHtml($html);
-        sendHtml('<!doctype html><meta charset="utf-8"><title>Not found</title>'
-               . '<p>No such page. <a href="/parts">Browse all parts</a>.</p>', 404, 60);
+        notFound('No such page', 'That page number is past the end of the list.');
     }
 
     if ($path === '/sitemap.xml') {
@@ -177,7 +205,16 @@ try {
     sendJson(['error' => 'server error'] + $detail, 500);
 }
 
-// --- Anything else: serve the single-page app shell -------------------------
+// --- The single-page app shell ----------------------------------------------
+//
+// The application has no client-side path routing — app.js only ever rewrites
+// the query string (history.replaceState against location.pathname) — so the
+// shell belongs at "/" and nowhere else. Any other unmatched path is a 404, not
+// a silent 200 with an empty search box. See notFound() above.
+if ($path !== '/' && $path !== '/index.php') {
+    notFound('Page not found');
+}
+
 //
 // Asset URLs get a ?v=<mtime> stamp. Without it a browser holding a cached
 // app.js will happily run it against a newer API response shape — which shows
