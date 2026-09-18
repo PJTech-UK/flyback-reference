@@ -93,6 +93,7 @@ Each result carries `subs`, the substitute shortlist.
 | `docs/CLASSIC_BRIDGE.md` | the second manufacturer's catalogue |
 | `docs/DATAPIN.md` | functional pin-outs |
 | `docs/MANUAL_HUNT.md` | service-manual leads |
+| `docs/INDEXING.md` | sitemaps, page titles and search indexing |
 
 ## Limitations
 

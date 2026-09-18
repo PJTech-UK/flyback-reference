@@ -381,7 +381,7 @@
             ${window.Sourcing ? Sourcing.render(res, soleResult) : ""}
             <p class="permalink"><a href="/part/${esc(code.replace(/[^A-Za-z0-9]+/g, "").toLowerCase())}">Permanent page for ${esc(code)}</a></p>
             ${res.obs ? `<h3>Notes <small style="color:#888;font-weight:normal">— quoted verbatim from the manufacturer's own application notes; not independently verified</small></h3>${renderNotes(res.obs, row)}` : ""}
-            ${accs.length ? `<h3>Accessories</h3><ul class="accs">${accs.map(a => `<li>${esc(a)}</li>`).join("")}</ul>` : ""}
+            ${accs.length ? `<h3>Accessories</h3><ul class="accs">${accs.map(a => `<li><b>${esc(a.code)}</b> &mdash; ${esc(a.label)}</li>`).join("")}</ul>` : ""}
             ${uses.length ? (() => {
               const nHit = uses.filter(u => u.hit).length;
               // uses_total is the real figure; the array may be truncated for

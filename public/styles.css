@@ -471,7 +471,8 @@ details[open] > summary { margin-bottom: 6px; }
   font-size: 13px; background: #fff6e5; border: 1px solid #f0d8a8;
   border-radius: 4px; padding: 5px 8px; color: #7a5a1d; line-height: 1.4;
 }
-.accs li { font-family: ui-monospace, monospace; font-size: 14px; }
+.accs li { font-size: 14px; }
+.accs b { font-family: ui-monospace, monospace; margin-right: 6px; }
 
 /* ---- sourcing panel (see sourcing.js) ---- */
 .sourcing {
@@ -703,6 +704,9 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 .part-index { columns: 3 220px; list-style: none; padding: 0; }
 .part-index li { break-inside: avoid; margin-bottom: 4px; font-family: ui-monospace, monospace; font-size: 14px; }
 .part-index span { color: var(--muted); font-family: system-ui, sans-serif; font-size: 13px; }
+.acc-list { list-style: none; padding: 0; margin: 0; }
+.acc-list li { margin-bottom: 4px; font-size: 14px; }
+.acc-list b { font-family: ui-monospace, monospace; margin-right: 6px; }
 .static-page .pager { margin-top: 24px; display: flex; gap: 16px; }
 .permalink { margin: 14px 0 0; font-size: 13px; }
 

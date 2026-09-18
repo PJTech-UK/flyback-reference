@@ -183,10 +183,21 @@ try {
         notFound('No such page', 'That page number is past the end of the list.');
     }
 
+    // /sitemap.xml is now an index pointing at one child sitemap per kind of
+    // page, so Search Console reports indexing separately for each.
     if ($path === '/sitemap.xml') {
         header('Content-Type: application/xml; charset=utf-8');
         header('Cache-Control: public, max-age=86400');
-        echo Page::sitemap(Db::get());
+        echo Page::sitemapIndex(Db::get());
+        exit;
+    }
+
+    if (preg_match('#^/sitemap-([a-z-]+)\.xml$#', $path, $m)) {
+        $xml = Page::sitemap(Db::get(), $m[1]);
+        if ($xml === null) notFound('No such sitemap');
+        header('Content-Type: application/xml; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        echo $xml;
         exit;
     }
 } catch (Throwable $e) {

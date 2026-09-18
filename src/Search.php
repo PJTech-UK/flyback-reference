@@ -380,7 +380,13 @@ final class Search
                     'note' => $m['note'], 'confidence' => $m['confidence'],
                 ], $manuals[$code] ?? []),
                 'obs' => $obs[$code] ?? null,
-                'acc' => array_map(fn($a) => $a['accessory'], $accs[$code] ?? []),
+                // Decoded server-side rather than in app.js: two copies of the
+                // same rule set in two languages is how norm()/hr_norm() nearly
+                // went wrong, and the page and the app must agree on whether a
+                // part is an EHT lead or a screen control.
+                'acc' => array_values(array_map(
+                    fn($a) => Page::accessory((string)$a['accessory']),
+                    $accs[$code] ?? [])),
                 // `hit` marks a set the search term actually named. Without it a
                 // search for CM8833 returned three parts with the reason for
                 // each buried inside a collapsed list of up to 2,000 models.
