@@ -39,9 +39,11 @@ final class Page
     }
 
     /** Shared chrome. $head is title/description/canonical; $body is the content. */
-    private static function shell(string $title, string $desc, string $canonical, string $body): string
+    private static function shell(string $title, string $desc, string $canonical, string $body,
+                                  ?PDO $db = null): string
     {
         $t = self::e($title); $d = self::e($desc); $c = self::e($canonical);
+        $v = $db ? self::e(self::buildMark($db)) : '';
         return <<<HTML
 <!doctype html>
 <html lang="en">
@@ -80,6 +82,7 @@ $body
   <a class="linkish kofi" href="https://ko-fi.com/jonathanpjtech60339" target="_blank" rel="noopener">Support this archive on Ko-fi</a></p>
  </div>
 </footer>
+<div class="verbadge">$v</div>
 </body>
 </html>
 HTML;
@@ -260,7 +263,7 @@ HTML;
         } else {
             $title = "$code — $kind cross-reference";
         }
-        return self::shell($title, $desc, self::base() . '/part/' . self::slug($code), $h);
+        return self::shell($title, $desc, self::base() . '/part/' . self::slug($code), $h, $db);
     }
 
     /** Paginated index, so a crawler can reach every part without the sitemap. */
@@ -291,7 +294,7 @@ HTML;
             'All parts' . ($page > 1 ? " — page $page" : '') . ' — Flyback & LOPT Cross-Reference',
             'Index of ' . number_format($total) . ' CRT line-output transformers, triplers and '
                 . 'EHT components, with their manufacturer equivalents.',
-            self::base() . '/parts' . ($page > 1 ? '/' . $page : ''), $h);
+            self::base() . '/parts' . ($page > 1 ? '/' . $page : ''), $h, $db);
     }
 
     /**
@@ -365,7 +368,7 @@ HTML;
         return self::shell('TV and monitor manufacturers — Flyback & LOPT Cross-Reference',
             number_format(count($rows) - count($aliases)) . ' TV and monitor manufacturers whose sets appear in this '
             . 'flyback and LOPT cross-reference, with the models recorded for each.',
-            self::base() . '/makes', $h);
+            self::base() . '/makes', $h, $db);
     }
 
     /** One manufacturer: its models, and the part each was fitted with. */
@@ -434,7 +437,7 @@ HTML;
             . ' televisions and monitors: ' . number_format($total) . ' models'
             . ($sample ? ' including ' . implode(', ', $sample) : '')
             . ', each with the part it was fitted with.',
-            self::base() . '/make/' . self::slug($fab) . ($page > 1 ? '/' . $page : ''), $h);
+            self::base() . '/make/' . self::slug($fab) . ($page > 1 ? '/' . $page : ''), $h, $db);
     }
 
     /**
@@ -510,6 +513,21 @@ HTML;
              . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
         foreach ($locs as $l) $out .= '<url><loc>' . $l . "</loc><lastmod>$mod</lastmod></url>\n";
         return $out . "</urlset>\n";
+    }
+
+    /**
+     * "v1.4.2 · data built 2026-09-19" — the same marker the application shows,
+     * so a server-rendered page can be pinned to a build too. These pages are
+     * what a crawler and a no-JavaScript reader get, and they carried no
+     * version at all.
+     */
+    private static function buildMark(PDO $db): string
+    {
+        static $mark = null;
+        if ($mark !== null) return $mark;
+        $v = (string)(Db::version() ?? '');
+        $mark = ($v !== '' ? 'v' . $v : '') . ' · data built ' . self::generated($db);
+        return $mark = trim($mark, ' ·');
     }
 
     /** Build date of the dataset, as the date half of an ISO timestamp. */

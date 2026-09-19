@@ -201,7 +201,7 @@ final class Catalog
                 ['value' => 'total', 'label' => 'R total'],
             ],
             'generated' => Db::meta('generated'),
-            'version'   => Db::meta('version'),
+            'version'   => Db::version(),
             // Counted once when the database is built, not per request: the model
             // count is a DISTINCT over ~400,000 rows and this endpoint is hit on
             // every page load. They still follow the data, because a rebuild is
