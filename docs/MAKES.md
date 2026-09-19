@@ -84,8 +84,30 @@ between the two intact rows that bracket it:
 | MEG | MEGATRON | MEE=M ELECTRONIC … MEI=MEIHUAN ELECTRONICS |
 | ERM | EUROMAN | ERL=EUROLINE … ERO=ERO |
 
-`BRE`, `HUN`, `KOG` and `LIE` are left as bare codes. The override file never
-overrides a name the extractor did find.
+`BRE` is `BRANDT`: it is the only BR brand in the index without a code and the
+only BR code without a name, its models are ICC and TX chassis — Thomson-Brandt
+families — and `CHASIS ICC 6 -> HR 7269 + HR 7270` matches what The Book shows
+for Brandt. `HUN`, `KOG` and `LIE` are left as bare codes. The override file
+never overrides a name the extractor did find.
+
+## Testing whether a code is a brand already named
+
+A code might be a second listing of a brand the catalogue also spells out. Two
+tests, both cheap, neither conclusive on its own:
+
+- **Duplication** — how many of the code's (model, part) pairs also appear under
+  a named brand. `JEN` is the only significant hit: all 43 of its pairs are also
+  under `PRIMA - PRIME`, which holds 63. A subset, not a rename, and two brands
+  sharing a rebadged chassis is ordinary, so they are left separate.
+- **Splitting** — a brand divided between code and title would show *no*
+  duplication, so absence of overlap proves nothing. Compare the model sets
+  instead. `CHH` (121 models: 14 C 99 N, 21 BM 32, 3418, 47 CJ 2) against
+  `CHANG HAI` (2 models: 4601 A, C 4901) shares no part and no model, and the
+  naming conventions do not resemble each other. Changhong is absent from the
+  catalogue under every spelling. `CHH` stays `CHH`.
+
+Overlaps of one to three pairs are noise — rebadged sets are common — and are
+not acted on.
 
 ## Two different kinds of unresolved code
 

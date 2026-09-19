@@ -8,5 +8,6 @@ code,name,evidence
 PHX,PHOENIX,"PHO=PHILCO < PHX < PIA=PIACA; orphaned name field at 0x2a141e; brand index runs PHILCO PHILIPS PHOENIX PHONOLA"
 MEG,MEGATRON,"MEE=M ELECTRONIC < MEG < MEI=MEIHUAN ELECTRONICS"
 ERM,EUROMAN,"ERL=EUROLINE < ERM < ERO=ERO"
-# Still unrecovered, name field not locatable: BRE (270 models), KOG (50),
-# HUN, LIE. Left as bare codes rather than guessed at.
+BRE,BRANDT,"BRANDT is the only BR brand in the index with no code and BRE the only BR code with no name; its models are ICC and TX chassis, which are Thomson-Brandt families; CHASIS ICC 6 -> HR 7269 + HR 7270 matches The Book"
+# Still unrecovered, name field not locatable: KOG (50 models), HUN, LIE.
+# Left as bare codes rather than guessed at.
