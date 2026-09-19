@@ -321,8 +321,12 @@ HTML;
         // looking for Thorn knows perfectly well it is the same chassis as a
         // Ferguson; what they cannot do is guess that the catalogue wrote it
         // "FERGUSON-THORN-EMI", or that Amstrad is filed as "AMS".
-        $aliases = $db->query('SELECT alias, fabname, note FROM make_aliases
-                               ORDER BY alias')->fetchAll(PDO::FETCH_ASSOC);
+        // Only the names a person would browse by. The catalogue's own
+        // three-letter codes are aliases too, so /make/ams still resolves and
+        // the code is searchable, but listing a thousand of them in the A-Z
+        // would bury the 1,472 makes it exists to show.
+        $aliases = $db->query("SELECT alias, fabname, note FROM make_aliases
+                               WHERE note <> 'catalogue code' ORDER BY alias")->fetchAll(PDO::FETCH_ASSOC);
         foreach ($aliases as $a) $rows[] = $a + ['m' => null, 'p' => null];
 
         $groups = [];
@@ -392,7 +396,8 @@ HTML;
         // headed "AMS", which is the catalogue's abbreviation and nobody else's
         // word for it — and no search engine would ever match it to the name a
         // person types.
-        $st = $db->prepare('SELECT alias FROM make_aliases WHERE fabname = ? ORDER BY alias');
+        $st = $db->prepare("SELECT alias FROM make_aliases
+                            WHERE fabname = ? AND note <> 'catalogue code' ORDER BY alias");
         $st->execute([$fab]);
         $also = $st->fetchAll(PDO::FETCH_COLUMN);
 

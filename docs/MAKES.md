@@ -49,3 +49,18 @@ under the code is usually enough: `AMS` carries `CPC 464`, `CPC 6128` and
 `CTM 644`, and the independent Classic catalogue lists the same models spelled
 `AMSTRAD`. Two catalogues, same models, different spelling. That is the standard;
 a plausible-looking abbreviation is not.
+
+## Catalogue codes
+
+The catalogue stores a three-letter code per make and resolves it to a name in a
+separate table. `bin/build-db.php` registers every code as an alias of its name,
+derived from `dataset/manufacturers.json` rather than curated, so `/make/ams`
+still reaches Amstrad and the code itself is searchable. These are tagged
+`catalogue code` and are deliberately **left out of the `/makes` A-Z** — there
+are about a thousand of them and they would bury the makes the page exists to
+show.
+
+343 codes still resolve to nothing: `TCL`, `PHX`, `BRE`, `CHH`, `AKR`, `XCC`,
+`HSN` and others, 2,615 models behind them. They are absent from the catalogue's
+manufacturer table, not lost in extraction. They show as the bare code, which is
+honest, and they are not guessed at.

@@ -710,19 +710,40 @@ if (is_file($aliasFile)) {
         if (str_starts_with(ltrim((string)$row[0]), '#')) continue;
         if ($hdr === null) { $hdr = array_flip($row); continue; }
         $alias = trim((string)($row[$hdr['alias']] ?? ''));
-        $fab   = trim((string)($row[$hdr['fabname']] ?? ''));
+        // not $fab: that is the manufacturer code=>name map loaded at the top of
+        // this script, and reusing the name here silently emptied it.
+        $target = trim((string)($row[$hdr['fabname']] ?? ''));
         $note  = trim((string)($row[$hdr['note']] ?? ''));
         $ak = norm($alias);
-        if ($alias === '' || $fab === '' || $ak === '') continue;
+        if ($alias === '' || $target === '' || $ak === '') continue;
         // Refuse an alias that is already a make in its own right: it would
         // shadow that make's own page, which is worse than not having the alias.
-        if (isset($known[$ak]))            { $aliasSkipped[] = "$alias (already a make)"; continue; }
-        if (!isset($known[norm($fab)]))    { $aliasSkipped[] = "$alias -> $fab (no such make)"; continue; }
-        $insAlias->execute([$alias, $ak, $known[norm($fab)], $note]);
-        $aliasByFab[$known[norm($fab)]][] = $alias;
+        if (isset($known[$ak]))              { $aliasSkipped[] = "$alias (already a make)"; continue; }
+        if (!isset($known[norm($target)]))   { $aliasSkipped[] = "$alias -> $target (no such make)"; continue; }
+        $insAlias->execute([$alias, $ak, $known[norm($target)], $note]);
+        $aliasByFab[$known[norm($target)]][] = $alias;
         $aliasRows++;
     }
     fclose($fh);
+
+    // The catalogue's own three-letter codes, as aliases of the names they
+    // resolve to. Two reasons, neither of them a guess: /make/ams was a live URL
+    // that Google had crawled and would now 404 because the make is called
+    // AMSTRAD, and somebody reading a code off a catalogue page should be able
+    // to type it. Derived from manufacturers.json, so it cannot drift.
+    $existing = [];
+    foreach ($db->query('SELECT alias_norm FROM make_aliases') as $r) $existing[$r['alias_norm']] = true;
+    foreach ($fab as $codeKey => $name) {
+        if (!is_string($name) || $name === '') continue;
+        $ck = norm((string)$codeKey);
+        if ($ck === '' || $ck === norm($name)) continue;   // code is the name
+        if (isset($existing[$ck]) || isset($known[$ck])) continue;
+        if (!isset($known[norm($name)])) continue;          // name has no fitment rows
+        $insAlias->execute([(string)$codeKey, $ck, $known[norm($name)], 'catalogue code']);
+        $aliasByFab[$known[norm($name)]][] = (string)$codeKey;
+        $existing[$ck] = true;
+        $aliasRows++;
+    }
 }
 printf("make aliases: %d loaded%s\n", $aliasRows,
        $aliasSkipped ? ', ' . count($aliasSkipped) . ' skipped: ' . implode('; ', $aliasSkipped) : '');
