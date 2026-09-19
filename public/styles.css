@@ -67,6 +67,13 @@ header h1 { margin: 0 0 6px; font-size: 21px; line-height: 1.25; }
 .mast-col li strong { color: var(--accent); }
 .mast-col li + li { color: var(--muted); }
 
+/* The introduction is for the landing state. On a 768px laptop it was half the
+   vertical viewport, and it stayed there over every result the reader had just
+   asked for. Once there are results it has done its job, at every width --
+   this used to collapse on phones only. */
+body.has-results .masthead { display: none; }
+body.has-results header { padding-bottom: 10px; }
+
 /* Figure above label, so the three numbers line up as a row of columns rather
    than running together as one sentence. */
 header .stats { display: flex; gap: 22px; flex-wrap: wrap; margin: 0; }
@@ -124,13 +131,27 @@ header .stats dd {
   /* Everything above the search box is a cost on a phone: the reader came to
      type a part number. What the archive is lives in "What is this?", and the
      column headings and second bullets are explanation they did not ask for. */
-  #mastAbout { display: none; }
+  /* Keep one line saying what the site is -- hiding the column outright left a
+     phone with a title, a search box and no explanation of either. The second
+     bullet of each column is the detail, and that can go. */
   .mast-col h2 { display: none; }
-  .mast-extra { display: none; }
+  .mast-extra, .mast-col li + li { display: none; }
+  .masthead { gap: 4px; }
+  .mast-col li { font-size: 13px; }
+  /* Reclaim the chrome above the search box. The top bar wrapped to two lines
+     on its gaps alone, and the logo took a line of its own above the title. */
+  header { padding: 10px 16px 10px; }
+  .topbar { gap: 10px 12px; font-size: 13px; }
+  .topbar .linkish { font-size: 13px; }
+  /* nowrap: the title is two lines on a phone and the logo was being pushed
+     onto a third of its own. */
+  .brand { gap: 9px; align-items: center; flex-wrap: nowrap; }
+  .brand .logo { width: 30px; height: 25px; margin-top: 0; }
+  header h1 { font-size: 17px; margin-bottom: 3px; }
+  .verbadge { font-size: 10px; }
   header .stats dt { font-size: 14px; }
   header .stats { gap: 14px; }
-  /* And once results are on screen the introduction has served its purpose. */
-  body.has-results .masthead { display: none; }
+
 }
 
 /* Short screens — an iPhone SE is 568px tall and the header alone was 704px.
@@ -161,14 +182,14 @@ header .stats dd {
 }
 
 @media (max-width: 640px) {
-  /* The logo beside the text squeezed the tagline into a 230px column and eight
-     lines of it. Put it above, and drop the greeting: on a phone it is a whole
-     line of a three-line heading before anything useful. */
-  .brand { flex-direction: column; gap: 6px; }
-  .brand .logo { width: 34px; height: 28px; }
-  header h1 { font-size: 18px; }
+  /* The logo used to go above the text, because beside it it squeezed the
+     tagline into a 230px column. There is no tagline any more, so it sits
+     beside the title and saves a line. The greeting still goes: on a phone it
+     is a whole line of heading before anything useful. */
+  .brand { flex-direction: row; align-items: center; gap: 9px; }
+  .brand .logo { width: 30px; height: 25px; margin-top: 0; }
+  header h1 { font-size: 17px; }
   .welcome { display: none; }
-  header .tagline { font-size: 13px; }
 
   /* The search row put a full-width box, a Clear, a select and two buttons on
      one line and let them fight. Box on its own line, controls under it. */
