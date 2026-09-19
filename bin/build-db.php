@@ -173,6 +173,23 @@ $uses = loadJson("$EX/hr_to_uses.json");
 $obs  = loadJson("$EX/notes_en.json");
 $acc  = loadJson("$EX/accessories.json");
 $fab  = loadJson("$EX/manufacturers.json");
+// Names the extractor cannot reach because the record straddles a page boundary
+// in diemen.v12. Hand-recovered, evidenced per row. See docs/MAKES.md.
+$ovFile = "$EX/manufacturer_overrides.csv";
+if (is_file($ovFile)) {
+    $fh = fopen($ovFile, 'r'); $hdr = null; $ovN = 0;
+    while (($row = fgetcsv($fh)) !== false) {
+        if (($row[0] ?? '') === '' || str_starts_with(ltrim((string)$row[0]), '#')) continue;
+        if ($hdr === null) { $hdr = array_flip($row); continue; }
+        $c = trim((string)($row[$hdr['code']] ?? ''));
+        $n = trim((string)($row[$hdr['name']] ?? ''));
+        if ($c === '' || $n === '') continue;
+        if (isset($fab[$c]) && $fab[$c] !== '') continue;   // never override the file
+        $fab[$c] = $n; $ovN++;
+    }
+    fclose($fh);
+    printf("manufacturer overrides: %d applied\n", $ovN);
+}
 $schem= loadJson("$EX/hr_to_schematic.json");
 
 // Box-letter -> dimensions, from data/packaging/modHR-family.txt
@@ -608,8 +625,18 @@ foreach ($uses as $h => $list) {
         // transport, not the data, and it breaks both display and search: nobody
         // searching S&V matches S&amp;V.
         $model = trim(html_entity_decode($u['model'] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        // $fab is the authority on what a code is called. extract_tables.py bakes
+        // a fabname into hr_to_uses.json using the map as it stood at extraction
+        // time, so a name added since -- an override for a record split across a
+        // page boundary, say -- would never reach the row. Resolve the code here
+        // when it resolves, and fall back to the baked value only when it does
+        // not. A code that resolves to nothing stays the bare code; it is never
+        // guessed at, and a real three-letter brand like DEC or ICL is in the
+        // catalogue's table as itself, so it comes back unchanged.
+        $code0 = (string)($u['fab'] ?? '');
+        $resolved = ($code0 !== '' && !empty($fab[$code0])) ? $fab[$code0] : null;
         $fabname = html_entity_decode(
-            $u['fabname'] ?? ($fab[$u['fab'] ?? ''] ?? ($u['fab'] ?? '')),
+            $resolved ?? ($u['fabname'] ?? ($fab[$code0] ?? $code0)),
             ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $insUse->execute([$h, $u['fab'] ?? '', $fabname, $model, norm("$fabname $model"),
                           $u['src'] ?? null]);

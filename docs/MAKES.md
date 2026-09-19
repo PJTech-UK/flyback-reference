@@ -64,3 +64,44 @@ show.
 `HSN` and others, 2,615 models behind them. They are absent from the catalogue's
 manufacturer table, not lost in extraction. They show as the bare code, which is
 honest, and they are not guessed at.
+
+## Records split across a page boundary
+
+`diemen.v12` is a **V12 Database Engine** file (the app ships
+`xtras/V12_DBE_FOR_DIRECTOR.X32`), and it is paged. A record can straddle a page
+boundary: `\x02\x10<CODE>\x00` ends one block and the name field lands in
+another as `\x1a\x00<len>\x10<NAME>\x00`. No contiguous regex joins the two, so
+the row is lost.
+
+Seven manufacturer codes are affected: `BRE ERM HUN KOG LIE MEG PHX`. Three are
+recovered in `dataset/manufacturer_overrides.csv`, each evidenced by its
+alphabetical neighbours — the table is sorted by code, so a name has to fit
+between the two intact rows that bracket it:
+
+| code | name | bracketed by |
+|---|---|---|
+| PHX | PHOENIX | PHO=PHILCO … PIA=PIACA |
+| MEG | MEGATRON | MEE=M ELECTRONIC … MEI=MEIHUAN ELECTRONICS |
+| ERM | EUROMAN | ERL=EUROLINE … ERO=ERO |
+
+`BRE`, `HUN`, `KOG` and `LIE` are left as bare codes. The override file never
+overrides a name the extractor did find.
+
+## Two different kinds of unresolved code
+
+Worth keeping straight, because only one of them is a defect:
+
+- **In the catalogue, lost in extraction** — the seven above, and the 51 A-codes
+  the byte window cut off. Recoverable, and recovered.
+- **Never in the catalogue** — roughly 340 codes used by the 2012 website whose
+  fitment we hold but whose names the 2003 manufacturer table never contained:
+  `TCL`, `CHH`, `AKR`, `XCC`, `HSN`, `KOG`, `JEN`, `ERN`. The Book's own brand
+  list cannot expand these either, so it displays the bare code exactly as this
+  site does. Nothing is lost; there is simply no name to show.
+
+A code is only ever expanded from the catalogue's own table or from an evidenced
+override. It is never inferred from what the letters look like they stand for.
+`CHH` may well be Changhong and `PHX` obviously was Phoenix — but one of those
+is in the file and the other is a guess, and guesses do not go in the data.
+Real three-letter brands are safe by the same rule: `DEC` and `ICL` appear in
+the catalogue's table as themselves and come through unchanged.

@@ -1,0 +1,12 @@
+code,name,evidence
+# Manufacturer names recovered by hand from diemen.v12 where the record is split
+# across a page boundary: "\x02\x10<CODE>\x00" ends one block, the name field
+# lands in another as "\x1a\x00<len>\x10<NAME>\x00", and no contiguous regex can
+# join them. Seven codes are affected. These three are corroborated by their
+# alphabetical neighbours in the intact part of the same table -- the table is
+# sorted by code, so a name has to fit between the two rows that bracket it.
+PHX,PHOENIX,"PHO=PHILCO < PHX < PIA=PIACA; orphaned name field at 0x2a141e; brand index runs PHILCO PHILIPS PHOENIX PHONOLA"
+MEG,MEGATRON,"MEE=M ELECTRONIC < MEG < MEI=MEIHUAN ELECTRONICS"
+ERM,EUROMAN,"ERL=EUROLINE < ERM < ERO=ERO"
+# Still unrecovered, name field not locatable: BRE (270 models), KOG (50),
+# HUN, LIE. Left as bare codes rather than guessed at.
