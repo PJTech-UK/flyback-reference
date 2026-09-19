@@ -9,5 +9,11 @@ PHX,PHOENIX,"PHO=PHILCO < PHX < PIA=PIACA; orphaned name field at 0x2a141e; bran
 MEG,MEGATRON,"MEE=M ELECTRONIC < MEG < MEI=MEIHUAN ELECTRONICS"
 ERM,EUROMAN,"ERL=EUROLINE < ERM < ERO=ERO"
 BRE,BRANDT,"BRANDT is the only BR brand in the index with no code and BRE the only BR code with no name; its models are ICC and TX chassis, which are Thomson-Brandt families; CHASIS ICC 6 -> HR 7269 + HR 7270 matches The Book"
-# Still unrecovered, name field not locatable: KOG (50 models), HUN, LIE.
-# Left as bare codes rather than guessed at.
+# Codes used by the 2012 website that the 2003 manufacturer table never held.
+# Not recoverable from diemen.v12 at all -- these come from a later edition of
+# The Book, and are only admitted on a model+part match, never on what the
+# letters look like they stand for.
+CHH,CHANGHONG,"CHH model 2131 NA -> HR 80050, which the updated Book gives as CHANGHONG 2131 NA"
+# Still unrecovered: KOG (50 models), HUN, LIE -- name field not locatable in
+# diemen.v12. And ~339 further 2012-website codes with no name in any source we
+# hold. Left as bare codes rather than guessed at.

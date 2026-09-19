@@ -615,6 +615,20 @@ foreach ($pairs as [$oem, $h, $src]) {
                      $isCanon && $alts ? json_encode(array_values($alts)) : null]);
 }
 
+// Resolve every fitment row's manufacturer name ONCE, here, before anything
+// reads $uses. The table insert and the search blob each used to work it out
+// for themselves, so fixing one left the other behind: the part page said
+// BRANDT while the blob still said BRE, and "BRANDT ICC 6" found nothing.
+foreach ($uses as $h => &$_list) {
+    foreach ($_list as &$_u) {
+        $_code = (string)($_u['fab'] ?? '');
+        if ($_code !== '' && !empty($fab[$_code])) $_u['fabname'] = $fab[$_code];
+        elseif (!isset($_u['fabname']))            $_u['fabname'] = $_code;
+    }
+    unset($_u);
+}
+unset($_list);
+
 $insUse = $db->prepare('INSERT INTO uses (hr, fab, fabname, model, model_norm, src) VALUES (?,?,?,?,?,?)');
 $useCount = [];
 foreach ($uses as $h => $list) {
@@ -625,18 +639,8 @@ foreach ($uses as $h => $list) {
         // transport, not the data, and it breaks both display and search: nobody
         // searching S&V matches S&amp;V.
         $model = trim(html_entity_decode($u['model'] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
-        // $fab is the authority on what a code is called. extract_tables.py bakes
-        // a fabname into hr_to_uses.json using the map as it stood at extraction
-        // time, so a name added since -- an override for a record split across a
-        // page boundary, say -- would never reach the row. Resolve the code here
-        // when it resolves, and fall back to the baked value only when it does
-        // not. A code that resolves to nothing stays the bare code; it is never
-        // guessed at, and a real three-letter brand like DEC or ICL is in the
-        // catalogue's table as itself, so it comes back unchanged.
-        $code0 = (string)($u['fab'] ?? '');
-        $resolved = ($code0 !== '' && !empty($fab[$code0])) ? $fab[$code0] : null;
-        $fabname = html_entity_decode(
-            $resolved ?? ($u['fabname'] ?? ($fab[$code0] ?? $code0)),
+        // Already resolved above, for every consumer at once.
+        $fabname = html_entity_decode((string)($u['fabname'] ?? ''),
             ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $insUse->execute([$h, $u['fab'] ?? '', $fabname, $model, norm("$fabname $model"),
                           $u['src'] ?? null]);

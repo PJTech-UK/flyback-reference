@@ -101,10 +101,24 @@ tests, both cheap, neither conclusive on its own:
   sharing a rebadged chassis is ordinary, so they are left separate.
 - **Splitting** — a brand divided between code and title would show *no*
   duplication, so absence of overlap proves nothing. Compare the model sets
-  instead. `CHH` (121 models: 14 C 99 N, 21 BM 32, 3418, 47 CJ 2) against
-  `CHANG HAI` (2 models: 4601 A, C 4901) shares no part and no model, and the
-  naming conventions do not resemble each other. Changhong is absent from the
-  catalogue under every spelling. `CHH` stays `CHH`.
+  instead. `CHH` shares no part and no model with `CHANG HAI`, so they are not
+  the same brand.
+- **A single model+part match against a source that has the name.** `CHH` is
+  `CHANGHONG`: its model `2131 NA` is fitted with `HR 80050`, and a later
+  edition of The Book lists exactly that pair under Changhong. One matching
+  pair from an independent source beats any amount of reasoning about what
+  three letters might abbreviate.
+
+## The later edition
+
+`CHANGHONG` does not appear anywhere in `diemen.v12` — the 2003 manufacturer
+table holds `CHANG FEI`, `CHANG FENG`, `CHANG HAI` and nothing else of the sort.
+The roughly 340 still-unresolved codes came from the 2012 website, and their
+names live in an edition of The Book newer than the 2003 file this repository
+extracts (the app ships `HRBOOKupdate.exe`, dated 2024).
+
+That is the source that would resolve the rest of them. Nothing in this
+repository can.
 
 Overlaps of one to three pairs are noise — rebadged sets are common — and are
 not acted on.
