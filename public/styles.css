@@ -797,27 +797,16 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 .relaxed h3 { margin: 22px 0 2px; color: var(--accent); }
 .relaxed-why { font-size: 14px; color: var(--muted); margin: 0 0 12px; }
 
-/* Build marker. Fixed in the corner on a desktop, where there is room to spare;
-   on a phone every pixel over the results is a cost, so it sits at the end of
-   the page instead of floating over them. */
+/* Build marker, at the right-hand end of the top bar. It was fixed to the
+   bottom-right corner, which on a phone meant the very end of a long page --
+   visible only to somebody who had already scrolled past everything. */
 .verbadge {
+  margin-left: auto;
   font-size: 11px;
   line-height: 1;
   color: var(--muted);
-  opacity: 0.75;
+  opacity: 0.8;
   font-variant-numeric: tabular-nums;
-  padding: 4px 8px;
-  text-align: right;
+  white-space: nowrap;
 }
 .verbadge:empty { display: none; }
-@media (min-width: 861px) {
-  .verbadge {
-    position: fixed;
-    right: 6px;
-    bottom: 4px;
-    background: var(--bg);
-    border-radius: 3px;
-    pointer-events: none;
-    z-index: 5;
-  }
-}

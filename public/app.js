@@ -936,12 +936,6 @@
        [st.codes, "manufacturer<br>part numbers"],
        [st.models, "TV and monitor<br>models"]]
       .map(([v, label]) => `<div><dt>${n(v)}</dt><dd>${label}</dd></div>`).join("");
-    // Belongs here, after the fetch. Reading CATALOG at module top level threw
-    // on a null and took every handler registered below it with it.
-    if ($("version") && CATALOG.version) {
-      $("version").textContent = "v" + CATALOG.version
-        + (CATALOG.generated ? " · data built " + CATALOG.generated.slice(0, 10) : "");
-    }
     buildHelp();
 
     restoreFromUrl();

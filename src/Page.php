@@ -82,7 +82,7 @@ $body
   <a class="linkish kofi" href="https://ko-fi.com/jonathanpjtech60339" target="_blank" rel="noopener">Support this archive on Ko-fi</a></p>
  </div>
 </footer>
-<div class="verbadge">$v</div>
+<p class="verbadge">$v</p>
 </body>
 </html>
 HTML;

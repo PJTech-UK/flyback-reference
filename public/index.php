@@ -243,6 +243,10 @@ if ($path !== '/' && $path !== '/index.php') {
 // than as an obvious error. Stamping means a deploy invalidates the cache.
 header('Content-Type: text/html; charset=utf-8');
 $shell = file_get_contents(__DIR__ . '/app.html');
+// The build marker, server-rendered. Reading it from /api/catalog made it as
+// stale as that response's hour-long cache.
+$shell = str_replace('@@VERSION@@',
+    htmlspecialchars('v' . (Db::version() ?? '?'), ENT_QUOTES), $shell);
 $shell = preg_replace_callback(
     '#(?:src|href)="(/(?:app\.js|sourcing\.js|styles\.css))"#',
     function (array $m): string {
