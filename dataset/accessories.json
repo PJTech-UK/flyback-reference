@@ -125,9 +125,6 @@
   "HR 16506-CA.MAT / HV CA.",
   "HR 16524-CA.FOCO / FOCUS CA."
  ],
- "HR 6100": [
-  "HR 16525-CA. G2 / SCREEN CA."
- ],
  "HR 6120": [
   "HR 1660-CA. MAT / HV CA.",
   "HR 16529-CA.FOCO / FOCUS CA."
@@ -184,7 +181,7 @@
   "HR 16529-CA.FOCO / FOCUS CA."
  ],
  "HR 6184": [
-  "HR 1660-CA. MA",
+  "HR 1660-CA. MAT / HV CA.",
   "HR 16524-CA.FOCO / FOCUS CA."
  ],
  "HR 6185": [
@@ -268,7 +265,7 @@
   "HR 16529-CA.FOCO / FOCUS CA."
  ],
  "HR 6260": [
-  "HR 1660-CA. MAT / HV CA.",
+  "HR 1660-CA",
   "HR 16529-CA.FOCO / FOCUS CA."
  ],
  "HR 6261": [
@@ -471,7 +468,6 @@
   "HR 16506-CA.MAT / HV CA."
  ],
  "HR 6365": [
-  "HR 1660-CA. MAT / HV CA.",
   "HR 16524-CA.FOCO / FOCUS CA.",
   "HR 16525-CA. G2 / SCREEN CA."
  ],
@@ -516,7 +512,7 @@
   "HR 16529-CA.FOCO / FOCUS CA."
  ],
  "HR 6394": [
-  "HR 1660-CA. MA"
+  "HR 1660-CA. MAT / HV CA."
  ],
  "HR 6396": [
   "HR 16525-CA. G2 / SCREEN CA."
@@ -566,7 +562,7 @@
   "HR 16529-CA.FOCO / FOCUS CA."
  ],
  "HR 6459": [
-  "HR 16529-CA.FOCO / FOCUS CA."
+  "HR 16529-CA.FO"
  ],
  "HR 6460": [
   "HR 1660-CA. MAT / HV CA.",
@@ -678,7 +674,7 @@
   "HR 1660-CA. MAT / HV CA."
  ],
  "HR 6508": [
-  "HR 1"
+  "HR 1660-CA. MAT / HV CA."
  ],
  "HR 6509": [
   "HR 1660-CA. MAT / HV CA.",
@@ -716,7 +712,8 @@
   "HR 16524-CA.FOCO / FOCUS CA."
  ],
  "HR 6518": [
-  "HR 1660-CA. MAT / HV CA."
+  "HR 1660-CA. MAT / HV CA.",
+  "HR 16524-CA.FOCO / FOCUS CA."
  ],
  "HR 6519": [
   "HR 1660-CA. MAT / HV CA.",
@@ -749,9 +746,6 @@
  "HR 6538": [
   "HR 16506-CA.MAT / HV CA.",
   "HR 16524-CA.FOCO / FOCUS CA."
- ],
- "HR 6541": [
-  "HR 1660-CA. MAT / HV CA."
  ],
  "HR 6542": [
   "HR 1660-CA. MAT / HV CA."
@@ -790,7 +784,7 @@
   "HR 16524-CA.FOCO / FOCUS CA."
  ],
  "HR 6574": [
-  "HR 1",
+  "HR 1660-CA. MAT / HV CA.",
   "HR 16524-CA.FOCO / FOCUS CA."
  ],
  "HR 6575": [
@@ -914,8 +908,11 @@
  "HR 6684": [
   "HR 16524"
  ],
+ "HR 6692": [
+  "HR 16524-CA.FOCO / FOCUS CA."
+ ],
  "HR 7086": [
-  "HR 16525-CA. G2 / SCREEN CA."
+  "HR 16525-CA. G2"
  ],
  "HR 7102": [
   "HR 16524-CA.FOCO / FOCUS CA."
@@ -937,7 +934,6 @@
   "HR 16524-CA.FOCO / FOCUS CA."
  ],
  "HR 7225": [
-  "HR 1660-C",
   "HR 16524-CA.FOCO / FOCUS CA."
  ],
  "HR 7227": [
@@ -1031,10 +1027,6 @@
   "HR 16502-CA.MAT / HV CA.",
   "HR 16529-CA.FOCO / FOCUS CA."
  ],
- "HR 7318": [
-  "HR 16502-CA.MAT / HV CA.",
-  "HR 16529-CA.FOCO / FOCUS CA."
- ],
  "HR 7319": [
   "HR 16502-CA.MAT / HV CA.",
   "HR 16529-CA.FOCO / FOCUS CA."
@@ -1125,11 +1117,6 @@
   "HR 16524-CA.FOCO / FOCUS CA.",
   "HR 16525-CA.G2 / SCREEN CA."
  ],
- "HR 7876": [
-  "HR 1660-CA. MAT / HV CA.",
-  "HR 16524-CA.FOCO / FOCUS CA.",
-  "HR 16525-CA. G2 / SCREEN CA."
- ],
  "HR 7946": [
   "HR 1660-CA. MAT / HV CA.",
   "HR 16524-CA.FOCO / FOCUS CA.",
@@ -1211,7 +1198,10 @@
   "HR 16524-CA.FOCO / FOCUS CA."
  ],
  "HR 8551": [
-  "HR 1663-CA. MAT / HV CA.",
+  "HR 1660-CA. MAT / HV CA.",
+  "HR 16524-CA.FOCO / FOCUS CA."
+ ],
+ "HR 8697": [
   "HR 16524-CA.FOCO / FOCUS CA."
  ]
 }

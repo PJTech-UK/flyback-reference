@@ -261,15 +261,33 @@ foreach ($schem as $h => &$imgs) {
     }
 } unset($imgs, $img);
 
-// equivalents pairs — [oem, hr, src] with src NULL for the 2003 database
+// equivalents pairs — [oem, hr, src]. src NULL for the 2003 database,
+// 'updated' for the later edition. Both are loaded: they are two editions of
+// the same catalogue and where they differ the difference is usually a
+// revision, which a repairer wants to see. Nothing is replaced.
+//
+// The later file is NOT dated by its timestamp. A V12 database records the
+// moment the updater ran, not when the data was written, and this copy was
+// rebuilt in 2024 from an update package of unknown age. See docs/SOURCES.md
+// for what actually dates it.
 $pairs = [];
-$fh = fopen("$EX/equivalents.csv", 'r');
-$header = fgetcsv($fh);
-$ci = array_flip($header);
-while (($row = fgetcsv($fh)) !== false) {
-    $pairs[] = [$row[$ci['oem']], $row[$ci['hr']], null];
+$equivFiles = ['equivalents.csv' => null, 'equivalents-updated.csv' => 'updated'];
+$equivCounts = [];
+foreach ($equivFiles as $file => $src) {
+    if (!is_file("$EX/$file")) continue;
+    $fh = fopen("$EX/$file", 'r');
+    $ci = array_flip(fgetcsv($fh));
+    if (!isset($ci['oem'], $ci['hr'])) {
+        fclose($fh);
+        throw new RuntimeException("$file: expected an 'oem' and an 'hr' column, got "
+                                   . implode(',', array_keys($ci)));
+    }
+    $n = 0;
+    while (($row = fgetcsv($fh)) !== false) { $pairs[] = [$row[$ci['oem']], $row[$ci['hr']], $src]; $n++; }
+    fclose($fh);
+    $equivCounts[$file] = $n;
 }
-fclose($fh);
+foreach ($equivCounts as $f => $n) printf("  %-26s %s pairs\n", $f, number_format($n));
 
 // ---------------------------------------------------------------------------
 // 2011 catalogue cross-reference (dataset/xref_pdf.csv, from parse_xref_pdf.py)

@@ -59,3 +59,12 @@ extract/ocr_out/
 # being true the moment the data was published without the reader.
 #   php tools/consolidate-schematic-extracts.php
 analysis/bulk_extract/
+
+# The installed Windows copy of The Book: licensed source material, 40MB+,
+# and the same class of thing as diemen.v12 above.
+\!INSTALLED_WINDOWS_FILES/
+
+# Extractor output lives in dataset/, which is what the build reads. These were
+# the old output location; keeping both invites editing the copy nothing loads.
+extract/*.json
+extract/equivalents.csv

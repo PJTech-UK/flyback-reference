@@ -95,6 +95,7 @@ Each result carries `subs`, the substitute shortlist.
 | `docs/MANUAL_HUNT.md` | service-manual leads |
 | `docs/INDEXING.md` | sitemaps, page titles and search indexing |
 | `docs/MAKES.md` | compound and abbreviated manufacturer names |
+| `docs/SOURCES.md` | the two editions of the source database, how the later one is dated, and what each contributes |
 
 ## Limitations
 

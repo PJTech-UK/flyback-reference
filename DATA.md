@@ -24,7 +24,9 @@ The position is therefore stated directly:
   B+, that a tester recorded 26.3 kV — are generally not subject to copyright.
   Compilations of such facts may attract a separate database right in the EU and
   UK, which runs for a fixed term from the making or last substantial update of
-  the database. The oldest material here dates from 2003.
+  the database. The oldest material here dates from 2003; a later edition of the
+  same reference database also contributes, undated but placed around 2007 by
+  its contents (see `docs/SOURCES.md`).
 - **This is not legal advice.** Take your own before building anything
   commercial on this data.
 
@@ -36,6 +38,7 @@ links are marked as inferred and are not merged into manufacturer claims.
 | tag | what it is |
 |---|---|
 | *(default)* | A manufacturer's reference database of part descriptors, cross-references, fitment lists and application notes, compiled 2003. |
+| `updated` | A later edition of that same reference database. The copy is undated — its file timestamp records only when an update package was applied to it — and its contents place it around 2007. It is loaded alongside the 2003 edition, never in place of it, so that where the two disagree both readings survive. |
 | `site` | The same manufacturer's public catalogue pages, captured before the site went offline. |
 | `xref` | Their published 2011 equivalence catalogue. |
 | `classic` | A second aftermarket manufacturer's catalogues, used only to *infer* links, tagged distinctly and never presented as the first manufacturer's claim. |
