@@ -94,6 +94,7 @@ Each result carries `subs`, the substitute shortlist.
 | `docs/DATAPIN.md` | functional pin-outs |
 | `docs/MANUAL_HUNT.md` | service-manual leads |
 | `docs/INDEXING.md` | sitemaps, page titles and search indexing |
+| `docs/MAKES.md` | compound and abbreviated manufacturer names |
 
 ## Limitations
 

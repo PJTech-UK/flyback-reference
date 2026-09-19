@@ -104,6 +104,13 @@ CREATE TABLE uses     (hr TEXT, fab TEXT, fabname TEXT, model TEXT, model_norm T
                                -- src: NULL = the manufacturer's own fitment list,
                                -- anything else = contributed, and shown as such
 CREATE TABLE obs      (hr TEXT, note TEXT);
+-- A name people browse or search by, and the catalogue name it reaches. The
+-- catalogue files sets under a compound name where brands shared a chassis
+-- ("FERGUSON-THORN-EMI"), and under an abbreviation where it felt like it
+-- ("AMS" for Amstrad) — so browsing for Thorn, or for Amstrad, found nothing.
+-- Curated in dataset/make_aliases.csv, not derived: splitting on punctuation
+-- alone turns WATT-RADIO into "Watt" and "Radio". See docs/MAKES.md.
+CREATE TABLE make_aliases (alias TEXT, alias_norm TEXT, fabname TEXT, note TEXT);
 CREATE TABLE acc      (hr TEXT, accessory TEXT);
 CREATE TABLE schematics (hr TEXT, kind TEXT, path TEXT);
 CREATE TABLE hrt_r    (hr TEXT PRIMARY KEY, total REAL, top REAL, bot REAL, pot REAL, verified INTEGER, file TEXT);
@@ -683,6 +690,43 @@ foreach ($sch as $h => $s) {
     foreach ($s['roles'] as $r) $insRole->execute([$h, $r]);
 }
 
+// ---------------------------------------------------------------------------
+// Make aliases
+// ---------------------------------------------------------------------------
+$aliasFile = __DIR__ . '/../dataset/make_aliases.csv';
+$aliasByFab = [];                 // fabname => [alias, ...], for the search blobs
+$aliasRows  = 0; $aliasSkipped = [];
+if (is_file($aliasFile)) {
+    $known = [];
+    foreach ($db->query("SELECT DISTINCT fabname FROM uses WHERE fabname <> ''") as $r) {
+        $known[norm($r['fabname'])] = $r['fabname'];
+    }
+    $insAlias = $db->prepare('INSERT INTO make_aliases (alias, alias_norm, fabname, note)
+                              VALUES (?,?,?,?)');
+    $fh = fopen($aliasFile, 'r');
+    $hdr = null;
+    while (($row = fgetcsv($fh)) !== false) {
+        if ($row === [null] || ($row[0] ?? '') === '') continue;
+        if (str_starts_with(ltrim((string)$row[0]), '#')) continue;
+        if ($hdr === null) { $hdr = array_flip($row); continue; }
+        $alias = trim((string)($row[$hdr['alias']] ?? ''));
+        $fab   = trim((string)($row[$hdr['fabname']] ?? ''));
+        $note  = trim((string)($row[$hdr['note']] ?? ''));
+        $ak = norm($alias);
+        if ($alias === '' || $fab === '' || $ak === '') continue;
+        // Refuse an alias that is already a make in its own right: it would
+        // shadow that make's own page, which is worse than not having the alias.
+        if (isset($known[$ak]))            { $aliasSkipped[] = "$alias (already a make)"; continue; }
+        if (!isset($known[norm($fab)]))    { $aliasSkipped[] = "$alias -> $fab (no such make)"; continue; }
+        $insAlias->execute([$alias, $ak, $known[norm($fab)], $note]);
+        $aliasByFab[$known[norm($fab)]][] = $alias;
+        $aliasRows++;
+    }
+    fclose($fh);
+}
+printf("make aliases: %d loaded%s\n", $aliasRows,
+       $aliasSkipped ? ', ' . count($aliasSkipped) . ' skipped: ' . implode('; ', $aliasSkipped) : '');
+
 $insHr = $db->prepare(<<<'SQL'
 INSERT INTO hr (code, tester_type, family, family_image, mat_kv, pinB, pinC, pinsD,
   alim_or_deflection, weight_g, box_class, box_x, box_y, box_z, box_image, source,
@@ -751,6 +795,14 @@ foreach ($hr_codes as $code) {
         $mw = preg_split('/\s+/u', trim($model), -1, PREG_SPLIT_NO_EMPTY) ?: [];
         if (count($mw) > 1) {
             $useParts[] = norm($fab . ' ' . implode(' ', array_slice($mw, 1)));
+        }
+        // And the names the catalogue did not use. Word-splitting the compound
+        // names above reaches "Thorn" but not "Amstrad", which the catalogue
+        // files as "AMS" — no amount of splitting recovers a name that is not
+        // there. dataset/make_aliases.csv supplies those.
+        foreach ($aliasByFab[$fab] ?? [] as $al) {
+            $useParts[] = norm("$al $model");
+            if (count($mw) > 1) $useParts[] = norm($al . ' ' . implode(' ', array_slice($mw, 1)));
         }
     }
     $useBlob = implode(' ', array_filter(array_unique($useParts)));

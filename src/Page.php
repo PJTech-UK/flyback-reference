@@ -294,6 +294,21 @@ HTML;
             self::base() . '/parts' . ($page > 1 ? '/' . $page : ''), $h);
     }
 
+    /**
+     * alias slug => canonical fabname, for /make/{alias}. Built once per request.
+     */
+    public static function makeAlias(PDO $db, string $slug): ?string
+    {
+        static $map = null;
+        if ($map === null) {
+            $map = [];
+            foreach ($db->query('SELECT alias, fabname FROM make_aliases') as $r) {
+                $map[self::slug($r['alias'])] = $r['fabname'];
+            }
+        }
+        return $map[$slug] ?? null;
+    }
+
     /** Every set manufacturer, A-Z. The original catalogue started here: you
      *  picked a make, then a model. Make and model are different things and the
      *  interface should not blur them. */
@@ -302,29 +317,49 @@ HTML;
         $rows = $db->query("SELECT fabname, COUNT(DISTINCT model) m, COUNT(DISTINCT hr) p
                             FROM uses WHERE fabname <> '' GROUP BY fabname
                             ORDER BY fabname")->fetchAll(PDO::FETCH_ASSOC);
+        // Fold in the names the catalogue did not file sets under. Somebody
+        // looking for Thorn knows perfectly well it is the same chassis as a
+        // Ferguson; what they cannot do is guess that the catalogue wrote it
+        // "FERGUSON-THORN-EMI", or that Amstrad is filed as "AMS".
+        $aliases = $db->query('SELECT alias, fabname, note FROM make_aliases
+                               ORDER BY alias')->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($aliases as $a) $rows[] = $a + ['m' => null, 'p' => null];
+
         $groups = [];
         foreach ($rows as $r) {
-            $init = strtoupper(mb_substr(ltrim($r['fabname']), 0, 1));
+            $label = $r['alias'] ?? $r['fabname'];
+            $init = strtoupper(mb_substr(ltrim($label), 0, 1));
             if (!preg_match('/[A-Z]/', $init)) $init = '#';
             $groups[$init][] = $r;
         }
+        foreach ($groups as &$g) {
+            usort($g, fn($x, $y) => strcasecmp($x['alias'] ?? $x['fabname'],
+                                               $y['alias'] ?? $y['fabname']));
+        }
+        unset($g);
         ksort($groups);
-        $h = '<h1>TV and monitor manufacturers</h1><p>' . number_format(count($rows))
-           . ' makes appear in the fitment lists. Pick one to see its models, or search a '
-           . 'part number directly.</p>';
+        $h = '<h1>TV and monitor manufacturers</h1><p>' . number_format(count($rows) - count($aliases))
+           . ' makes appear in the fitment lists, plus ' . count($aliases) . ' other names they '
+           . 'were sold under. Pick one to see its models, or search a part number directly.</p>';
         $h .= '<p class="az">' . implode(' ', array_map(
             fn($k) => '<a href="#' . self::e($k) . '">' . self::e($k) . '</a>', array_keys($groups))) . '</p>';
         foreach ($groups as $init => $list) {
             $h .= '<h2 id="' . self::e($init) . '">' . self::e($init) . '</h2><ul class="part-index">';
             foreach ($list as $r) {
-                $h .= '<li><a href="/make/' . self::e(self::slug($r['fabname'])) . '">'
-                    . self::e($r['fabname']) . '</a> <span>' . number_format((int)$r['m'])
-                    . ' models</span></li>';
+                $link = '/make/' . self::e(self::slug($r['fabname']));
+                if (isset($r['alias'])) {
+                    $h .= '<li class="alias"><a href="' . $link . '">' . self::e($r['alias'])
+                        . '</a> <span>&rarr; ' . self::e($r['fabname'])
+                        . ($r['note'] ? ' (' . self::e($r['note']) . ')' : '') . '</span></li>';
+                } else {
+                    $h .= '<li><a href="' . $link . '">' . self::e($r['fabname'])
+                        . '</a> <span>' . number_format((int)$r['m']) . ' models</span></li>';
+                }
             }
             $h .= '</ul>';
         }
         return self::shell('TV and monitor manufacturers — Flyback & LOPT Cross-Reference',
-            number_format(count($rows)) . ' TV and monitor manufacturers whose sets appear in this '
+            number_format(count($rows) - count($aliases)) . ' TV and monitor manufacturers whose sets appear in this '
             . 'flyback and LOPT cross-reference, with the models recorded for each.',
             self::base() . '/makes', $h);
     }
@@ -353,8 +388,18 @@ HTML;
         $st->execute([$fab, self::PER_PAGE, ($page - 1) * self::PER_PAGE]);
         $rows = $st->fetchAll(PDO::FETCH_ASSOC);
 
-        $h = '<h1>' . self::e($fab) . ($page > 1 ? " — page $page of $pages" : '') . '</h1><p>'
-           . number_format($total)
+        // Names this make is also known by. Without them the page for Amstrad is
+        // headed "AMS", which is the catalogue's abbreviation and nobody else's
+        // word for it — and no search engine would ever match it to the name a
+        // person types.
+        $st = $db->prepare('SELECT alias FROM make_aliases WHERE fabname = ? ORDER BY alias');
+        $st->execute([$fab]);
+        $also = $st->fetchAll(PDO::FETCH_COLUMN);
+
+        $h = '<h1>' . self::e($fab) . ($page > 1 ? " — page $page of $pages" : '') . '</h1>'
+           . ($also ? '<p class="also">Also listed as ' . implode(', ', array_map(
+                 [self::class, 'e'], $also)) . '.</p>' : '')
+           . '<p>' . number_format($total)
            . ' models recorded, with the line-output transformer or tripler each was fitted with.</p>'
            . '<table class="model-table"><thead><tr><th>Model</th><th>Parts</th></tr></thead><tbody>';
         foreach ($rows as $r) {
@@ -375,11 +420,13 @@ HTML;
         // parts by model" is indistinguishable from fourteen hundred siblings;
         // "Sony KX 2501, KV 2212 UB" is what somebody actually types.
         $sample = array_slice(array_filter(array_column($rows, 'model')), 0, 3);
+        $alsoTitle = $also ? ' (' . implode(', ', array_slice($also, 0, 3)) . ')' : '';
         return self::shell(
-            self::e($fab) . ($page > 1 ? " — page $page" : '')
+            self::e($fab) . $alsoTitle . ($page > 1 ? " — page $page" : '')
                 . ' — flyback, LOPT and tripler parts by model',
-            'Line-output transformers, flybacks and triplers for ' . $fab . ' televisions and '
-            . 'monitors: ' . number_format($total) . ' models'
+            'Line-output transformers, flybacks and triplers for ' . $fab
+            . ($also ? ', also listed as ' . implode(', ', $also) . ',' : '')
+            . ' televisions and monitors: ' . number_format($total) . ' models'
             . ($sample ? ' including ' . implode(', ', $sample) : '')
             . ', each with the part it was fitted with.',
             self::base() . '/make/' . self::slug($fab) . ($page > 1 ? '/' . $page : ''), $h);

@@ -707,6 +707,9 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
 .acc-list { list-style: none; padding: 0; margin: 0; }
 .acc-list li { margin-bottom: 4px; font-size: 14px; }
 .acc-list b { font-family: ui-monospace, monospace; margin-right: 6px; }
+.also { color: var(--muted); font-size: 14px; margin: -4px 0 10px; }
+.part-index li.alias a { color: var(--muted); }
+.part-index li.alias span { font-style: italic; }
 .static-page .pager { margin-top: 24px; display: flex; gap: 16px; }
 .permalink { margin: 14px 0 0; font-size: 13px; }
 

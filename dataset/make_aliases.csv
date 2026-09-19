@@ -1,0 +1,65 @@
+alias,fabname,note
+# A name people browse or search by, and the catalogue name it should reach.
+#
+# Two kinds. Compound catalogue names joining brands that shared a chassis
+# ("FERGUSON-THORN-EMI") are split into the names sets were actually sold under.
+# Abbreviations the catalogue used in place of a name ("AMS" for Amstrad) are
+# expanded. Only fragments that are real brand names are listed: "WATT-RADIO"
+# and "LITE-ON" are single brands and are left alone, and a fragment that is
+# already a make in its own right (SINUDYNE, SCHNEIDER, WESTINGHOUSE, HITACHI,
+# GORLER) is skipped so it cannot shadow that make's own page.
+FERGUSON,FERGUSON-THORN-EMI,shared chassis
+THORN,FERGUSON-THORN-EMI,shared chassis
+THORN EMI,FERGUSON-THORN-EMI,shared chassis
+THORN-FERGUSON,FERGUSON-THORN-EMI,shared chassis
+EMI,FERGUSON-THORN-EMI,shared chassis
+BUSH,BUSH-MURPHY-RANK,shared chassis
+MURPHY,BUSH-MURPHY-RANK,shared chassis
+RANK,BUSH-MURPHY-RANK,shared chassis
+NOKIA,NOKIA - ITT,shared chassis
+ITT,NOKIA - ITT,shared chassis
+GOLDSTAR,GOLDSTAR - LG,renamed
+LG,GOLDSTAR - LG,renamed
+PANASONIC,PANASONIC - MATSUSHITA,parent company
+MATSUSHITA,PANASONIC - MATSUSHITA,parent company
+LOEWE,LOEWE / LOEWE-OPTA,renamed
+LOEWE-OPTA,LOEWE / LOEWE-OPTA,renamed
+OPTA,LOEWE / LOEWE-OPTA,renamed
+BEKO,BEKO - BEKOTEKNIK,renamed
+BEKOTEKNIK,BEKO - BEKOTEKNIK,renamed
+FORMENTI,FORMENTI - ADMIRAL,shared chassis
+ADMIRAL,FORMENTI - ADMIRAL,shared chassis
+BANG & OLUFSEN,BANG & OLUFSEN - B&O,abbreviation
+BANG OLUFSEN,BANG & OLUFSEN - B&O,abbreviation
+B&O,BANG & OLUFSEN - B&O,abbreviation
+SEI,SEI-SINUDYNE,shared chassis
+SAMBER'S,SAMBER'S / NUOVA SAMBER'S,renamed
+SAMBERS,SAMBER'S / NUOVA SAMBER'S,renamed
+NUOVA SAMBER'S,SAMBER'S / NUOVA SAMBER'S,renamed
+SCHAUB,SCHAUB-LORENZ,shared chassis
+LORENZ,SCHAUB-LORENZ,shared chassis
+ALBIRAL,ALBIRAL-ALBICOLOR,renamed
+ALBICOLOR,ALBIRAL-ALBICOLOR,renamed
+PRIMA,PRIMA - PRIME,renamed
+PRIME,PRIMA - PRIME,renamed
+KDS,KDS-KOREA DATA SYSTEMS,abbreviation
+KOREA DATA SYSTEMS,KDS-KOREA DATA SYSTEMS,abbreviation
+CYMATIC,CYMATIC - CELYTEL,shared chassis
+CELYTEL,CYMATIC - CELYTEL,shared chassis
+OVP,OVP - ORAVA,renamed
+ORAVA,OVP - ORAVA,renamed
+SIREL,SIREL - ELSIR,renamed
+ELSIR,SIREL - ELSIR,renamed
+IBERO-SHON,IBERO-SHON - IBEROPHON,renamed
+IBEROPHON,IBERO-SHON - IBEROPHON,renamed
+STARLINE,STAR - STARLINE,renamed
+DAYMOND,DAYMOND - HERTZ,shared chassis
+HERTZ,DAYMOND - HERTZ,shared chassis
+CASPAR,CASPAR - CASPER,spelling variant
+CASPER,CASPAR - CASPER,spelling variant
+ECKO,ECKO-ECKOVISION,renamed
+ECKOVISION,ECKO-ECKOVISION,renamed
+FUJIAN,HITACHI-FUJIAN,joint venture
+SILVA,SILVA-SCHNEIDER,shared chassis
+WESTMAN,WESTMAN-WESTINGHOUSE,shared chassis
+AMSTRAD,AMS,abbreviation in the catalogue

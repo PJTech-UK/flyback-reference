@@ -171,9 +171,19 @@ try {
     }
 
     if (preg_match('#^/make/([^/]+?)(?:/(\d+))?/?$#', $path, $m)) {
-        $html = Page::make(Db::get(), strtolower(preg_replace('/[^a-z0-9]+/i', '', urldecode($m[1]))),
-                           isset($m[2]) ? (int)$m[2] : 1);
+        $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '', urldecode($m[1])));
+        $html = Page::make(Db::get(), $slug, isset($m[2]) ? (int)$m[2] : 1);
         if ($html !== null) sendHtml($html);
+        // /make/thorn is not a page of its own — it is another name for a make
+        // the catalogue files as FERGUSON-THORN-EMI. Redirect rather than serve
+        // the same models at two URLs: duplicate content at scale is exactly
+        // what the indexing work was undoing.
+        $canon = Page::makeAlias(Db::get(), $slug);
+        if ($canon !== null) {
+            header('Location: /make/' . Page::slug($canon)
+                   . (isset($m[2]) ? '/' . (int)$m[2] : ''), true, 301);
+            exit;
+        }
         notFound('No such manufacturer', 'That manufacturer is not in the archive.');
     }
 
