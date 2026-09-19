@@ -32,20 +32,57 @@ header {
 /* Sticky ONLY where the header is comfortably shorter than the screen. A sticky
    element taller than the viewport pins and never releases: the page scrolls
    behind it and the results are unreachable. That is what happened on a phone
-   once the header grew a tagline, a prompt and a stats line — 788px of header
+   once the header grew an introduction and a stats line — 788px of header
    on an 844px viewport, and worse once browser chrome takes its share. */
 @media (min-width: 861px) and (min-height: 620px) {
   header { position: sticky; top: 0; }
 }
 header h1 { margin: 0 0 6px; font-size: 21px; line-height: 1.25; }
-header .stats { color: var(--muted); font-size: 15px; margin-top: 2px; }
-header .tagline {
-  margin: 0;
-  text-wrap: pretty;
-  font-size: 14px;
-  line-height: 1.55;
+/* The introduction, in columns that share the full container width. auto-fit
+   with a 250px floor means three columns on a desktop, two on a tablet and one
+   on a phone, without a breakpoint for each. */
+.masthead {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px 32px;
+  margin: 12px 0 0;
+  align-items: start;
+}
+.mast-col h2 {
+  margin: 0 0 5px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--muted);
-  max-width: 78ch;
+}
+.mast-col ul { margin: 0; padding: 0; list-style: none; }
+.mast-col li {
+  margin: 0 0 5px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg);
+  text-wrap: pretty;
+}
+.mast-col li strong { color: var(--accent); }
+.mast-col li + li { color: var(--muted); }
+
+/* Figure above label, so the three numbers line up as a row of columns rather
+   than running together as one sentence. */
+header .stats { display: flex; gap: 22px; flex-wrap: wrap; margin: 0; }
+header .stats div { min-width: 0; }
+header .stats dt {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.2;
+}
+header .stats dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--muted);
 }
 
 /* Links on their own row above the title. Inline in the tagline they broke the
@@ -72,6 +109,7 @@ header .tagline {
 
 /* Logo beside the title: a CRT tube in profile with the flyback's HV lead. */
 .brand { display: flex; gap: 14px; align-items: flex-start; }
+.brand h1 { flex: 1; min-width: 0; }
 .brand .logo {
   width: 52px;
   height: 42px;
@@ -81,27 +119,18 @@ header .tagline {
 }
 
 /* The one instruction anybody needs, above the box it refers to. */
-.prompt {
-  margin: 12px 0 0;
-  font-size: 15px;
-  line-height: 1.5;
-  max-width: 78ch;
-  /* Short blocks broke at whatever the viewport dictated — "the make and /
-     model of the set". Let the browser even the lines out. */
-  text-wrap: balance;
-}
-.prompt strong { color: var(--accent); }
 
 @media (max-width: 860px) {
   /* Everything above the search box is a cost on a phone: the reader came to
-     type a part number. The tagline is in "What is this?" and the prompt's
-     explanation is not needed twice. */
-  header .tagline { display: none; }
-  .prompt .prompt-detail { display: none; }
-  header .stats { font-size: 12px; }
+     type a part number. What the archive is lives in "What is this?", and the
+     column headings and second bullets are explanation they did not ask for. */
+  #mastAbout { display: none; }
+  .mast-col h2 { display: none; }
+  .mast-extra { display: none; }
+  header .stats dt { font-size: 14px; }
+  header .stats { gap: 14px; }
   /* And once results are on screen the introduction has served its purpose. */
-  body.has-results .prompt { display: none; }
-  body.has-results header .stats { display: none; }
+  body.has-results .masthead { display: none; }
 }
 
 /* Short screens — an iPhone SE is 568px tall and the header alone was 704px.
@@ -129,7 +158,6 @@ header .tagline {
   .brand .logo { width: 28px; height: 23px; }
   header h1 { font-size: 16px; }
   header .stats { display: none; }
-  .prompt { margin-top: 8px; }
 }
 
 @media (max-width: 640px) {
@@ -141,7 +169,6 @@ header .tagline {
   header h1 { font-size: 18px; }
   .welcome { display: none; }
   header .tagline { font-size: 13px; }
-  .prompt { font-size: 14px; }
 
   /* The search row put a full-width box, a Clear, a select and two buttons on
      one line and let them fight. Box on its own line, controls under it. */

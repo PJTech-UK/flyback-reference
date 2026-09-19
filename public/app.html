@@ -36,26 +36,37 @@
         <circle cx="23.5" cy="14" r="4"/>
       </g>
     </svg>
-    <div>
-      <h1><span class="welcome">Welcome to the </span>Flyback, LOPT &amp; Tripler Cross-Reference Database</h1>
-      <p class="tagline">
-        Cross-reference and technical data for <b>HR Diemen</b> line-output
-        transformers (flybacks&nbsp;/&nbsp;LOPTs), triplers and related EHT
-        components for CRT televisions and monitors, supplemented with
-        cross-reference data from other historic parts catalogues and from
-        documents circulated by the repair community.
-      </p>
-    </div>
+    <h1><span class="welcome">Welcome to the </span>Flyback, LOPT &amp; Tripler Cross-Reference Database</h1>
   </div>
 
-  <div class="stats" id="stats">loading…</div>
-
-  <p class="prompt" id="prompt">
-    <strong>Type any part number to start</strong><span class="prompt-detail"> &mdash;
-    whatever is printed on the transformer, or the make and model of the set. Every
-    result links out to searches for that part <em>and all of its equivalents</em>, so
-    a dead part number becomes a shortlist of things to look for.</span>
-  </p>
+  <!-- Three columns that share the full container width. The introduction used
+       to be one 78ch paragraph, which on a 1200px page filled half of it and
+       lined up with nothing; and it explained the site twice, once in prose and
+       once again in the prompt underneath. -->
+  <div class="masthead">
+    <section class="mast-col" id="mastAbout">
+      <h2>What this is</h2>
+      <ul>
+        <li>Cross-reference and technical data for CRT line-output transformers
+            (flybacks&nbsp;/&nbsp;LOPTs), triplers and EHT components.</li>
+        <li>Built from <b>HR Diemen</b>&rsquo;s catalogue, other historic parts
+            catalogues, and documents circulated by the repair community.</li>
+      </ul>
+    </section>
+    <section class="mast-col" id="mastHow">
+      <h2>How to search</h2>
+      <ul>
+        <li><strong>Type what is printed on the transformer</strong> &mdash; or the
+            make and model of the set.</li>
+        <li class="mast-extra">Punctuation, spacing and case are ignored. Every result
+            lists the part <em>and its equivalents</em>.</li>
+      </ul>
+    </section>
+    <section class="mast-col">
+      <h2>In the archive</h2>
+      <dl class="stats" id="stats"><dd>loading&hellip;</dd></dl>
+    </section>
+  </div>
 
   <div class="search">
     <input type="text" id="q" autofocus

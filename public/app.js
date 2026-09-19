@@ -931,9 +931,11 @@
     $sortBy.innerHTML = CATALOG.sorts.map(s => `<option value="${s.value}">${esc(s.label)}</option>`).join("");
     const st = CATALOG.stats || {};
     const n = v => (v || 0).toLocaleString();
-    $("stats").textContent =
-      `${n(st.parts)} transformer parts · ${n(st.codes)} manufacturer part numbers · ` +
-      `${n(st.models)} TV and monitor models`;
+    $("stats").innerHTML =
+      [[st.parts, "transformer parts"],
+       [st.codes, "manufacturer<br>part numbers"],
+       [st.models, "TV and monitor<br>models"]]
+      .map(([v, label]) => `<div><dt>${n(v)}</dt><dd>${label}</dd></div>`).join("");
     // Belongs here, after the fetch. Reading CATALOG at module top level threw
     // on a null and took every handler registered below it with it.
     if ($("version") && CATALOG.version) {
