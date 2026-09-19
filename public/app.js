@@ -416,15 +416,21 @@
 
   // ------------------------------------------------------------------ search
   let timer = null;
-  function scheduleSearch(resetPage = true) {
+  function scheduleSearch(resetPage = true, mode = "replace") {
     if (resetPage) page = 1;
     clearTimeout(timer);
-    timer = setTimeout(runSearch, 180);
+    timer = setTimeout(() => runSearch(mode), 180);
+  }
+  /** A deliberate jump: push it, and take the reader to the top of it. */
+  function goTo(q) {
+    $q.value = q;
+    scheduleSearch(true, "push");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  async function runSearch() {
+  async function runSearch(mode = "replace") {
     const q = $q.value;
-    syncUrl();
+    syncUrl(mode);
     if (q.trim() === "" && !$cat.value) {
       $summary.innerHTML = "";
       $pager.innerHTML = "";
@@ -538,14 +544,13 @@
         img.addEventListener("click", () => openImage(img.dataset.src || img.src));
       }
       for (const btn of $results.querySelectorAll("[data-suggest]")) {
-        btn.addEventListener("click", () => { $q.value = btn.dataset.suggest; scheduleSearch(); });
+        btn.addEventListener("click", () => goTo(btn.dataset.suggest));
       }
       for (const btn of $results.querySelectorAll("[data-drop-type]")) {
         btn.addEventListener("click", () => {
           $cat.value = "";
           const rest = $q.value.replace(/\b(?:tester_)?type:\S+\s*/gi, "").trim();
-          $q.value = rest || "data:any";
-          scheduleSearch();
+          goTo(rest || "data:any");
         });
       }
       return;
@@ -566,31 +571,19 @@
         // empty "type a part code" state, which answers nothing. data:any is
         // the match-all, so the point being made — there are more parts than
         // the filter showed — is actually visible.
-        $q.value = rest || "data:any";
-        scheduleSearch();
+        goTo(rest || "data:any");
       });
     }
     for (const btn of $results.querySelectorAll("[data-goto]")) {
-      btn.addEventListener("click", () => {
-        $q.value = btn.dataset.goto;
-        scheduleSearch();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+      btn.addEventListener("click", () => goTo(btn.dataset.goto));
     }
     for (const btn of $results.querySelectorAll("[data-subs]")) {
-      btn.addEventListener("click", () => {
-        $q.value = `subs:"${btn.dataset.subs}"`;
-        scheduleSearch();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+      btn.addEventListener("click", () => goTo(`subs:"${btn.dataset.subs}"`));
     }
     for (const btn of $results.querySelectorAll(".link-btn[data-action]")) {
       btn.addEventListener("click", () => {
-        const hr = btn.dataset.hr;
         const tok = btn.dataset.action === "same-network" ? "network" : "similaruf";
-        $q.value = `${tok}:"${hr}"`;
-        scheduleSearch();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        goTo(`${tok}:"${btn.dataset.hr}"`);
       });
     }
     renderPager(data);
@@ -602,13 +595,24 @@
       <button class="btn" id="prevPage" ${data.page <= 1 ? "disabled" : ""}>‹ Prev</button>
       <span class="pinfo">page ${data.page} / ${data.pages} · ${data.total.toLocaleString()} results</span>
       <button class="btn" id="nextPage" ${data.page >= data.pages ? "disabled" : ""}>Next ›</button>`;
-    const go = d => { page = data.page + d; runSearch(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+    const go = d => { page = data.page + d; runSearch("push"); window.scrollTo({ top: 0, behavior: "smooth" }); };
     if ($("prevPage")) $("prevPage").onclick = () => go(-1);
     if ($("nextPage")) $("nextPage").onclick = () => go(1);
   }
 
   // --------------------------------------------------------------- URL sync
-  function syncUrl() {
+  //
+  // Every state used to be written with replaceState, so a whole session --
+  // search, part, its substitute, that part's substitute -- occupied a single
+  // history entry. Back then skipped the lot and landed on whatever preceded
+  // the app, which for anyone who had searched twice was a stale query they had
+  // long finished with.
+  //
+  // Typing still replaces: a debounced keystroke is not a place you navigated
+  // to, and pushing per keystroke would bury the real steps under "A", "AM",
+  // "AMS". A deliberate jump pushes -- following a substitute, a suggestion, a
+  // "see all", a pager page. Those are the steps Back should walk.
+  function currentQs() {
     const p = new URLSearchParams();
     if ($q.value.trim()) p.set("q", $q.value.trim());
     if ($cat.value) p.set("category", $cat.value);
@@ -616,17 +620,50 @@
     if ($only.checked) p.set("onlyImgs", "1");
     if (!$uses.checked) p.set("uses", "0");
     if (page > 1) p.set("page", String(page));
-    const qs = p.toString();
-    history.replaceState(null, "", qs ? "?" + qs : location.pathname);
+    return p.toString();
   }
+  // Typing "AMSTRAD CTM" after "CM8833" is two searches, not one, and Back
+  // should separate them -- but the keystrokes that built each one are not
+  // twelve searches. A query that continues the last one replaces it; a query
+  // that is not a continuation is a new place, and gets its own entry.
+  // The last non-empty query that settled. Emptying the box does not reset it:
+  // clearing and retyping is how people replace a search, and if the empty
+  // string counted as the baseline then every query would look like a fresh
+  // start from nothing and none of them would ever differ from it.
+  let committed = "";
+  const normQ = t => t.trim().toUpperCase().replace(/\s+/g, " ");
+  function isContinuation(a, b) {
+    const x = normQ(a), y = normQ(b);
+    return y === "" || x.startsWith(y) || y.startsWith(x);
+  }
+  function syncUrl(mode) {
+    const q = $q.value;
+    if (mode === "none") { if (normQ(q)) committed = q; return; }  // popstate
+    // An empty box is not a place. Clearing the field on the way to retyping
+    // used to blank the URL first, which wiped the previous search out of the
+    // entry it lived in -- so Back from the new search landed on an empty app
+    // rather than on what you had been looking at.
+    if (normQ(q) === "" && normQ(committed) !== "") return;
+    const qs = currentQs();
+    const url = qs ? "?" + qs : location.pathname;
+    const push = normQ(q) !== "" && url !== location.pathname + location.search
+              && (mode === "push" || !isContinuation(q, committed));
+    // Never push a duplicate: two identical entries make Back look broken.
+    if (push) history.pushState(null, "", url);
+    else      history.replaceState(null, "", url);
+    if (normQ(q)) committed = q;
+  }
+  // Absent parameters must reset to their defaults, not keep whatever the
+  // previous state left in the control -- going Back to a URL with no sort
+  // would otherwise keep the sort you had moved on from.
   function restoreFromUrl() {
     const p = new URLSearchParams(location.search);
-    if (p.has("q")) $q.value = p.get("q");
-    if (p.has("category")) $cat.value = p.get("category");
-    if (p.has("sort")) $sortBy.value = p.get("sort");
-    if (p.has("onlyImgs")) $only.checked = p.get("onlyImgs") === "1";
-    if (p.has("uses")) $uses.checked = p.get("uses") !== "0";
-    if (p.has("page")) page = Math.max(1, parseInt(p.get("page"), 10) || 1);
+    $q.value = p.get("q") || "";
+    $cat.value = p.get("category") || "";
+    $sortBy.value = p.get("sort") || "code";
+    $only.checked = p.get("onlyImgs") === "1";
+    $uses.checked = p.get("uses") !== "0";
+    page = Math.max(1, parseInt(p.get("page"), 10) || 1);
   }
 
   // ------------------------------------------------------------- query builder
@@ -828,7 +865,7 @@
   $("addGroup").onclick = () => { groups.push(defaultGroup()); renderBuilder(); };
   $("applyBuilder").onclick = () => {
     const q = composeQuery();
-    if (q) { $q.value = q; $builder.hidden = true; scheduleSearch(); }
+    if (q) { $builder.hidden = true; goTo(q); }
   };
   $("toggleBuilder").onclick = () => {
     $builder.hidden = !$builder.hidden;
@@ -916,6 +953,14 @@
     $only.addEventListener("change", () => scheduleSearch());
     $uses.addEventListener("change", () => scheduleSearch());
     $sortBy.addEventListener("change", () => scheduleSearch());
+    // Back and Forward: the browser has already set the URL, so read the state
+    // out of it and re-run without writing history again.
+    window.addEventListener("popstate", () => {
+      restoreFromUrl();
+      syncClear();
+      clearTimeout(timer);
+      runSearch("none");
+    });
     document.addEventListener("keydown", e => {
       if (e.key === "Escape") { $modal.classList.remove("show"); $("help").classList.remove("show"); $("about").classList.remove("show"); }
     });
