@@ -10,11 +10,11 @@
 ### Dating the later edition
 
 **Its timestamp is not its date.** The file records
-`creation-date: Fri Mar 22 03:30:25 2024`, but a V12 database is rebuilt when
-the updater runs and stamped with that moment. This copy was assembled in 2024
-from an update package obtained second-hand; the package itself is undated and
-was already old. The 2003 file is honestly dated — `creation-date: Tue Feb 18
-10:49:26 2003` — because it is the original press.
+`creation-date: Fri Mar 22 03:30:25 2024`, but a V12 database is rebuilt and
+re-stamped whenever an update is applied to it, so that records when this copy
+was last written, not when its contents were compiled. The 2003 file is
+honestly dated — `creation-date: Tue Feb 18 10:49:26 2003` — because it is the
+original press.
 
 What actually dates the content:
 
