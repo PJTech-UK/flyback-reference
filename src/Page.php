@@ -211,8 +211,16 @@ HTML;
         }
 
         if ($oems) {
+            // A trailing ".." is the catalogue's own notation for a range, not a
+            // number this page cut short. Mark it so it does not read as damage.
             $h .= '<h2>Manufacturer equivalents (' . count($oems) . ')</h2><p class="codes">'
-                . implode(' &middot; ', array_map([self::class, 'e'], $oems)) . '</p>';
+                . implode(' &middot; ', array_map(function (string $o): string {
+                    $e = self::e($o);
+                    return str_ends_with($o, '..')
+                        ? '<abbr class="wild" title="A range: any part number beginning '
+                          . self::e(rtrim($o, '.')) . '. The digits are not missing.">' . $e . '</abbr>'
+                        : $e;
+                  }, $oems)) . '</p>';
         }
         if ($subs) {
             $h .= '<h2>Possible substitutes</h2><p>Parts of a similar design. A shortlist to '

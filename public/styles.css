@@ -324,6 +324,11 @@ main { padding: 14px 20px 80px; max-width: 1200px; margin: 0 auto; }
   font-size: 14px;
 }
 .equiv.hit { background: var(--hit); border-color: #d8a800; }
+/* A range, not a truncation. The trailing ".." is the catalogue's own notation
+   for "any number starting like this"; shown plain it reads as a code the page
+   ran out of room for. Dotted underline and a help cursor say otherwise. */
+.equiv.wild { cursor: help; border-style: dotted; }
+.codes .wild { cursor: help; text-decoration: underline dotted; }
 /* The sources printed this number more than one way (AT 2075-30102 vs
    AT 2075/30102). One chip, with the other spellings in the tooltip. */
 .equiv.variants { cursor: help; }

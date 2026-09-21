@@ -365,9 +365,14 @@
             <h3>Manufacturer equivalents (${equivs.length})${provNote}</h3>
             <div class="equivs">${equivs.map(e => {
               const alts = e.alts || [];
+              // The catalogue's own shorthand: "BG 1897-641-3.." stands for any
+              // code beginning BG 1897-641-3. 54 codes carry it, and rendered
+              // plain it reads as a number the page has cut short rather than
+              // one the manufacturer wrote that way.
+              const wild = /\.\.$/.test(e.oem);
               const cls = "equiv" + (matched.has(e.oem) ? " hit" : "") +
                           (e.src === "xref" ? " xref" : e.src === "classic" ? " classic" : "") +
-                          (alts.length ? " variants" : "");
+                          (alts.length ? " variants" : "") + (wild ? " wild" : "");
               const t = (e.src === "xref"
                 ? "From the 2011 HR Diemen equivalence catalogue"
                 : e.src === "classic"
@@ -375,6 +380,9 @@
                 : "From the manufacturer's 2003 reference database")
                 + (alts.length
                    ? `\n\nAlso printed as: ${alts.join(", ")}\nPunctuation is ignored when searching, so any of these finds it.`
+                   : "")
+                + (wild
+                   ? `\n\nThe catalogue writes this as a range: any part number beginning ${e.oem.replace(/\.\.$/, "")}. The digits are not missing.`
                    : "");
               return `<span class="${cls}" title="${esc(t)}">${esc(e.oem)}</span>`;
             }).join("")}</div>
