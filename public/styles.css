@@ -499,6 +499,10 @@ details[open] > summary { margin-bottom: 6px; }
 .manual-leads li.ml-hit { border-left-color: #3d8b3d; }
 .manual-leads li.ml-lead { border-left-color: #d8a800; }
 .manual-leads li.ml-weak { border-left-color: #bbb; }
+/* Inferred siblings: amber rule, like a manual lead: plausible, not stated */
+.siblings { display: flex; flex-direction: column; gap: 6px; margin: 0 0 6px; }
+.sibling { border-left: 3px solid #d8a800; padding: 4px 0 4px 8px; font-size: 14px; }
+.sibling p { margin: 4px 0 0; }
 .ml-badge {
   font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
   padding: 1px 5px; border-radius: 3px; background: #eef1f6; color: #55637a; margin-right: 5px;

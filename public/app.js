@@ -199,6 +199,21 @@
     return `<div class="use-hits">${shown}${more}</div>`;
   }
 
+  /* Inferred siblings: a part we believe shares an original design with this
+   * one, typically the same OEM transformer under a different revision suffix.
+   * Not an equivalent, and labelled so. The reasoning is shown in full rather
+   * than behind a tooltip, because the reasoning is the claim. */
+  function renderSiblings(sibs) {
+    if (!sibs || !sibs.length) return "";
+    const rows = sibs.map(s => `<div class="sibling">
+        <div><button class="link-btn" data-goto="${esc(s.code)}">${esc(s.code)}</button>
+          <span class="sub-tag" title="Inferred by a contributor, not stated by HR Diemen">inferred</span></div>
+        <p>${esc(s.note)}${s.url ? ` <a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">Source</a>` : ""}</p>
+      </div>`).join("");
+    return `<h3>Inferred sibling${sibs.length === 1 ? "" : "s"} <small style="color:#888;font-weight:normal">— not a manufacturer claim</small></h3>
+      <div class="siblings">${rows}</div>`;
+  }
+
   /* Candidate substitutes: parts whose extracted tap profile is the same shape
    * at a comparable scale, in the same line-rate class. Deliberately not called
    * equivalents — HR Diemen never claimed these interchange, and inductance,
@@ -213,6 +228,8 @@
       bits.push(s.pins
         ? `<span class="sub-tag good" title="Same B+ and collector pins — no rewiring">same pins</span>`
         : `<span class="sub-tag" title="B+ or collector sits on a different pin — viable only if you will move wires">rewire</span>`);
+      if (s.pol === 0) bits.push(`<span class="sub-tag bad" title="Pulse polarity disagrees in a way rewiring cannot fix: an inverted pulse on the primary, or a winding with some taps inverted and some not. Rails rectified from these taps would come out wrong.">polarity clash</span>`);
+      else if (s.pol === 1) bits.push(`<span class="sub-tag" title="Pulse polarity matches once one or more secondary windings are wired the other way round (swap the winding's two ends)">reverse winding</span>`);
       if (!s.mat_ok) bits.push(`<span class="sub-tag bad" title="Anode rating below this part's. It may pass on the bench and flash over in a month.">MAT ${s.mat ?? "?"} kV</span>`);
       if (s.missing) bits.push(`<span class="sub-tag" title="Taps this part has that the candidate does not">${s.missing} tap${s.missing === 1 ? "" : "s"} short</span>`);
       if (s.extra) bits.push(`<span class="sub-tag" title="Spare taps you can leave unconnected">+${s.extra} spare</span>`);
@@ -352,6 +369,7 @@
             ${ghostNote}
             <h3>Schematic</h3>
             ${imgs.length ? renderImages(imgs) : `<div class="nodata">No schematic on disk for this part.</div>`}
+            ${renderSiblings(res.siblings)}
             ${row.mat_kv != null ? `<h3>Flyback tester (STVDST)</h3>${renderTester(row)}` : ""}
             ${(res.pinfunc || []).length ? `<h3>Pin functions <small style="color:#888;font-weight:normal">— from community Data-Pin compilations, not HR Diemen</small></h3>${renderPinFunc(res.pinfunc)}` : ""}
             ${(res.manuals || []).length ? `<h3>Service manuals for sets using this part</h3>${renderManualLeads(res.manuals)}` : ""}

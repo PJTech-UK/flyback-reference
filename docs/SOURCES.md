@@ -69,7 +69,7 @@ Each source is loaded and tagged, never overwritten by whichever ran last:
 | `updated` | the later database |
 | `xref` | the 2011 catalogue PDF |
 | `classic` | inferred via a Classic FBT correspondence |
-| `community` | contributed |
+| `community` | contributed (fitments, orphans, inferred siblings: see `SIBLINGS.md`) |
 
 Equivalents are written one CSV per edition — `equivalents.csv`,
 `equivalents-updated.csv` — and the build loads both. Writing one file that each
@@ -100,3 +100,26 @@ backslash the rule un-ignores it.
 The update package ships per-table files — `FABRICAN.CDN`, `HR.CDN`,
 `UTILITZA.CDN`, `EQUIVALE.CDN`, `OBSEHR.CDN`, `ACCEHR.CDN` — but they are
 encrypted, so the extractors read the assembled `.v12` instead.
+
+## Contributed schematic sheets
+
+Genuine HR Diemen sheets sometimes turn up one at a time, usually as a seller's
+photo on a marketplace listing. They go in `data/schematics-contributed/`
+(`HR<code>.gif`), each with a row in `data/schematics-contributed/SOURCES.csv`
+saying where it was found, when, and how it was checked. They're shown as
+"schematic (contributed)".
+
+To add one:
+
+1. Check the sheet against the record: MAT, +, COL, earths and TYPE should match
+   what the database already says. If they don't, it isn't the same part.
+2. Convert with `convert in.webp +dither -colors 32 HR<code>.gif`. Don't
+   `-remap` onto a Diemen palette: on a JPEG-damaged photo it wipes out the
+   wiring.
+3. The OCR reader keys on Diemen's exact palette and can't read a recompressed
+   photo, so transcribe the taps by hand into `analysis/bulk_extract/HR<code>.json`
+   (copy an existing file's shape), then run
+   `php tools/consolidate-schematic-extracts.php` and `php bin/build-db.php`.
+4. Add the mapping to `dataset/hr_to_schematic.json` with kind `contributed`.
+
+First one: HR 80177, from an Ozon listing, October 2026.

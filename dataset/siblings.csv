@@ -1,0 +1,9 @@
+# Inferred siblings: two HR codes believed to be close relatives of the same
+# original design. NOT equivalents. HR Diemen gave each its own code, which is
+# itself a hint that they differ in something (pin-out, anode rating, focus/G2
+# network, mechanical fit). Each row is shown on both parts' pages, with `note`
+# explaining the inference and `url` pointing at supporting evidence where there
+# is any. `note` is mandatory: an inference nobody can retrace is a rumour.
+# See docs/SIBLINGS.md.
+hr,sibling,note,url,source
+HR 46455,HR 46177,"HR Diemen's 2011 equivalence catalogue maps LG 6174Z-1017D to HR 46455 (no data held) and 6174Z-1017H to HR 46177 (schematic, 30.6 kV, B+ pin 2, COL pin 1; fitted to Apple CRT iMacs, M5521). The -D is reported as an iMac G3 part, which is why the -H is the sibling chosen. The suffix letter alone proves little: the 6174Z-1017 range covers at least eight HR codes, and of the three with data, -A (HR 46187) matches the -H closely but -E (HR 46255) has a different pin-out and 25.5 kV. Treat the HR 46177 sheet as a lead and check pin-out and anode rating on the part.",https://68kmla.org/bb/goto/post?id=516171,community

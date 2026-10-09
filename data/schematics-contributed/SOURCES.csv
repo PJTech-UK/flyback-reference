@@ -1,0 +1,8 @@
+# Genuine HR Diemen schematic sheets that reached us individually rather than
+# from the database or a site/archive sweep. One row per file: where it was
+# found, when, and how it was checked. The image itself is the seller's or
+# poster's photo of Diemen's sheet, quantised to GIF for the pipeline.
+file,hr,found_at,found_on,original_name,checked
+HR80177.gif,HR 80177,https://www.ozon.uz/product/tdks-fbt-6174v-6006-m-hr80177-bsc25-n1648-strochnyy-transformator-428925757/,2026-10-09,6179079811.webp,"Seller listing photo. MAT 24.2, + 2, COL 1, earths 9/6/11/12 and TYPE 90 all match the 2003/2007 database record exactly. Taps transcribed by hand."
+HR8758.gif,HR 8758,https://strong-ltd.narod.ru/data/FBTnews/HR8758.gif,2026-10-09,HR8758.gif,"Native Diemen GIF, linked from the seller's table at https://strong-ltd.narod.ru/fbt/fbt_data.htm (row DCF-2217A). MAT 25.9, + 4, COL 1, earths 6/8, TYPE 90 match the database record. Taps corrected by hand: OCR missed four and misread ∩ polarity."
+HR8759.gif,HR 8759,https://strong-ltd.narod.ru/data/FBTnews/HR8759.gif,2026-10-09,HR8759.gif,"Native Diemen GIF, linked from the seller's table at https://strong-ltd.narod.ru/fbt/fbt_data.htm (row 154-238A). MAT 51.1, + 2, COL 1, earths 8/5/10, TYPE 110 match the database record. Tap polarities corrected by hand: OCR read ∩ as negative."

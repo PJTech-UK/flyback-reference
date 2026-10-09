@@ -145,7 +145,12 @@ CREATE TABLE substitutes (
   same_pins INTEGER,   -- 1 = same B+ and COL pins, so no rewiring
   mat_ok    INTEGER,   -- 1 = candidate anode rating is not below the target's
   n_extra   INTEGER,   -- candidate taps the target does not have
-  n_missing INTEGER    -- target taps the candidate lacks
+  n_missing INTEGER,   -- target taps the candidate lacks
+  pol       INTEGER    -- pulse polarity of the paired taps: 2 = all agree,
+                       -- 1 = agree once one or more candidate secondaries are
+                       -- wired in reverse, 0 = conflict (an inverted primary,
+                       -- or a winding with some taps inverted and some not),
+                       -- NULL = not enough polarity data to say
 );
 CREATE TABLE vpps     (hr TEXT, v INTEGER, pin TEXT, pol TEXT, side TEXT, wnd INTEGER);
 CREATE TABLE roles    (hr TEXT, role TEXT);
@@ -162,6 +167,12 @@ CREATE TABLE pinfunc  (hr TEXT, oem TEXT, pin INTEGER, function TEXT,
 -- and the manual is reachable; 'lead' is plausible but unverified; 'weak' is a
 -- sibling model or partial match. None of it has been read by a human yet.
 CREATE TABLE manuals  (hr TEXT, chassis TEXT, url TEXT, note TEXT, confidence TEXT);
+-- Inferred siblings: two HR codes believed to descend from the same original
+-- design (e.g. one OEM part, two revision suffixes). Not an equivalence, and
+-- never merged into one: HR gave them separate codes for a reason. `note` says
+-- how the inference was reached and is never empty. Curated in
+-- dataset/siblings.csv and stored in both directions. See docs/SIBLINGS.md.
+CREATE TABLE siblings (hr TEXT, sibling TEXT, note TEXT, url TEXT, src TEXT);
 CREATE TABLE meta     (key TEXT PRIMARY KEY, value TEXT);
 SQL);
 
@@ -352,13 +363,25 @@ if (is_dir($bulkDir) && glob("$bulkDir/HR*.json")) {
 {
     foreach ($bulkRecs as $d) {
         $vpps = []; $rolesList = []; $nSeg = 0;
+        // The primary is the winding the reader marked as such, else the one
+        // carrying the Vcc label (the two agree on 2,487 of 2,488 sheets).
+        $primW = null;
+        foreach ($d['windings'] ?? [] as $w) {
+            if (($w['role'] ?? '') === 'primary') { $primW = $w['winding_num'] ?? null; break; }
+        }
+        if ($primW === null) foreach ($d['windings'] ?? [] as $w) {
+            foreach ($w['taps'] ?? [] as $t) {
+                if (($t['role'] ?? '') === 'Vcc') { $primW = $w['winding_num'] ?? null; break 2; }
+            }
+        }
         foreach ($d['windings'] ?? [] as $w) {
             $nSeg += $w['segments'] ?? 1;
             foreach ($w['taps'] ?? [] as $t) {
                 if (($t['kind'] ?? '') === 'vpp' && ($t['vpp'] ?? null) !== null) {
                     $vpps[] = ['v' => $t['vpp'], 'pin' => $t['pin'] ?? null,
                                'pol' => $t['polarity'] ?? null, 'side' => $w['side'] ?? null,
-                               'wnd' => $w['winding_num'] ?? null];
+                               'wnd' => $w['winding_num'] ?? null,
+                               'prim' => $primW !== null && ($w['winding_num'] ?? null) === $primW];
                 } elseif (($t['kind'] ?? '') === 'role' && !empty($t['role'])) {
                     $rolesList[] = $t['role'];
                 }
@@ -700,6 +723,7 @@ function schemKind(string $k): string {
         'esquema'   => 'schematic',
         'wayback'   => 'schematic (archived)',
         'recovered' => 'schematic (recovered)',
+        'contributed' => 'schematic (contributed)',
         'trip'      => 'tripler',
         'accesorio' => 'accessory',
         'acc_pdf'   => 'accessory sheet',
@@ -730,6 +754,30 @@ foreach (loadJson("$EX/service_manual_found.json") as $code => $m) {
     $insMan->execute([$code, $m['chassis'] ?? '', $m['url'] ?? '',
                       $m['note'] ?? '', $m['confidence'] ?? 'lead']);
     $manual_rows++;
+}
+
+// Inferred siblings (dataset/siblings.csv). A row without a note is refused
+// rather than loaded: the explanation is the whole value of the claim.
+$sibling_rows = 0;
+$sibFile = "$EX/siblings.csv";
+if (is_file($sibFile)) {
+    $insSib = $db->prepare('INSERT INTO siblings (hr, sibling, note, url, src) VALUES (?,?,?,?,?)');
+    $fh = fopen($sibFile, 'r'); $hdr = null;
+    while (($row = fgetcsv($fh)) !== false) {
+        if (($row[0] ?? '') === '' || str_starts_with(ltrim((string)$row[0]), '#')) continue;
+        if ($hdr === null) { $hdr = array_flip($row); continue; }
+        $a = trim((string)($row[$hdr['hr']] ?? ''));
+        $b = trim((string)($row[$hdr['sibling']] ?? ''));
+        $note = trim((string)($row[$hdr['note']] ?? ''));
+        if ($a === '' || $b === '' || $a === $b) continue;
+        if ($note === '') { fwrite(STDERR, "siblings.csv: $a <-> $b has no note, skipped\n"); continue; }
+        $url = trim((string)($row[$hdr['url']] ?? ''));
+        $src = trim((string)($row[$hdr['source']] ?? '')) ?: 'community';
+        $insSib->execute([$a, $b, $note, $url, $src]);
+        $insSib->execute([$b, $a, $note, $url, $src]);
+        $sibling_rows++;
+    }
+    fclose($fh);
 }
 
 $insVpp = $db->prepare('INSERT INTO vpps (hr, v, pin, pol, side, wnd) VALUES (?,?,?,?,?,?)');
@@ -915,6 +963,7 @@ $db->exec('CREATE INDEX idx_vpp_hr  ON vpps(hr)');
 $db->exec('CREATE INDEX idx_role_hr ON roles(hr)');
 $db->exec('CREATE INDEX idx_pinfunc_hr ON pinfunc(hr)');
 $db->exec('CREATE INDEX idx_manuals_hr ON manuals(hr)');
+$db->exec('CREATE INDEX idx_siblings_hr ON siblings(hr)');
 $db->exec('CREATE INDEX idx_schem_hr ON schematics(hr)');
 $db->exec('CREATE INDEX idx_hr_tipo ON hr(tester_type)');
 
@@ -977,6 +1026,51 @@ function subMissing(array $want, array $have): int {
     return $missing;
 }
 
+/** Pulse polarity agreement between target $A and candidate $B (2/1/0/null,
+ *  see the substitutes table). Taps are paired on voltage normalised to each
+ *  part's own largest tap, greedily from the top, within SUB_TOL.
+ *
+ *  A winding is AC: reverse a secondary's two ends and every pulse on it
+ *  inverts. So polarity is judged per candidate winding: all paired taps
+ *  agreeing is a straight match; all inverted is fine on a secondary (wire it
+ *  the other way round) but not on the primary, whose B+ and collector ends
+ *  are fixed; a mix cannot be fixed by rewiring. */
+function subPolarity(array $A, array $B): ?int {
+    $pool = $B['ptaps'];
+    $byWnd = [];                       // candidate winding => [same, inverted, primary]
+    foreach ($A['ptaps'] as $a) {
+        $na = $a['v'] / $A['top'];
+        // Closest tap within tolerance. Taps a few percent apart (240 and 230
+        // Vpp against 200 and 190) cannot be told apart by voltage, so when two
+        // candidates are both within half the tolerance, polarity breaks the
+        // tie; otherwise an arbitrary crossing reads as a clash.
+        $hit = null; $best = null;
+        foreach ($pool as $k => $b) {
+            $nb = $b['v'] / $B['top'];
+            $diff = abs($na - $nb) / max($na, $nb, 1e-9);
+            if ($diff > SUB_TOL + 1e-9) continue;
+            $key = [$diff <= SUB_TOL / 2 + 1e-9 ? 0 : 1,
+                    ($a['pol'] !== null && $a['pol'] === $b['pol']) ? 0 : 1, $diff];
+            if ($best === null || $key < $best) { $best = $key; $hit = $k; }
+        }
+        if ($hit === null) continue;
+        $b = $pool[$hit]; unset($pool[$hit]);
+        if ($a['pol'] === null || $b['pol'] === null) continue;
+        $w = $b['wnd'] ?? '?';
+        $byWnd[$w] ??= [0, 0, $b['prim'] || $a['prim']];
+        $byWnd[$w][$a['pol'] === $b['pol'] ? 0 : 1]++;
+        if ($a['prim']) $byWnd[$w][2] = true;
+    }
+    if (!$byWnd) return null;
+    $result = 2;
+    foreach ($byWnd as [$same, $inv, $prim]) {
+        if ($inv === 0) continue;
+        if ($same > 0 || $prim) return 0;
+        $result = 1;
+    }
+    return $result;
+}
+
 /** The 2003 database writes pin "02" where the site records write "2"; compare numerically. */
 function subPin(?string $p): ?string {
     $p = strtoupper(trim((string)$p));
@@ -991,15 +1085,26 @@ foreach ($db->query("SELECT code, tester_type, mat_kv, pinB, pinC, alim_or_defle
         'mat'  => $r['mat_kv'] !== null ? (float)$r['mat_kv'] : null,
         'pinB' => subPin($r['pinB']), 'pinC' => subPin($r['pinC']),
         'alim' => strtoupper(trim((string)$r['alim_or_deflection'])),
-        'taps' => [],
+        'taps' => [], 'ptaps' => [],
     ];
 }
-foreach ($db->query("SELECT hr, v FROM vpps WHERE v IS NOT NULL") as $r) {
-    if (isset($subParts[$r['hr']])) $subParts[$r['hr']]['taps'][] = (int)$r['v'];
+foreach ($sch as $h => $sx) {
+    if (!isset($subParts[$h])) continue;
+    foreach ($sx['vpps'] as $v) {
+        if ($v['v'] === null) continue;
+        $subParts[$h]['taps'][] = (int)$v['v'];
+        $subParts[$h]['ptaps'][] = ['v' => (int)$v['v'], 'wnd' => $v['wnd'],
+            'prim' => !empty($v['prim']),
+            'pol' => in_array($v['pol'], ['positive', 'negative'], true) ? $v['pol'] : null];
+    }
 }
 // Two taps is the floor: a single tap normalises to 1.0 and carries no shape.
 $subParts = array_filter($subParts, fn($p) => count($p['taps']) >= 2);
-foreach ($subParts as &$p) { $p['shape'] = subShape($p['taps']); $p['top'] = max($p['taps']); }
+foreach ($subParts as &$p) {
+    $p['shape'] = subShape($p['taps']); $p['top'] = max($p['taps']);
+    // largest first, so polarity pairing starts from the top
+    usort($p['ptaps'], fn($x, $y) => $y['v'] <=> $x['v']);
+}
 unset($p);
 
 // Bucket by tap count: profiles differing by more than one tap can never align,
@@ -1009,7 +1114,7 @@ foreach ($subParts as $code => $p) $subByLen[count($p['shape'])][] = $code;
 
 // Already inside the build's single transaction; do not open another.
 $insSub = $db->prepare('INSERT INTO substitutes
-    (hr, cand, shape_d, scale, same_pins, mat_ok, n_extra, n_missing) VALUES (?,?,?,?,?,?,?,?)');
+    (hr, cand, shape_d, scale, same_pins, mat_ok, n_extra, n_missing, pol) VALUES (?,?,?,?,?,?,?,?,?)');
 $subPairs = 0;
 foreach ($subParts as $a => $A) {
     $len = count($A['shape']);
@@ -1030,6 +1135,7 @@ foreach ($subParts as $a => $A) {
                 ($A['mat'] !== null && $B['mat'] !== null) ? ($B['mat'] >= $A['mat'] - 0.05 ? 1 : 0) : 1,
                 subMissing($B['taps'], $A['taps']),   // candidate taps the target lacks
                 subMissing($A['taps'], $B['taps']),   // target taps the candidate lacks
+                subPolarity($A, $B),
             ]);
             $subPairs++;
         }
@@ -1123,6 +1229,7 @@ printf("  + %s inferred pairs via Classic FBT correspondences\n", number_format(
 printf("  + %s pin-function rows, %s alt diagrams, %s equivalents from Data-Pin PDFs\n",
        number_format($datapin_pins), number_format($datapin_diagrams), number_format($datapin_equivs));
 printf("  + %s service-manual leads\n", number_format($manual_rows));
+printf("  + %s inferred sibling pairs\n", number_format($sibling_rows));
 printf("  + %s contributed fitment rows\n", number_format($community_uses));
 printf("  + %s parts identified with no HR equivalent\n", number_format($orphan_rows));
 printf("  + %s accessory datasheet links (were unreachable)\n", number_format($accSheets));

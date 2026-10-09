@@ -100,12 +100,24 @@
 
   // --- link builders --------------------------------------------------------
 
+  /* "HR 8435" collides with US Congress bill numbers ("H.R. 8435"): engines
+   * drop the dots, so the spaced and hyphenated variants match thousands of
+   * congress.gov / govinfo pages. Adding "flyback" to the query fixes that but
+   * throws away every page that calls it a Zeilentrafo or a ТДКС, so the noise
+   * is subtracted instead. Every bill page names its Congress ("118th
+   * Congress"), and a flyback page essentially never does. Appended last, so
+   * if Google's 32-word cap bites it trims the exclusions, not the codes.
+   * Yandex and Baidu get the bare word only: their site: exclusion is
+   * unreliable, and Congress pages are rare in their indexes anyway. */
+  const NOISE_FULL = ' -congress -site:congress.gov -site:govinfo.gov -site:govtrack.us';
+  const NOISE_WORD = ' -congress';
+
   const ENGINES = [
-    { id: 'google', label: 'Google', url: q => `https://www.google.com/search?q=${encodeURIComponent(q)}` },
-    { id: 'bing', label: 'Bing', url: q => `https://www.bing.com/search?q=${encodeURIComponent(q)}` },
-    { id: 'ddg', label: 'DuckDuckGo', url: q => `https://duckduckgo.com/?q=${encodeURIComponent(q)}` },
-    { id: 'yandex', label: 'Yandex', url: q => `https://yandex.com/search/?text=${encodeURIComponent(q)}` },
-    { id: 'baidu', label: 'Baidu', url: q => `https://www.baidu.com/s?wd=${encodeURIComponent(q)}` },
+    { id: 'google', label: 'Google', noise: NOISE_FULL, url: q => `https://www.google.com/search?q=${encodeURIComponent(q)}` },
+    { id: 'bing', label: 'Bing', noise: NOISE_FULL, url: q => `https://www.bing.com/search?q=${encodeURIComponent(q)}` },
+    { id: 'ddg', label: 'DuckDuckGo', noise: NOISE_FULL, url: q => `https://duckduckgo.com/?q=${encodeURIComponent(q)}` },
+    { id: 'yandex', label: 'Yandex', noise: NOISE_WORD, url: q => `https://yandex.com/search/?text=${encodeURIComponent(q)}` },
+    { id: 'baidu', label: 'Baidu', noise: NOISE_WORD, url: q => `https://www.baidu.com/s?wd=${encodeURIComponent(q)}` },
   ];
 
   const MARKETS = [
@@ -206,10 +218,10 @@
     const hrOnly = orQuery(variants);
 
     const engineRow = ENGINES.map(e =>
-      chip(e.url(combo), e.label, `${e.label}: all ${comboList.length} code variants at once`)).join('');
+      chip(e.url(combo + e.noise), e.label, `${e.label}: all ${comboList.length} code variants at once`)).join('');
 
     const hrRow = ENGINES.slice(0, 4).map(e =>
-      chip(e.url(hrOnly), e.label, `${e.label}: the HR code alone`)).join('');
+      chip(e.url(hrOnly + e.noise), e.label, `${e.label}: the HR code alone`)).join('');
 
     const marketRow = MARKETS.map(m =>
       m.single

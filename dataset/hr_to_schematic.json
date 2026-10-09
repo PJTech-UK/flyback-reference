@@ -221,6 +221,18 @@
    "path": "data/schematics/HR1492.gif"
   }
  ],
+ "HR 15018": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR15018.gif"
+  }
+ ],
+ "HR 15020": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR15020.gif"
+  }
+ ],
  "HR 1601": [
   {
    "kind": "schematic",
@@ -487,6 +499,102 @@
   {
    "kind": "schematic",
    "path": "data/schematics/HR1730.gif"
+  }
+ ],
+ "HR 19004": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19004.gif"
+  }
+ ],
+ "HR 19005": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19005.gif"
+  }
+ ],
+ "HR 19007": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19007.gif"
+  }
+ ],
+ "HR 19008": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19008.gif"
+  }
+ ],
+ "HR 19027": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19027.gif"
+  }
+ ],
+ "HR 19043": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19043.gif"
+  }
+ ],
+ "HR 1910": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR1910.gif"
+  }
+ ],
+ "HR 19118": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19118.gif"
+  }
+ ],
+ "HR 1912": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR1912.gif"
+  }
+ ],
+ "HR 19127": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19127.gif"
+  }
+ ],
+ "HR 1918": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR1918.gif"
+  }
+ ],
+ "HR 19233": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19233.gif"
+  }
+ ],
+ "HR 19247": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19247.gif"
+  }
+ ],
+ "HR 1927": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR1927.gif"
+  }
+ ],
+ "HR 19282": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR19282.gif"
+  }
+ ],
+ "HR 1939": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR1939.gif"
   }
  ],
  "HR 2011": [
@@ -3343,6 +3451,12 @@
   {
    "kind": "schematic (recovered)",
    "path": "data/schematics-from-web/HR5670.gif"
+  }
+ ],
+ "HR 5672": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR5672.gif"
   }
  ],
  "HR 5701": [
@@ -14489,6 +14603,12 @@
    "path": "data/schematics/HR8017.gif"
   }
  ],
+ "HR 80177": [
+  {
+   "kind": "contributed",
+   "path": "data/schematics-contributed/HR80177.gif"
+  }
+ ],
  "HR 8018": [
   {
    "kind": "schematic",
@@ -18919,6 +19039,18 @@
    "path": "data/schematics-from-wayback/HR8756.gif"
   }
  ],
+ "HR 8758": [
+  {
+   "kind": "contributed",
+   "path": "data/schematics-contributed/HR8758.gif"
+  }
+ ],
+ "HR 8759": [
+  {
+   "kind": "contributed",
+   "path": "data/schematics-contributed/HR8759.gif"
+  }
+ ],
  "HR 8760": [
   {
    "kind": "schematic (archived)",
@@ -21661,6 +21793,12 @@
    "path": "data/schematics/HR9678.gif"
   }
  ],
+ "HR 9680": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR9680.gif"
+  }
+ ],
  "HR 9682": [
   {
    "kind": "schematic",
@@ -22055,6 +22193,12 @@
   {
    "kind": "schematic",
    "path": "data/schematics/HR9854.gif"
+  }
+ ],
+ "HR 9858": [
+  {
+   "kind": "wayback",
+   "path": "data/schematics-from-wayback/HR9858.gif"
   }
  ],
  "HR 9868": [

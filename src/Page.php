@@ -175,10 +175,12 @@ HTML;
         $equivs = $get('SELECT oem FROM equivalents WHERE hr = ? AND canon = 1 ORDER BY oem');
         $uses   = $get('SELECT fabname, model FROM uses WHERE hr = ? ORDER BY fabname, model');
         $subs   = $get('SELECT cand FROM substitutes WHERE hr = ?
-                        ORDER BY same_pins DESC, mat_ok DESC, shape_d ASC LIMIT 12');
+                        ORDER BY (pol IS 0) ASC, same_pins DESC, mat_ok DESC, pol DESC,
+                                 shape_d ASC LIMIT 12');
         $imgs   = $get('SELECT kind, path FROM schematics WHERE hr = ?');
         $note   = $get('SELECT note FROM obs WHERE hr = ?');
         $accs   = $get('SELECT DISTINCT accessory FROM acc WHERE hr = ?');
+        $sibs   = $get('SELECT sibling, note, url FROM siblings WHERE hr = ? ORDER BY sibling');
 
         $oems  = array_column($equivs, 'oem');
         $kind  = self::kind($code, $db);
@@ -221,6 +223,17 @@ HTML;
                           . self::e(rtrim($o, '.')) . '. The digits are not missing.">' . $e . '</abbr>'
                         : $e;
                   }, $oems)) . '</p>';
+        }
+        if ($sibs) {
+            $h .= '<h2>Inferred sibling' . (count($sibs) === 1 ? '' : 's') . '</h2>'
+                . '<p>Believed to share an original design with this part. Not a '
+                . 'manufacturer claim; the reasoning is given with each.</p>';
+            foreach ($sibs as $sb) {
+                $h .= '<p><a href="/part/' . self::e(self::slug($sb['sibling'])) . '">'
+                    . self::e($sb['sibling']) . '</a> &mdash; ' . self::e($sb['note'])
+                    . ($sb['url'] ? ' <a href="' . self::e($sb['url'])
+                        . '" rel="nofollow noopener">Source</a>' : '') . '</p>';
+            }
         }
         if ($subs) {
             $h .= '<h2>Possible substitutes</h2><p>Parts of a similar design. A shortlist to '

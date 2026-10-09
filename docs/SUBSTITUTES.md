@@ -55,6 +55,31 @@ The first four are stored in the `substitutes` table; anode rating and pin
 identity are recorded as flags rather than filtered, so a part needing only its
 wires moved is offered and marked, not hidden.
 
+## Pulse polarity
+
+Each tap's pulse is drawn ∩ (positive-going) or ∪ (negative-going), and a rail
+rectified from one stroke comes out very different from the other. So the taps
+of the two parts are paired (normalised voltage, largest first, within 10%;
+between taps a few percent apart, polarity breaks the tie), and the pairs are
+judged per candidate winding:
+
+| `pol` | meaning | pairs |
+|---|---|---:|
+| 2 | every paired pulse agrees | 29,188 |
+| 1 | agrees once one or more secondary windings are wired the other way round | 6,757 |
+| 0 | clash: an inverted pulse on the primary, or a winding with some taps inverted and some not | 26,246 |
+| NULL | no paired taps with known polarity | 4,967 |
+
+A winding is AC: swap a secondary's two ends and every pulse on it inverts,
+so a wholly inverted secondary is a rewiring job, not a mismatch. The primary
+cannot be turned round, because its B+ and collector ends are fixed. A clash
+sends the candidate to the bottom of the list with a "polarity clash" tag. It
+isn't hidden, because a polarity read wrongly off a poor scan should not make
+a part vanish.
+
+Ranking: clash last, then same pins, anode rating adequate, `pol` 2 before 1,
+then closeness of fit.
+
 **EHT scales with B+.** A candidate needing ×0.80 to bring its auxiliary rails
 into line drops the anode voltage by a fifth, and the CRT decides whether that is
 survivable. ×0.80–×1.25 is already generous.
@@ -68,9 +93,13 @@ yourself, not proof of a bad match.
 ## Data-quality caveats
 
 - Only parts with extracted schematic data can be matched.
-- **Polarity is not reliable per-image.** Globally the split is healthy (~4.4k
-  positive / 3.7k negative) but individual parts extract wrongly. Check against
-  the drawing.
+- **Polarity was wrong on about a quarter of all pulses until October 2026.**
+  The reader compared pixel counts in the glyph's top and bottom rows, which fails
+  for the commoner rendering of the symbol, and the global split looked healthy
+  only because the errors ran both ways. It now reads which half of the glyph its
+  centre columns fall in. Re-running it corrected 1,619 of 11,143 taps on 670
+  sheets and resolved 125 that had none. Individual misreads remain possible on
+  poor scans, so check the drawing before trusting a clash.
 - Some parts record two taps against one pin — sometimes a genuinely tapped
   winding, sometimes mis-association by the reader.
 - Pin labels are zero-padded inconsistently between sources; compare numerically.

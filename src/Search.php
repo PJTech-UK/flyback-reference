@@ -254,13 +254,18 @@ final class Search
                           WHERE hr IN ($ph) ORDER BY oem, pin");
         $manuals = $group("SELECT hr, chassis, url, note, confidence FROM manuals
                            WHERE hr IN ($ph)");
-        // Candidate substitutes, best first: no rewiring beats rewiring, an
-        // adequate anode rating beats an inadequate one, then closeness of fit.
-        $subs   = $group("SELECT s.hr, s.cand, s.shape_d, s.scale, s.same_pins, s.mat_ok,
+        $sibs    = $group("SELECT hr, sibling, note, url, src FROM siblings
+                           WHERE hr IN ($ph) ORDER BY sibling");
+        // Candidate substitutes, best first: a pulse-polarity conflict goes to
+        // the bottom whatever else it has going for it; then no rewiring beats
+        // rewiring, an adequate anode rating beats an inadequate one, matching
+        // polarity beats polarity that needs a winding reversed, then fit.
+        $subs   = $group("SELECT s.hr, s.cand, s.shape_d, s.scale, s.same_pins, s.mat_ok, s.pol,
                                  s.n_extra, s.n_missing, h.mat_kv, h.family
                           FROM substitutes s JOIN hr h ON h.code = s.cand
                           WHERE s.hr IN ($ph)
-                          ORDER BY s.same_pins DESC, s.mat_ok DESC, s.shape_d ASC");
+                          ORDER BY (s.pol IS 0) ASC, s.same_pins DESC, s.mat_ok DESC,
+                                   s.pol DESC, s.shape_d ASC");
         // model_norm is norm("fabname model"), so one substring test covers a
         // free-text term, a make: term and a model: term alike.
         $uses   = $group("SELECT hr, fab, fabname, model, model_norm, src FROM uses WHERE hr IN ($ph)");
@@ -379,6 +384,12 @@ final class Search
                     'chassis' => $m['chassis'], 'url' => $m['url'],
                     'note' => $m['note'], 'confidence' => $m['confidence'],
                 ], $manuals[$code] ?? []),
+                // Inferred siblings. The note is the reasoning and always travels
+                // with the link: a bare "see also" would read as an equivalence.
+                'siblings' => array_map(fn($x) => [
+                    'code' => $x['sibling'], 'note' => $x['note'],
+                    'url' => $x['url'] ?: null, 'src' => $x['src'],
+                ], $sibs[$code] ?? []),
                 'obs' => $obs[$code] ?? null,
                 // Decoded server-side rather than in app.js: two copies of the
                 // same rule set in two languages is how norm()/hr_norm() nearly
@@ -403,6 +414,8 @@ final class Search
                         'mat' => $s['mat_kv'] !== null ? (float)$s['mat_kv'] : null,
                         'extra' => (int)$s['n_extra'],
                         'missing' => (int)$s['n_missing'],
+                        // 2 same, 1 after reversing a secondary, 0 conflict, null unknown
+                        'pol' => $s['pol'] !== null ? (int)$s['pol'] : null,
                     ], array_slice($subs[$code] ?? [], 0, 8)),
                 ],
                 // `hit` marks a set the search term actually named, and long lists

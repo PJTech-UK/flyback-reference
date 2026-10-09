@@ -42,6 +42,7 @@ links are marked as inferred and are not merged into manufacturer claims.
 | `site` | The same manufacturer's public catalogue pages, captured before the site went offline. |
 | `xref` | Their published 2011 equivalence catalogue. |
 | `classic` | A second aftermarket manufacturer's catalogues, used only to *infer* links, tagged distinctly and never presented as the first manufacturer's claim. |
+| `community` | Contributed by repairers: extra fitments, parts with no HR equivalent, and *inferred siblings* (two HR codes believed to share an original design). Siblings always carry a note explaining the inference; see `docs/SIBLINGS.md`. |
 | `datapin` | Community-compiled pin-out documents, shared on hobbyist forums. Watermarks are left intact and the origin travels with each row. |
 
 Archived copies of pages come from the Internet Archive and Common Crawl.
