@@ -65,6 +65,7 @@ final class Page
     <a class="linkish" href="/">Search the database</a>
     <a class="linkish" href="/parts">All parts</a>
     <a class="linkish" href="/makes">By TV make</a>
+    <a class="linkish" href="/notes">Repairers' notes</a>
     <a class="linkish kofi" href="https://ko-fi.com/jonathanpjtech60339" target="_blank" rel="noopener">Support this archive</a>
   </nav>
  </div>
@@ -181,7 +182,7 @@ HTML;
         $note   = $get('SELECT note FROM obs WHERE hr = ?');
         $accs   = $get('SELECT DISTINCT accessory FROM acc WHERE hr = ?');
         $sibs   = $get('SELECT sibling, note, url FROM siblings WHERE hr = ? ORDER BY sibling');
-        $cnotes = $get('SELECT note, image, url FROM community_notes WHERE hr = ?');
+        $cnotes = $get('SELECT title, note, image, url FROM community_notes WHERE hr = ?');
 
         $oems  = array_column($equivs, 'oem');
         $kind  = self::kind($code, $db);
@@ -195,6 +196,8 @@ HTML;
               . ($accs ? '. Accessories: ' . implode(', ', array_map(
                     fn($a) => self::accessoryParse((string)$a['accessory'])[0], $accs)) : '')
               . '.';
+        if ($cnotes) $desc .= ' Repairer\'s ' . (array_filter(array_column($cnotes, 'image'))
+                                ? 'diagram and notes.' : 'notes.');
         $desc = mb_substr($desc, 0, 300);
 
         $h = '<h1>' . self::e($code) . '</h1>';
@@ -237,14 +240,16 @@ HTML;
             }
         }
         if ($cnotes) {
-            $h .= '<h2>Repairers\' notes</h2><p>Contributed, not HR Diemen data.</p>';
+            $h .= '<h2 id="notes">Repairers\' notes</h2><p>Contributed, not HR Diemen data. '
+                . '<a href="/notes">All repairers\' notes</a></p>';
             foreach ($cnotes as $cn) {
-                $h .= '<p>' . self::e($cn['note'])
+                $h .= ($cn['title'] ? '<h3>' . self::e($cn['title']) . '</h3>' : '')
+                    . '<p>' . self::e($cn['note'])
                     . ($cn['url'] ? ' <a href="' . self::e($cn['url'])
                         . '" rel="nofollow noopener">Source</a>' : '') . '</p>';
                 if ($cn['image']) {
                     $h .= '<figure><img src="' . self::e(preg_replace('#^\.\./#', '/', $cn['image']))
-                        . '" alt="Diagram contributed for ' . self::e($code) . '" loading="lazy">'
+                        . '" alt="' . self::e(self::noteAlt($code, $cn['note'])) . '" loading="lazy">'
                         . '<figcaption>contributed diagram</figcaption></figure>';
                 }
             }
@@ -439,6 +444,9 @@ HTML;
         $st->execute([$fab]);
         $also = $st->fetchAll(PDO::FETCH_COLUMN);
 
+        $noted = array_flip($db->query('SELECT DISTINCT hr FROM community_notes')
+                                ->fetchAll(PDO::FETCH_COLUMN));
+
         $h = '<h1>' . self::e($fab) . ($page > 1 ? " — page $page of $pages" : '') . '</h1>'
            . ($also ? '<p class="also">Also listed as ' . implode(', ', array_map(
                  [self::class, 'e'], $also)) . '.</p>' : '')
@@ -450,7 +458,9 @@ HTML;
             $h .= '<tr><td>' . self::e($r['model'] ?: '(unspecified)')
                 . ($r['src'] ? ' <abbr title="Contributed, or read from a service manual">*</abbr>' : '')
                 . '</td><td class="codes">' . implode(' ', array_map(
-                    fn($c) => '<a href="/part/' . self::e(self::slug($c)) . '">' . self::e($c) . '</a>',
+                    fn($c) => '<a href="/part/' . self::e(self::slug($c)) . '">' . self::e($c) . '</a>'
+                            . (isset($noted[$c]) ? ' <a class="note-flag" href="/part/'
+                                . self::e(self::slug($c)) . '#notes">repairer\'s note</a>' : ''),
                     $codes)) . '</td></tr>';
         }
         $h .= '</tbody></table><nav class="pager">';
@@ -473,6 +483,63 @@ HTML;
             . ($sample ? ' including ' . implode(', ', $sample) : '')
             . ', each with the part it was fitted with.',
             self::base() . '/make/' . self::slug($fab) . ($page > 1 ? '/' . $page : ''), $h, $db);
+    }
+
+    /** Alt text for a contributed diagram: the part and the note's first sentence. */
+    private static function noteAlt(string $code, string $note): string
+    {
+        $first = preg_split('/(?<=\.)\s/', $note, 2)[0];
+        return "Repairer's diagram for $code: " . mb_substr($first, 0, 160);
+    }
+
+    /**
+     * Every repairer's note on one page. They are scattered across part pages,
+     * and nobody looking for the B&O MX5000 footprint knows to open HR 7321.
+     */
+    public static function notes(PDO $db): string
+    {
+        $rows = $db->query("SELECT c.hr, c.title, c.note, c.image, c.url FROM community_notes c
+                            ORDER BY c.title = '', c.title, c.hr")->fetchAll(PDO::FETCH_ASSOC);
+        $uses = $db->prepare("SELECT DISTINCT fabname || ' ' || model FROM uses
+                              WHERE hr = ? ORDER BY fabname, model LIMIT 8");
+        // One section per title: the same finding written against two parts
+        // (HR 6260 and HR 6373 are both 40315s) is one entry with one diagram.
+        $groups = [];
+        foreach ($rows as $r) $groups[$r['title'] ?: $r['hr']][] = $r;
+        $h = '<h1>Repairers\' notes</h1><p>Findings contributed by people repairing sets: '
+           . 'pin mappings, fitting differences, parts that can stand in for one another. '
+           . 'They are not HR Diemen data, and each says how sure it is. '
+           . number_format(count($groups)) . ' so far.</p>';
+        foreach ($groups as $title => $list) {
+            $h .= '<section class="note-entry"><h2>' . self::e($title) . '</h2>';
+            $shown = [];
+            foreach ($list as $r) {
+                $uses->execute([$r['hr']]);
+                $sets = $uses->fetchAll(PDO::FETCH_COLUMN);
+                $h .= '<p class="meta-line">Part: <a href="/part/' . self::e(self::slug($r['hr'])) . '">'
+                    . self::e($r['hr']) . '</a>'
+                    . ($sets ? ' &middot; fitted to ' . self::e(implode(', ', $sets)) : '') . '</p>'
+                    . '<p>' . self::e($r['note'])
+                    . ($r['url'] ? ' <a href="' . self::e($r['url']) . '" rel="nofollow noopener">Source</a>' : '')
+                    . '</p>';
+                if ($r['image'] && !isset($shown[$r['image']])) {
+                    $shown[$r['image']] = true;
+                    $src = self::e(preg_replace('#^\.\./#', '/', $r['image']));
+                    $h .= '<figure><a href="' . $src . '"><img src="' . $src . '" alt="'
+                        . self::e(self::noteAlt($r['hr'], $r['note'])) . '" loading="lazy"></a>'
+                        . '<figcaption>contributed diagram</figcaption></figure>';
+                }
+            }
+            $h .= '</section>';
+        }
+        $h .= '<p>Have something to add? See CONTRIBUTING.md in the '
+            . '<a href="https://github.com/PJTech-UK/flyback-reference">repository</a>.</p>';
+        $titles = array_values(array_unique(array_filter(array_column($rows, 'title'))));
+        return self::shell('Repairers\' notes: flyback fitting findings and pin-mapping diagrams',
+            'Contributed repair notes for line-output transformers'
+            . ($titles ? ': ' . implode('; ', array_slice($titles, 0, 4)) : '')
+            . '. Pin mappings, fitting differences and stand-in parts, with diagrams.',
+            self::base() . '/notes', $h, $db);
     }
 
     /**
@@ -509,6 +576,7 @@ HTML;
             case 'core':
                 $locs[] = "$base/";
                 $locs[] = "$base/makes";
+                $locs[] = "$base/notes";
                 $total = (int)$db->query('SELECT COUNT(*) FROM hr')->fetchColumn();
                 for ($p = 1, $n = (int)ceil($total / self::PER_PAGE); $p <= $n; $p++) {
                     $locs[] = $base . '/parts' . ($p > 1 ? '/' . $p : '');

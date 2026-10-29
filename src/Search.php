@@ -256,7 +256,7 @@ final class Search
                            WHERE hr IN ($ph)");
         $sibs    = $group("SELECT hr, sibling, note, url, src FROM siblings
                            WHERE hr IN ($ph) ORDER BY sibling");
-        $cnotes  = $group("SELECT hr, note, image, url, src FROM community_notes
+        $cnotes  = $group("SELECT hr, title, note, image, url, src FROM community_notes
                            WHERE hr IN ($ph)");
         // Candidate substitutes, best first: a pulse-polarity conflict goes to
         // the bottom whatever else it has going for it; then no rewiring beats
@@ -394,7 +394,7 @@ final class Search
                 ], $sibs[$code] ?? []),
                 // Repairers' notes, kept apart from HR Diemen's own (obs).
                 'cnotes' => array_map(fn($x) => [
-                    'note' => $x['note'], 'image' => $x['image'] ?: null,
+                    'title' => $x['title'] ?: null, 'note' => $x['note'], 'image' => $x['image'] ?: null,
                     'url' => $x['url'] ?: null, 'src' => $x['src'],
                 ], $cnotes[$code] ?? []),
                 'obs' => $obs[$code] ?? null,

@@ -177,7 +177,7 @@ CREATE TABLE siblings (hr TEXT, sibling TEXT, note TEXT, url TEXT, src TEXT);
 -- source data. Never merged into HR Diemen's own notes (obs), and shown with
 -- the source tag. `image` is an optional supplementary diagram. Curated in
 -- dataset/community_notes.csv.
-CREATE TABLE community_notes (hr TEXT, note TEXT, image TEXT, url TEXT, src TEXT);
+CREATE TABLE community_notes (hr TEXT, title TEXT, note TEXT, image TEXT, url TEXT, src TEXT);
 CREATE TABLE meta     (key TEXT PRIMARY KEY, value TEXT);
 SQL);
 
@@ -790,7 +790,7 @@ if (is_file($sibFile)) {
 $note_rows = 0;
 $cnFile = "$EX/community_notes.csv";
 if (is_file($cnFile)) {
-    $insCn = $db->prepare('INSERT INTO community_notes (hr, note, image, url, src) VALUES (?,?,?,?,?)');
+    $insCn = $db->prepare('INSERT INTO community_notes (hr, title, note, image, url, src) VALUES (?,?,?,?,?,?)');
     $fh = fopen($cnFile, 'r'); $hdr = null;
     while (($row = fgetcsv($fh)) !== false) {
         if (($row[0] ?? '') === '' || str_starts_with(ltrim((string)$row[0]), '#')) continue;
@@ -801,7 +801,7 @@ if (is_file($cnFile)) {
         if ($note === '') { fwrite(STDERR, "community_notes.csv: $h has no note, skipped\n"); continue; }
         $img = trim((string)($row[$hdr['image']] ?? ''));
         if ($img !== '' && !is_file("$ROOT/$img")) { fwrite(STDERR, "community_notes.csv: $h: no such image $img\n"); $img = ''; }
-        $insCn->execute([$h, $note, $img !== '' ? "../$img" : '',
+        $insCn->execute([$h, isset($hdr['title']) ? trim((string)($row[$hdr['title']] ?? '')) : '', $note, $img !== '' ? "../$img" : '',
                          trim((string)($row[$hdr['url']] ?? '')),
                          trim((string)($row[$hdr['source']] ?? '')) ?: 'community']);
         $note_rows++;

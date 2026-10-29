@@ -840,3 +840,9 @@ footer .linkish { margin-left: 0; margin-right: 14px; font-size: 13px; }
   white-space: nowrap;
 }
 .verbadge:empty { display: none; }
+
+/* Repairers' notes: the flag on make pages, and the /notes index. */
+.note-flag { font-size: .8em; padding: 0 .4em; border-radius: 3px; background: #fff3cd; color: #7a5a00; text-decoration: none; white-space: nowrap; }
+.note-flag:hover { text-decoration: underline; }
+.note-entry { border-top: 1px solid #ddd; margin-top: 1.5em; }
+.note-entry figure img { max-width: 100%; height: auto; }

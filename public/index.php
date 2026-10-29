@@ -170,6 +170,10 @@ try {
         sendHtml(Page::makes(Db::get()));
     }
 
+    if ($path === '/notes' || $path === '/notes/') {
+        sendHtml(Page::notes(Db::get()));
+    }
+
     if (preg_match('#^/make/([^/]+?)(?:/(\d+))?/?$#', $path, $m)) {
         $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '', urldecode($m[1])));
         $html = Page::make(Db::get(), $slug, isset($m[2]) ? (int)$m[2] : 1);

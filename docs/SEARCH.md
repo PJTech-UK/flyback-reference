@@ -34,6 +34,7 @@ Adjacent **free-text** words merge into one phrase rather than being ANDed:
 | `vpp:` `wnd:` `mat:` `uf:` | tap voltage, winding count, anode rating, focus voltage |
 | `subs:` | substitute candidates for a given part |
 | `data:` `listed:` `src:` | completeness and provenance |
+| `notes:` | has a repairer's note (`notes:yes`); all of them are listed at `/notes` |
 
 Bare text covers part codes and set models only — not notes, roles, family codes
 or accessory lists. Set makes and models are included only when the "include

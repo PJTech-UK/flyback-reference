@@ -38,7 +38,7 @@ final class QueryCompiler
         // Every prefix leaf() understands must be listed here, or QueryParser
         // treats the token as free text and merges it with its neighbours into
         // one unmatchable phrase — the filter then silently returns nothing.
-        return (bool) preg_match('/^(uf|vpp|wnd|mat|tester_type|type|family|pol|role|img|oem|make|model|network|similaruf|subs|data|listed|src)[:<>=]/i', $tok);
+        return (bool) preg_match('/^(uf|vpp|wnd|mat|tester_type|type|family|pol|role|img|oem|make|model|network|similaruf|subs|data|listed|notes|src)[:<>=]/i', $tok);
     }
 
     /** @return array{sql:string, params:array, terms:string[], useTerms:string[]} */
@@ -181,6 +181,11 @@ final class QueryCompiler
         if (preg_match('/^listed:(yes|no|y|n|1|0|true|false)$/i', $tok, $m)) {
             $yes = in_array(strtolower($m[1]), ['yes', 'y', '1', 'true'], true);
             return 'hr.listed = ' . ($yes ? '1' : '0');
+        }
+        // `notes:yes` — a repairer has contributed a note or diagram (community_notes).
+        if (preg_match('/^notes:(yes|no|y|n|1|0|true|false)$/i', $tok, $m)) {
+            $yes = in_array(strtolower($m[1]), ['yes', 'y', '1', 'true'], true);
+            return 'hr.code ' . ($yes ? '' : 'NOT ') . 'IN (SELECT hr FROM community_notes)';
         }
         // `src:` — where the record came from.
         if (preg_match('/^src:(book|site|xref|accessory_sheet)$/i', $tok, $m)) {

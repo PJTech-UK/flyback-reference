@@ -205,13 +205,14 @@
    * than behind a tooltip, because the reasoning is the claim. */
   /* Repairers' notes: board traces, footprint quirks, data errors spotted by
    * someone with the set on the bench. Contributed, and labelled so. */
-  function renderNotes(notes) {
+  function renderRepairNotes(notes) {
     if (!notes || !notes.length) return "";
     const rows = notes.map(n => `<div class="sibling">
+        ${n.title ? `<p><b>${esc(n.title)}</b></p>` : ""}
         <p>${esc(n.note)}${n.url ? ` <a href="${esc(n.url)}" target="_blank" rel="noopener noreferrer">Source</a>` : ""}</p>
         ${n.image ? renderImages([{ kind: "contributed diagram", path: n.image }]) : ""}
       </div>`).join("");
-    return `<h3>Repairers' notes <small style="color:#888;font-weight:normal">(contributed, not HR Diemen data)</small></h3>
+    return `<h3>Repairers' notes <small style="color:#888;font-weight:normal">(contributed, not HR Diemen data; <a href="/notes">all notes</a>)</small></h3>
       <div class="siblings">${rows}</div>`;
   }
 
@@ -382,7 +383,7 @@
             <h3>Schematic</h3>
             ${imgs.length ? renderImages(imgs) : `<div class="nodata">No schematic on disk for this part.</div>`}
             ${renderSiblings(res.siblings)}
-            ${renderNotes(res.cnotes)}
+            ${renderRepairNotes(res.cnotes)}
             ${row.mat_kv != null ? `<h3>Flyback tester (STVDST)</h3>${renderTester(row)}` : ""}
             ${(res.pinfunc || []).length ? `<h3>Pin functions <small style="color:#888;font-weight:normal">— from community Data-Pin compilations, not HR Diemen</small></h3>${renderPinFunc(res.pinfunc)}` : ""}
             ${(res.manuals || []).length ? `<h3>Service manuals for sets using this part</h3>${renderManualLeads(res.manuals)}` : ""}

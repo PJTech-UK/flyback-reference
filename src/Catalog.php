@@ -129,6 +129,13 @@ final class Catalog
                 'examples' => ['listed:yes data:none'],
             ],
             [
+                'key' => 'notes', 'label' => 'Has repairers\' notes', 'type' => 'bool',
+                'help' => 'Parts with a contributed repairer\'s note or diagram: fitting findings, pin mappings, sibling parts. Contributed, not HR Diemen data. All of them are listed at /notes.',
+                'ops' => [['op' => 'is', 'token' => 'notes:{v}', 'label' => 'is']],
+                'options' => [['value' => 'yes', 'label' => 'yes'], ['value' => 'no', 'label' => 'no']],
+                'examples' => ['notes:yes'],
+            ],
+            [
                 'key' => 'src', 'label' => 'Record source', 'type' => 'enum',
                 'help' => 'Which source the record came from: the manufacturer’s 2003 reference database, their website before it went offline, or their 2011 equivalence catalogue (cross-reference only).',
                 'ops' => [['op' => 'is', 'token' => 'src:{v}', 'label' => 'is']],
