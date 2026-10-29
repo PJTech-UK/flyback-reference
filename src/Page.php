@@ -181,6 +181,7 @@ HTML;
         $note   = $get('SELECT note FROM obs WHERE hr = ?');
         $accs   = $get('SELECT DISTINCT accessory FROM acc WHERE hr = ?');
         $sibs   = $get('SELECT sibling, note, url FROM siblings WHERE hr = ? ORDER BY sibling');
+        $cnotes = $get('SELECT note, image, url FROM community_notes WHERE hr = ?');
 
         $oems  = array_column($equivs, 'oem');
         $kind  = self::kind($code, $db);
@@ -233,6 +234,19 @@ HTML;
                     . self::e($sb['sibling']) . '</a> &mdash; ' . self::e($sb['note'])
                     . ($sb['url'] ? ' <a href="' . self::e($sb['url'])
                         . '" rel="nofollow noopener">Source</a>' : '') . '</p>';
+            }
+        }
+        if ($cnotes) {
+            $h .= '<h2>Repairers\' notes</h2><p>Contributed, not HR Diemen data.</p>';
+            foreach ($cnotes as $cn) {
+                $h .= '<p>' . self::e($cn['note'])
+                    . ($cn['url'] ? ' <a href="' . self::e($cn['url'])
+                        . '" rel="nofollow noopener">Source</a>' : '') . '</p>';
+                if ($cn['image']) {
+                    $h .= '<figure><img src="' . self::e(preg_replace('#^\.\./#', '/', $cn['image']))
+                        . '" alt="Diagram contributed for ' . self::e($code) . '" loading="lazy">'
+                        . '<figcaption>contributed diagram</figcaption></figure>';
+                }
             }
         }
         if ($subs) {

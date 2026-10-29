@@ -256,6 +256,8 @@ final class Search
                            WHERE hr IN ($ph)");
         $sibs    = $group("SELECT hr, sibling, note, url, src FROM siblings
                            WHERE hr IN ($ph) ORDER BY sibling");
+        $cnotes  = $group("SELECT hr, note, image, url, src FROM community_notes
+                           WHERE hr IN ($ph)");
         // Candidate substitutes, best first: a pulse-polarity conflict goes to
         // the bottom whatever else it has going for it; then no rewiring beats
         // rewiring, an adequate anode rating beats an inadequate one, matching
@@ -390,6 +392,11 @@ final class Search
                     'code' => $x['sibling'], 'note' => $x['note'],
                     'url' => $x['url'] ?: null, 'src' => $x['src'],
                 ], $sibs[$code] ?? []),
+                // Repairers' notes, kept apart from HR Diemen's own (obs).
+                'cnotes' => array_map(fn($x) => [
+                    'note' => $x['note'], 'image' => $x['image'] ?: null,
+                    'url' => $x['url'] ?: null, 'src' => $x['src'],
+                ], $cnotes[$code] ?? []),
                 'obs' => $obs[$code] ?? null,
                 // Decoded server-side rather than in app.js: two copies of the
                 // same rule set in two languages is how norm()/hr_norm() nearly

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1090 830" width="1090" height="830" font-family="Helvetica, Arial, sans-serif">
+<rect width="1090" height="830" fill="#fff"/>
+<text x="545.0" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#111">Orega 40315 (HR 6260, HR 6373) in the B&amp;O MX4500 / MX5000 horseshoe holes</text>
+<text x="545.0" y="68" text-anchor="middle" font-size="15" fill="#444">Inferred from pin layout, not a known fitment. Component side; circles: board silkscreen numbers.</text>
+<path d="M 694 217 Q 720 345 809 403" fill="none" stroke="#1f5fa8" stroke-width="2.5" stroke-dasharray="7 5"/>
+<line x1="668" y1="536" x2="760" y2="616" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="694" y1="474" x2="804" y2="511" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="697" y1="410" x2="809" y2="403" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="674" y1="348" x2="770" y2="298" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="629" y1="300" x2="694" y2="217" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="567" y1="275" x2="589" y2="175" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="502" y1="275" x2="479" y2="175" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="447" y1="300" x2="386" y2="217" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="400" y1="348" x2="307" y2="298" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="374" y1="410" x2="263" y2="403" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="374" y1="474" x2="263" y2="511" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<line x1="403" y1="536" x2="312" y2="616" stroke="#78909c" stroke-width="2" stroke-opacity="0.6"/>
+<circle cx="312" cy="616" r="21" fill="#37474f"/><text x="312" y="623" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">1</text>
+<text x="282" y="621" text-anchor="end" font-size="15" font-weight="bold" fill="#222">GND</text>
+<circle cx="263" cy="511" r="21" fill="#37474f"/><text x="263" y="518" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">2</text>
+<text x="233" y="516" text-anchor="end" font-size="15" font-weight="bold" fill="#222">110-115 Vpp -</text>
+<circle cx="263" cy="403" r="21" fill="#37474f"/><text x="263" y="410" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">3</text>
+<text x="233" y="408" text-anchor="end" font-size="15" font-weight="bold" fill="#222">190-205 Vpp -</text>
+<circle cx="307" cy="298" r="21" fill="#37474f"/><text x="307" y="304" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">4</text>
+<text x="277" y="302" text-anchor="end" font-size="15" font-weight="bold" fill="#222">GND</text>
+<circle cx="386" cy="217" r="21" fill="#37474f"/><text x="386" y="224" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">5</text>
+<text x="356" y="222" text-anchor="end" font-size="15" font-weight="bold" fill="#222">EHT return</text>
+<circle cx="479" cy="175" r="21" fill="#37474f"/><text x="479" y="182" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">6</text>
+<text x="487" y="145" text-anchor="end" font-size="15" font-weight="bold" fill="#222">45-50 Vpp +</text>
+<circle cx="589" cy="175" r="21" fill="#c62828"/><text x="589" y="182" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">7</text>
+<text x="581" y="145" text-anchor="start" font-size="15" font-weight="bold" fill="#c62828">26-28 Vpp + (board: 25 Vpp -)</text>
+<circle cx="694" cy="217" r="21" fill="#1f5fa8"/><text x="694" y="224" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">8</text>
+<text x="724" y="222" text-anchor="start" font-size="15" font-weight="bold" fill="#1f5fa8">B+</text>
+<circle cx="770" cy="298" r="21" fill="#37474f"/><text x="770" y="304" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">9</text>
+<text x="800" y="302" text-anchor="start" font-size="15" font-weight="bold" fill="#222">Collector</text>
+<circle cx="809" cy="403" r="21" fill="#c62828"/><text x="809" y="410" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">10</text>
+<text x="839" y="408" text-anchor="start" font-size="15" font-weight="bold" fill="#c62828">400-420 Vpp (board: B+)</text>
+<circle cx="804" cy="511" r="21" fill="#37474f"/><text x="804" y="518" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">11</text>
+<text x="834" y="516" text-anchor="start" font-size="15" font-weight="bold" fill="#222">240-245 Vpp +</text>
+<circle cx="760" cy="616" r="21" fill="#37474f"/><text x="760" y="623" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">12</text>
+<text x="790" y="621" text-anchor="start" font-size="15" font-weight="bold" fill="#222">50-55 Vpp +</text>
+<rect x="391" y="524" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="403" y="541" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">12</text>
+<rect x="362" y="462" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="374" y="479" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">11</text>
+<rect x="362" y="398" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="374" y="415" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">10</text>
+<rect x="388" y="336" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="400" y="352" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">9</text>
+<rect x="435" y="288" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="447" y="305" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">8</text>
+<rect x="490" y="263" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="502" y="280" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">7</text>
+<rect x="555" y="263" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="567" y="280" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">6</text>
+<rect x="617" y="288" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="629" y="305" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">5</text>
+<rect x="662" y="336" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="674" y="352" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">4</text>
+<rect x="685" y="398" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="697" y="415" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">3</text>
+<rect x="682" y="462" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="694" y="479" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">2</text>
+<rect x="656" y="524" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="668" y="541" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">1</text>
+<rect x="30" y="708" width="1030" height="102" fill="#f7f7f7" stroke="#ddd"/>
+<circle cx="55" cy="730" r="8" fill="#37474f"/><text x="72" y="735" font-size="14" fill="#222">board hole; squares: the 40315 pin (HR numbering) that lands in it</text>
+<circle cx="55" cy="754" r="8" fill="#c62828"/><text x="72" y="759" font-size="14" fill="#222">conflict: pin 3 lands on the B+ track (board 10); pin 6 has the opposite polarity (board 7)</text>
+<circle cx="55" cy="778" r="8" fill="#1f5fa8"/><text x="72" y="783" font-size="14" fill="#222">40315 B+ (pin 5); dashed: the hard trace from board 8 to board 10, which must be cut</text>
+</svg>

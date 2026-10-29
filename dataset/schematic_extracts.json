@@ -40490,7 +40490,7 @@
         ]
     },
     "HR 6469": {
-        "n_windings": 4,
+        "n_windings": 5,
         "windings": [
             {
                 "winding_num": 1,
@@ -40519,7 +40519,7 @@
                 ]
             },
             {
-                "winding_num": 4,
+                "winding_num": 3,
                 "role": "secondary",
                 "side": "R",
                 "segments": 4,
@@ -40535,7 +40535,7 @@
                 ]
             },
             {
-                "winding_num": 3,
+                "winding_num": 4,
                 "role": "secondary",
                 "side": "R",
                 "segments": 1,
@@ -40557,6 +40557,20 @@
                         "vpp": 110,
                         "pin": "8",
                         "polarity": "negative"
+                    }
+                ]
+            },
+            {
+                "winding_num": 5,
+                "role": "secondary",
+                "side": "R",
+                "segments": 1,
+                "taps": [
+                    {
+                        "kind": "vpp",
+                        "vpp": 180,
+                        "pin": "7",
+                        "polarity": "positive"
                     },
                     {
                         "kind": "vpp",
@@ -40566,7 +40580,8 @@
                     }
                 ]
             }
-        ]
+        ],
+        "transcribed": "taps corrected by hand against the sheet; the OCR reader merged two windings and dropped taps"
     },
     "HR 6470": {
         "n_windings": 3,
@@ -56353,14 +56368,19 @@
         ]
     },
     "HR 6726": {
-        "n_windings": 4,
+        "n_windings": 5,
         "windings": [
             {
                 "winding_num": 1,
                 "role": "primary",
                 "side": "L",
                 "segments": 1,
-                "taps": []
+                "taps": [
+                    {
+                        "kind": "role",
+                        "role": "Vcc"
+                    }
+                ]
             },
             {
                 "winding_num": 2,
@@ -56390,6 +56410,12 @@
                 "taps": [
                     {
                         "kind": "vpp",
+                        "vpp": 20,
+                        "pin": "12",
+                        "polarity": "positive"
+                    },
+                    {
+                        "kind": "vpp",
                         "vpp": 55,
                         "pin": "10",
                         "polarity": "negative"
@@ -56411,8 +56437,23 @@
                         "role": "FOCUS"
                     }
                 ]
+            },
+            {
+                "winding_num": 5,
+                "role": "secondary",
+                "side": "R",
+                "segments": 1,
+                "taps": [
+                    {
+                        "kind": "vpp",
+                        "vpp": 55,
+                        "pin": "1",
+                        "polarity": "positive"
+                    }
+                ]
             }
-        ]
+        ],
+        "transcribed": "taps corrected by hand against the sheet; the OCR reader merged two windings and dropped taps"
     },
     "HR 6728": {
         "n_windings": 3,
@@ -133413,7 +133454,8 @@
                     }
                 ]
             }
-        ]
+        ],
+        "transcribed": "by hand from a contributed photo of the sheet; the OCR reader cannot handle recompressed images"
     },
     "HR 8018": {
         "n_windings": 3,
@@ -178547,7 +178589,8 @@
                     }
                 ]
             }
-        ]
+        ],
+        "transcribed": "by hand from the sheet; the OCR reader missed taps and read every \u2229 pulse as negative"
     },
     "HR 8759": {
         "n_windings": 4,
@@ -178618,7 +178661,8 @@
                     }
                 ]
             }
-        ]
+        ],
+        "transcribed": "by hand from the sheet; the OCR reader missed taps and read every \u2229 pulse as negative"
     },
     "HR 8760": {
         "n_windings": 3,

@@ -71,3 +71,15 @@ rows carrying the same code rather than being left blank.
 new domain mean Google has decided the pages are not yet worth an index slot.
 That is a judgement about the site's standing, not an error to fix. Inbound
 links move it; nothing in this repository does.
+
+"Alternative page with proper canonical tag" (first reported October 2026) is
+the canonical tags working. Two kinds of URL declare a canonical elsewhere:
+
+- search URLs, `/?q=…`, serve the app shell, whose canonical is the root
+- a part URL in another form, such as `/part/HR6469`, answers 200 with its
+  canonical set to the lower-case slug, `/part/hr6469`
+
+Scrapers fire thousands of `?q=` searches (one HTTrack mirror on 1 October 2026
+ran 13,000), and Google picks some of them up. Check the report's example URLs:
+if they are all of those two kinds, there is nothing to do. A lower-case
+`/part/hr…` page listed there would be a real fault.

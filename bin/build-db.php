@@ -173,6 +173,11 @@ CREATE TABLE manuals  (hr TEXT, chassis TEXT, url TEXT, note TEXT, confidence TE
 -- how the inference was reached and is never empty. Curated in
 -- dataset/siblings.csv and stored in both directions. See docs/SIBLINGS.md.
 CREATE TABLE siblings (hr TEXT, sibling TEXT, note TEXT, url TEXT, src TEXT);
+-- Repairers' notes on one part: a board trace, a footprint quirk, a typo in the
+-- source data. Never merged into HR Diemen's own notes (obs), and shown with
+-- the source tag. `image` is an optional supplementary diagram. Curated in
+-- dataset/community_notes.csv.
+CREATE TABLE community_notes (hr TEXT, note TEXT, image TEXT, url TEXT, src TEXT);
 CREATE TABLE meta     (key TEXT PRIMARY KEY, value TEXT);
 SQL);
 
@@ -780,6 +785,30 @@ if (is_file($sibFile)) {
     fclose($fh);
 }
 
+// Repairers' notes (dataset/community_notes.csv). Same rule as siblings: a
+// row with no note is refused, because the note is the whole contribution.
+$note_rows = 0;
+$cnFile = "$EX/community_notes.csv";
+if (is_file($cnFile)) {
+    $insCn = $db->prepare('INSERT INTO community_notes (hr, note, image, url, src) VALUES (?,?,?,?,?)');
+    $fh = fopen($cnFile, 'r'); $hdr = null;
+    while (($row = fgetcsv($fh)) !== false) {
+        if (($row[0] ?? '') === '' || str_starts_with(ltrim((string)$row[0]), '#')) continue;
+        if ($hdr === null) { $hdr = array_flip($row); continue; }
+        $h    = trim((string)($row[$hdr['hr']] ?? ''));
+        $note = trim((string)($row[$hdr['note']] ?? ''));
+        if ($h === '') continue;
+        if ($note === '') { fwrite(STDERR, "community_notes.csv: $h has no note, skipped\n"); continue; }
+        $img = trim((string)($row[$hdr['image']] ?? ''));
+        if ($img !== '' && !is_file("$ROOT/$img")) { fwrite(STDERR, "community_notes.csv: $h: no such image $img\n"); $img = ''; }
+        $insCn->execute([$h, $note, $img !== '' ? "../$img" : '',
+                         trim((string)($row[$hdr['url']] ?? '')),
+                         trim((string)($row[$hdr['source']] ?? '')) ?: 'community']);
+        $note_rows++;
+    }
+    fclose($fh);
+}
+
 $insVpp = $db->prepare('INSERT INTO vpps (hr, v, pin, pol, side, wnd) VALUES (?,?,?,?,?,?)');
 $insRole = $db->prepare('INSERT INTO roles (hr, role) VALUES (?,?)');
 foreach ($sch as $h => $s) {
@@ -964,6 +993,7 @@ $db->exec('CREATE INDEX idx_role_hr ON roles(hr)');
 $db->exec('CREATE INDEX idx_pinfunc_hr ON pinfunc(hr)');
 $db->exec('CREATE INDEX idx_manuals_hr ON manuals(hr)');
 $db->exec('CREATE INDEX idx_siblings_hr ON siblings(hr)');
+$db->exec('CREATE INDEX idx_cnotes_hr ON community_notes(hr)');
 $db->exec('CREATE INDEX idx_schem_hr ON schematics(hr)');
 $db->exec('CREATE INDEX idx_hr_tipo ON hr(tester_type)');
 
@@ -1230,6 +1260,7 @@ printf("  + %s pin-function rows, %s alt diagrams, %s equivalents from Data-Pin 
        number_format($datapin_pins), number_format($datapin_diagrams), number_format($datapin_equivs));
 printf("  + %s service-manual leads\n", number_format($manual_rows));
 printf("  + %s inferred sibling pairs\n", number_format($sibling_rows));
+printf("  + %s repairers' notes\n", number_format($note_rows));
 printf("  + %s contributed fitment rows\n", number_format($community_uses));
 printf("  + %s parts identified with no HR equivalent\n", number_format($orphan_rows));
 printf("  + %s accessory datasheet links (were unreachable)\n", number_format($accSheets));

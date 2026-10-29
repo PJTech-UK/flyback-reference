@@ -50,6 +50,8 @@ committed, and is regenerated from source on every build.
 | anything in the interface | `` |
 | a set with **no** HR equivalent | `dataset/orphan_parts.csv` |
 | a fitment the maker never listed | `dataset/community_uses.csv` |
+| a repairer's note on one part, with an optional diagram | `dataset/community_notes.csv` (diagrams in `data/notes/`) |
+| taps the schematic reader got wrong | `analysis/bulk_extract/HR….json`, with a `transcribed` note saying why, then `php tools/consolidate-schematic-extracts.php` |
 
 Run `php bin/build-db.php` and check the result in the application
 before opening a pull request. There is no test suite: the build reporting its

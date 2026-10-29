@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1090 830" width="1090" height="830" font-family="Helvetica, Arial, sans-serif">
+<rect width="1090" height="830" fill="#fff"/>
+<text x="545.0" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#111">B&amp;O MX4500 / MX5000: Orega 40317 (HR 7321) on the main board</text>
+<text x="545.0" y="68" text-anchor="middle" font-size="15" fill="#444">Component side. Circles: the board's silkscreen hole numbers. Squares: the 40317's own pins.</text>
+<path d="M 694 217 Q 720 345 809 403" fill="none" stroke="#1f5fa8" stroke-width="2.5" stroke-dasharray="7 5"/>
+<path d="M 620 494 L 760 616" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 620 438 L 804 511" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 620 382 L 809 403" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 620 326 L 770 298" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 423 520 L 543 520 L 543 215 L 589 175" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 423 296 L 479 175" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 465 270 L 386 217" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 465 326 L 307 298" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 465 382 L 263 403" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 465 438 L 263 511" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<path d="M 465 494 Q 465 626 312 616" fill="none" stroke="#78909c" stroke-width="2.5" stroke-opacity="0.6"/>
+<circle cx="312" cy="616" r="21" fill="#37474f"/><text x="312" y="623" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">1</text>
+<text x="282" y="621" text-anchor="end" font-size="15" font-weight="bold" fill="#222">GND</text>
+<circle cx="263" cy="511" r="21" fill="#37474f"/><text x="263" y="518" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">2</text>
+<text x="233" y="509" text-anchor="end" font-size="15" font-weight="bold" fill="#222">+13 V rail</text>
+<text x="233" y="526" text-anchor="end" font-size="13" fill="#777">HR 125 Vpp -</text>
+<circle cx="263" cy="403" r="21" fill="#37474f"/><text x="263" y="410" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">3</text>
+<text x="233" y="401" text-anchor="end" font-size="15" font-weight="bold" fill="#222">+21 V rail</text>
+<text x="233" y="418" text-anchor="end" font-size="13" fill="#777">HR 200 Vpp -</text>
+<circle cx="307" cy="298" r="21" fill="#37474f"/><text x="307" y="304" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">4</text>
+<text x="277" y="302" text-anchor="end" font-size="15" font-weight="bold" fill="#222">GND</text>
+<circle cx="386" cy="217" r="21" fill="#37474f"/><text x="386" y="224" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">5</text>
+<text x="356" y="222" text-anchor="end" font-size="15" font-weight="bold" fill="#222">EHT feedback (ABL)</text>
+<circle cx="479" cy="175" r="21" fill="#37474f"/><text x="479" y="182" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">6</text>
+<text x="487" y="127" text-anchor="end" font-size="15" font-weight="bold" fill="#222">+200 V, boosted on B+</text>
+<text x="487" y="144" text-anchor="end" font-size="13" fill="#777">HR 65 Vpp +</text>
+<circle cx="589" cy="175" r="21" fill="#37474f"/><text x="589" y="182" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">7</text>
+<text x="581" y="127" text-anchor="start" font-size="15" font-weight="bold" fill="#222">heater?</text>
+<text x="581" y="144" text-anchor="start" font-size="13" fill="#777">HR 25 Vpp -</text>
+<circle cx="694" cy="217" r="21" fill="#1f5fa8"/><text x="694" y="224" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">8</text>
+<text x="724" y="222" text-anchor="start" font-size="15" font-weight="bold" fill="#1f5fa8">B+ 152 V</text>
+<circle cx="770" cy="298" r="21" fill="#37474f"/><text x="770" y="304" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">9</text>
+<text x="800" y="302" text-anchor="start" font-size="15" font-weight="bold" fill="#222">Collector, line coil</text>
+<circle cx="809" cy="403" r="21" fill="#37474f"/><text x="809" y="410" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">10</text>
+<text x="839" y="408" text-anchor="start" font-size="15" font-weight="bold" fill="#222">B+ 152 V</text>
+<circle cx="804" cy="511" r="21" fill="#37474f"/><text x="804" y="518" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">11</text>
+<text x="834" y="509" text-anchor="start" font-size="15" font-weight="bold" fill="#222">vertical coil (N-S?)</text>
+<text x="834" y="526" text-anchor="start" font-size="13" fill="#777">HR 230 Vpp +</text>
+<circle cx="760" cy="616" r="21" fill="#37474f"/><text x="760" y="623" text-anchor="middle" font-size="19" font-weight="bold" fill="#fff">12</text>
+<text x="790" y="614" text-anchor="start" font-size="15" font-weight="bold" fill="#222">not yet traced</text>
+<text x="790" y="631" text-anchor="start" font-size="13" fill="#777">HR 50 Vpp +</text>
+<rect x="453" y="258" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="465" y="275" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">6</text>
+<rect x="453" y="314" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="465" y="331" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">8</text>
+<rect x="453" y="370" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="465" y="387" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">10</text>
+<rect x="453" y="426" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="465" y="443" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">11</text>
+<rect x="453" y="482" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="465" y="499" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">12</text>
+<rect x="608" y="258" width="24" height="24" rx="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="620" y="275" text-anchor="middle" font-size="12" font-weight="bold" fill="#999">5</text>
+<rect x="608" y="314" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="620" y="331" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">4</text>
+<rect x="608" y="370" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="620" y="387" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">3</text>
+<rect x="608" y="426" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="620" y="443" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">2</text>
+<rect x="608" y="482" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="620" y="499" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">1</text>
+<rect x="411" y="284" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="423" y="301" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">7</text>
+<rect x="411" y="340" width="24" height="24" rx="4" fill="#fff" stroke="#333" stroke-width="1.5"/><text x="423" y="357" text-anchor="middle" font-size="12" font-weight="bold" fill="#999">9</text>
+<rect x="411" y="508" width="24" height="24" rx="4" fill="#333" stroke="#333" stroke-width="1.5"/><text x="423" y="525" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">13</text>
+<rect x="30" y="708" width="1030" height="102" fill="#f7f7f7" stroke="#ddd"/>
+<circle cx="55" cy="730" r="8" fill="#37474f"/><text x="72" y="735" font-size="14" fill="#222">board hole; the line shows which 40317 pin is wired to it (square positions illustrative)</text>
+<circle cx="55" cy="754" r="8" fill="#78909c"/><text x="72" y="759" font-size="14" fill="#222">grey: HR's tester reading for that pin, not an in-set voltage; ? = not confirmed</text>
+<circle cx="55" cy="778" r="8" fill="#1f5fa8"/><text x="72" y="783" font-size="14" fill="#222">B+, but no 40317 pin; dashed: hard trace to board 10 (cut it to fit a different transformer)</text>
+</svg>
